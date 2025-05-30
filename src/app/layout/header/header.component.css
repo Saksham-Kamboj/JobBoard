@@ -121,10 +121,7 @@
     transition: all 0.2s ease;
 }
 
-.search-box:focus-within {
-    border-color: var(--ring);
-    box-shadow: 0 0 0 2px var(--ring);
-}
+/* No focus styles for search box - completely clean */
 
 .search-icon {
     color: var(--muted-foreground);
@@ -608,10 +605,7 @@
     transition: all 0.2s ease;
 }
 
-.mobile-search-box:focus-within {
-    border-color: var(--ring);
-    box-shadow: 0 0 0 2px var(--ring);
-}
+/* No focus styles for mobile search box - completely clean */
 
 .mobile-search-input {
     flex: 1;
@@ -732,23 +726,64 @@
 }
 
 /* Focus States for Accessibility */
-.logo:focus,
-.nav-link:focus,
-.search-input:focus,
-.mobile-search-toggle:focus,
-.theme-toggle:focus,
-.login-btn:focus,
-.signup-btn:focus,
-.profile-trigger:focus,
-.dropdown-item:focus,
-.mobile-menu-toggle:focus,
-.mobile-nav-link:focus,
-.mobile-search-input:focus,
-.mobile-search-button:focus,
-.close-search:focus,
-.suggestion-tag:focus {
+/* Remove default browser outline */
+.logo,
+.nav-link,
+.search-input,
+.mobile-search-toggle,
+.theme-toggle,
+.login-btn,
+.signup-btn,
+.profile-trigger,
+.dropdown-item,
+.mobile-menu-toggle,
+.mobile-nav-link,
+.mobile-search-input,
+.mobile-search-button,
+.close-search,
+.suggestion-tag {
+    outline: none;
+}
+
+/* Custom focus styles - only visible when using keyboard navigation */
+.logo:focus-visible,
+.nav-link:focus-visible,
+.mobile-search-toggle:focus-visible,
+.theme-toggle:focus-visible,
+.login-btn:focus-visible,
+.signup-btn:focus-visible,
+.profile-trigger:focus-visible,
+.dropdown-item:focus-visible,
+.mobile-menu-toggle:focus-visible,
+.mobile-nav-link:focus-visible,
+.mobile-search-button:focus-visible,
+.close-search:focus-visible,
+.suggestion-tag:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
+}
+
+/* Special focus styles for input fields - only for keyboard navigation */
+.search-input:focus-visible,
+.mobile-search-input:focus-visible {
+    outline: none;
+}
+
+/* Subtle focus styles for interactive elements when clicked */
+.logo:focus:not(:focus-visible),
+.nav-link:focus:not(:focus-visible),
+.mobile-search-toggle:focus:not(:focus-visible),
+.theme-toggle:focus:not(:focus-visible),
+.login-btn:focus:not(:focus-visible),
+.signup-btn:focus:not(:focus-visible),
+.profile-trigger:focus:not(:focus-visible),
+.dropdown-item:focus:not(:focus-visible),
+.mobile-menu-toggle:focus:not(:focus-visible),
+.mobile-nav-link:focus:not(:focus-visible),
+.mobile-search-button:focus:not(:focus-visible),
+.close-search:focus:not(:focus-visible),
+.suggestion-tag:focus:not(:focus-visible) {
+    outline: none;
 }
 
 /* Smooth scrolling for anchor links */

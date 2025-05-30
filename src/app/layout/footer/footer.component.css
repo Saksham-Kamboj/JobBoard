@@ -328,13 +328,37 @@
 }
 
 /* Focus States for Accessibility */
-.footer-link:focus,
-.social-link:focus,
-.newsletter-input:focus,
-.newsletter-button:focus,
-.footer-bottom-link:focus {
+/* Remove default browser outline */
+.footer-link,
+.social-link,
+.newsletter-input,
+.newsletter-button,
+.footer-bottom-link {
+    outline: none;
+}
+
+/* Custom focus styles - only visible when using keyboard navigation */
+.footer-link:focus-visible,
+.social-link:focus-visible,
+.newsletter-button:focus-visible,
+.footer-bottom-link:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
+}
+
+/* Special focus styles for input fields */
+.newsletter-input:focus {
+    outline: none;
+    border-color: var(--ring);
+    box-shadow: 0 0 0 2px var(--ring);
+}
+
+/* Subtle focus styles for interactive elements when clicked */
+.footer-link:focus:not(:focus-visible),
+.social-link:focus:not(:focus-visible),
+.newsletter-button:focus:not(:focus-visible),
+.footer-bottom-link:focus:not(:focus-visible) {
+    outline: none;
 }
 
 /* Animation for newsletter success */
