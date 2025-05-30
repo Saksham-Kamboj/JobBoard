@@ -1,0 +1,19 @@
+/* App Layout Styles */
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--background);
+    color: var(--foreground);
+}
+
+/* Ensure router-outlet content takes available space */
+router-outlet+* {
+    flex: 1;
+}
+
+/* Global body styles */
+:host {
+    display: block;
+    min-height: 100vh;
+}

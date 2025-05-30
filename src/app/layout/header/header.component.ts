@@ -13,6 +13,7 @@ export class HeaderComponent implements OnInit {
   isMenuOpen = false;
   isDarkMode = false;
   searchQuery = '';
+  isSearchOpen = false;
   isLoggedIn = false; // This would typically come from an auth service
   userProfile = {
     name: 'John Doe',
@@ -34,6 +35,25 @@ export class HeaderComponent implements OnInit {
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  toggleSearch() {
+    this.isSearchOpen = !this.isSearchOpen;
+    if (this.isSearchOpen) {
+      // Focus the search input after the popup opens
+      setTimeout(() => {
+        const searchInput = document.querySelector(
+          '.mobile-search-input'
+        ) as HTMLInputElement;
+        if (searchInput) {
+          searchInput.focus();
+        }
+      }, 100);
+    }
+  }
+
+  closeSearch() {
+    this.isSearchOpen = false;
   }
 
   toggleTheme() {

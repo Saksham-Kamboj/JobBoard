@@ -21,8 +21,8 @@
             <a routerLink="/about" routerLinkActive="active" class="nav-link">About</a>
         </nav>
 
-        <!-- Search Bar -->
-        <div class="search-container">
+        <!-- Desktop Search Bar -->
+        <div class="search-container desktop-search">
             <div class="search-box">
                 <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
@@ -42,6 +42,14 @@
 
         <!-- User Actions -->
         <div class="user-actions">
+            <!-- Mobile Search Button -->
+            <button (click)="toggleSearch()" class="mobile-search-toggle" aria-label="Open search">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+                    <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" />
+                </svg>
+            </button>
+
             <!-- Theme Toggle -->
             <button (click)="toggleTheme()" class="theme-toggle"
                 [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
@@ -131,6 +139,62 @@
                 <span class="hamburger-line" [class.active]="isMenuOpen"></span>
                 <span class="hamburger-line" [class.active]="isMenuOpen"></span>
             </button>
+        </div>
+    </div>
+
+    <!-- Mobile Search Popup -->
+    <div class="mobile-search-popup" [class.open]="isSearchOpen">
+        <div class="mobile-search-overlay" (click)="closeSearch()"></div>
+        <div class="mobile-search-content">
+            <div class="mobile-search-header">
+                <h3>Search Jobs</h3>
+                <button (click)="closeSearch()" class="close-search" aria-label="Close search">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" />
+                        <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                </button>
+            </div>
+            <div class="mobile-search-form">
+                <div class="mobile-search-box">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+                        <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                    <input type="text" placeholder="Search jobs, companies..." [(ngModel)]="searchQuery"
+                        (keyup.enter)="onSearch(); closeSearch()" class="mobile-search-input">
+                    <button *ngIf="searchQuery" (click)="searchQuery = ''" class="clear-search">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" />
+                            <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                    </button>
+                </div>
+                <button (click)="onSearch(); closeSearch()" class="mobile-search-button"
+                    [disabled]="!searchQuery.trim()">
+                    Search
+                </button>
+            </div>
+            <div class="search-suggestions">
+                <p class="suggestions-title">Popular Searches</p>
+                <div class="suggestion-tags">
+                    <button class="suggestion-tag"
+                        (click)="searchQuery = 'Frontend Developer'; onSearch(); closeSearch()">Frontend
+                        Developer</button>
+                    <button class="suggestion-tag"
+                        (click)="searchQuery = 'Backend Developer'; onSearch(); closeSearch()">Backend
+                        Developer</button>
+                    <button class="suggestion-tag"
+                        (click)="searchQuery = 'UI/UX Designer'; onSearch(); closeSearch()">UI/UX Designer</button>
+                    <button class="suggestion-tag"
+                        (click)="searchQuery = 'Product Manager'; onSearch(); closeSearch()">Product Manager</button>
+                    <button class="suggestion-tag"
+                        (click)="searchQuery = 'Data Scientist'; onSearch(); closeSearch()">Data Scientist</button>
+                    <button class="suggestion-tag"
+                        (click)="searchQuery = 'DevOps Engineer'; onSearch(); closeSearch()">DevOps Engineer</button>
+                </div>
+            </div>
         </div>
     </div>
 
