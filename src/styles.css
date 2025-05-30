@@ -75,14 +75,3 @@
     padding: 0;
     box-sizing: border-box;
 }
-
-body {
-    background-color: var(--background);
-}
-
-.app-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 100vh;
-}

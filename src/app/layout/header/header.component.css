@@ -698,25 +698,8 @@
 
 @media (min-width: 768px) {
     .header-container {
-        padding: 0 1.5rem;
+        padding: 0 1rem;
         gap: 1.5rem;
-    }
-
-    .desktop-nav {
-        display: flex;
-    }
-
-    .desktop-search {
-        display: flex;
-        margin: 0 2rem;
-    }
-
-    .mobile-search-toggle {
-        display: none;
-    }
-
-    .mobile-menu-toggle {
-        display: none;
     }
 }
 
@@ -725,9 +708,26 @@
         padding: 0 1rem;
         gap: 2rem;
     }
+}
+
+/* Desktop Layout - Only on XL screens (1200px+) */
+@media (min-width: 1200px) {
+    .desktop-nav {
+        display: flex;
+    }
 
     .desktop-search {
+        display: flex;
+        margin: 0 2rem;
         max-width: 500px;
+    }
+
+    .mobile-search-toggle {
+        display: none;
+    }
+
+    .mobile-menu-toggle {
+        display: none;
     }
 }
 
