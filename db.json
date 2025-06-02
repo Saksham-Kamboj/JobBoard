@@ -19,6 +19,16 @@
       "password": "password123",
       "createdAt": "2024-01-01T00:00:00.000Z",
       "isActive": true
+    },
+    {
+      "id": "mbep7e5zdmrlik6v66j",
+      "email": "saksham@ekvayu.com",
+      "firstName": "Saksham",
+      "lastName": "Kamboj",
+      "role": "job-seeker",
+      "createdAt": "2025-06-02T06:17:57.623Z",
+      "isActive": true,
+      "password": "Saksham1@"
     }
   ],
   "jobs": [

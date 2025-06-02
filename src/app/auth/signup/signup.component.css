@@ -78,6 +78,10 @@
   flex: 1;
 }
 
+.name-input {
+  padding-left: 1rem;
+}
+
 /* Terms Agreement */
 .checkbox-label {
   display: flex;
