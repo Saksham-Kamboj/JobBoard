@@ -266,7 +266,7 @@
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 0.5rem;
+    padding: 0.3rem;
     cursor: pointer;
     transition: all 0.2s ease;
 }
