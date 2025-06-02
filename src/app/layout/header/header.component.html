@@ -73,15 +73,16 @@
 
             <!-- User Profile or Login -->
             <div *ngIf="!isLoggedIn" class="auth-buttons">
-                <button (click)="onLogin()" class="login-btn">Sign In</button>
-                <button (click)="onLogin()" class="signup-btn">Sign Up</button>
+                <a routerLink="/auth/signin" class="login-btn">Sign In</a>
+                <a routerLink="/auth/signup" class="signup-btn">Sign Up</a>
             </div>
 
             <div *ngIf="isLoggedIn" class="user-profile">
                 <div class="profile-dropdown">
                     <button class="profile-trigger">
-                        <img [src]="userProfile.avatar" [alt]="userProfile.name" class="avatar">
-                        <span class="profile-name">{{ userProfile.name }}</span>
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face"
+                            [alt]="currentUser?.firstName + ' ' + currentUser?.lastName" class="avatar">
+                        <span class="profile-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
                         <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <polyline points="6,9 12,15 18,9" stroke="currentColor" stroke-width="2" />
@@ -209,14 +210,15 @@
             <a routerLink="/about" routerLinkActive="active" class="mobile-nav-link" (click)="toggleMenu()">About</a>
 
             <div class="mobile-auth" *ngIf="!isLoggedIn">
-                <button (click)="onLogin(); toggleMenu()" class="mobile-login-btn">Sign In</button>
-                <button (click)="onLogin(); toggleMenu()" class="mobile-signup-btn">Sign Up</button>
+                <a routerLink="/auth/signin" (click)="toggleMenu()" class="mobile-login-btn">Sign In</a>
+                <a routerLink="/auth/signup" (click)="toggleMenu()" class="mobile-signup-btn">Sign Up</a>
             </div>
 
             <div class="mobile-user-menu" *ngIf="isLoggedIn">
                 <div class="mobile-user-info">
-                    <img [src]="userProfile.avatar" [alt]="userProfile.name" class="mobile-avatar">
-                    <span class="mobile-user-name">{{ userProfile.name }}</span>
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face"
+                        [alt]="currentUser?.firstName + ' ' + currentUser?.lastName" class="mobile-avatar">
+                    <span class="mobile-user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
                 </div>
                 <a (click)="onProfile(); toggleMenu()" class="mobile-nav-link">Profile</a>
                 <a routerLink="/dashboard" class="mobile-nav-link" (click)="toggleMenu()">Dashboard</a>

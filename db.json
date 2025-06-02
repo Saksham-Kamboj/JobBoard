@@ -1,0 +1,147 @@
+{
+  "users": [
+    {
+      "id": "demo-job-seeker",
+      "email": "jobseeker@demo.com",
+      "firstName": "John",
+      "lastName": "Doe",
+      "role": "job-seeker",
+      "password": "password123",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "isActive": true
+    },
+    {
+      "id": "demo-admin",
+      "email": "admin@demo.com",
+      "firstName": "Admin",
+      "lastName": "User",
+      "role": "admin",
+      "password": "password123",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "isActive": true
+    }
+  ],
+  "jobs": [
+    {
+      "id": "1",
+      "title": "Frontend Developer",
+      "company": "TechCorp Inc.",
+      "location": "San Francisco, CA",
+      "type": "Full-time",
+      "salary": "$80,000 - $120,000",
+      "description": "We are looking for a skilled Frontend Developer to join our team...",
+      "requirements": [
+        "3+ years of experience with React",
+        "Strong knowledge of JavaScript/TypeScript",
+        "Experience with modern CSS frameworks",
+        "Understanding of responsive design"
+      ],
+      "benefits": [
+        "Health insurance",
+        "401k matching",
+        "Flexible working hours",
+        "Remote work options"
+      ],
+      "postedBy": "demo-admin",
+      "postedAt": "2024-01-15T10:00:00.000Z",
+      "isActive": true,
+      "applicationsCount": 12
+    },
+    {
+      "id": "2",
+      "title": "Backend Developer",
+      "company": "DataSoft Solutions",
+      "location": "New York, NY",
+      "type": "Full-time",
+      "salary": "$90,000 - $140,000",
+      "description": "Join our backend team to build scalable APIs and microservices...",
+      "requirements": [
+        "5+ years of experience with Node.js",
+        "Experience with databases (PostgreSQL, MongoDB)",
+        "Knowledge of cloud platforms (AWS, Azure)",
+        "Understanding of microservices architecture"
+      ],
+      "benefits": [
+        "Comprehensive health coverage",
+        "Stock options",
+        "Professional development budget",
+        "Unlimited PTO"
+      ],
+      "postedBy": "demo-admin",
+      "postedAt": "2024-01-14T14:30:00.000Z",
+      "isActive": true,
+      "applicationsCount": 8
+    },
+    {
+      "id": "3",
+      "title": "UI/UX Designer",
+      "company": "Creative Agency",
+      "location": "Los Angeles, CA",
+      "type": "Contract",
+      "salary": "$60 - $80 per hour",
+      "description": "We need a talented UI/UX Designer for a 6-month project...",
+      "requirements": [
+        "Portfolio showcasing UI/UX work",
+        "Proficiency in Figma and Adobe Creative Suite",
+        "Understanding of user-centered design principles",
+        "Experience with prototyping tools"
+      ],
+      "benefits": [
+        "Flexible schedule",
+        "Remote work",
+        "Creative freedom",
+        "Potential for full-time conversion"
+      ],
+      "postedBy": "demo-admin",
+      "postedAt": "2024-01-13T09:15:00.000Z",
+      "isActive": true,
+      "applicationsCount": 15
+    }
+  ],
+  "applications": [
+    {
+      "id": "1",
+      "jobId": "1",
+      "userId": "demo-job-seeker",
+      "status": "pending",
+      "appliedAt": "2024-01-16T12:00:00.000Z",
+      "coverLetter": "I am very interested in this position...",
+      "resume": "john-doe-resume.pdf"
+    }
+  ],
+  "companies": [
+    {
+      "id": "1",
+      "name": "TechCorp Inc.",
+      "description": "Leading technology company specializing in innovative solutions",
+      "website": "https://techcorp.com",
+      "location": "San Francisco, CA",
+      "size": "100-500 employees",
+      "industry": "Technology",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=100&h=100&fit=crop",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "name": "DataSoft Solutions",
+      "description": "Data analytics and software development company",
+      "website": "https://datasoft.com",
+      "location": "New York, NY",
+      "size": "50-100 employees",
+      "industry": "Software",
+      "logo": "https://images.unsplash.com/photo-1551434678-e076c223a692?w=100&h=100&fit=crop",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "name": "Creative Agency",
+      "description": "Full-service creative and digital marketing agency",
+      "website": "https://creativeagency.com",
+      "location": "Los Angeles, CA",
+      "size": "10-50 employees",
+      "industry": "Marketing",
+      "logo": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=100&h=100&fit=crop",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ]
+}
