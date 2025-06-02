@@ -17,6 +17,13 @@ export const routes: Routes = [
         (m) => m.JobListComponent
       ),
   },
+  {
+    path: 'jobs/:id',
+    loadComponent: () =>
+      import('./features/jobs/job-detail/job-detail.component').then(
+        (m) => m.JobDetailComponent
+      ),
+  },
 
   // Authentication routes (only for guests)
   {

@@ -199,7 +199,7 @@
                         [alt]="currentUser?.firstName + ' ' + currentUser?.lastName" class="mobile-avatar">
                     <span class="mobile-user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
                 </div>
-                <a (click)="onProfile(); toggleMenu()" class="mobile-nav-link">Profile</a>
+                <a routerLink="/profile" class="mobile-nav-link" (click)="toggleMenu()">Profile</a>
                 <a routerLink="/dashboard" class="mobile-nav-link" (click)="toggleMenu()">Dashboard</a>
                 <a routerLink="/settings" class="mobile-nav-link" (click)="toggleMenu()">Settings</a>
                 <a (click)="onLogout(); toggleMenu()" class="mobile-nav-link logout">Sign Out</a>
