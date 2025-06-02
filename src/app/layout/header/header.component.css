@@ -669,6 +669,10 @@
     .auth-buttons {
         display: flex;
     }
+
+    .dropdown-arrow {
+        display: block;
+    }
 }
 
 @media (min-width: 768px) {
@@ -682,6 +686,13 @@
     .header-container {
         padding: 0 1rem;
         gap: 2rem;
+    }
+}
+
+/* Hide dropdown arrow on small screens */
+@media (max-width: 639px) {
+    .dropdown-arrow {
+        display: none;
     }
 }
 
