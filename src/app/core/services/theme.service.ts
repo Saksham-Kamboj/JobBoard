@@ -3,12 +3,12 @@ import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThemeService {
   private renderer: Renderer2;
   private isDarkModeSubject = new BehaviorSubject<boolean>(false);
-  
+
   public isDarkMode$ = this.isDarkModeSubject.asObservable();
 
   constructor(
@@ -22,21 +22,35 @@ export class ThemeService {
   private initializeTheme(): void {
     // Check for saved theme preference or default to light mode
     const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
+    const prefersDark = window.matchMedia(
+      '(prefers-color-scheme: dark)'
+    ).matches;
+
     const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-    this.setTheme(isDark);
+
+    // Set the initial theme state
+    this.isDarkModeSubject.next(isDark);
+
+    // Apply theme immediately to avoid flash
+    this.applyThemeToDOM(isDark);
+
+    // Save to localStorage if not already saved
+    if (!savedTheme) {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
   }
 
-  setTheme(isDark: boolean): void {
-    this.isDarkModeSubject.next(isDark);
-    
+  private applyThemeToDOM(isDark: boolean): void {
     if (isDark) {
       this.renderer.addClass(this.document.documentElement, 'dark');
     } else {
       this.renderer.removeClass(this.document.documentElement, 'dark');
     }
-    
+  }
+
+  setTheme(isDark: boolean): void {
+    this.isDarkModeSubject.next(isDark);
+    this.applyThemeToDOM(isDark);
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
   }
 
