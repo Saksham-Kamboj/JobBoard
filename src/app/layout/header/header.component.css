@@ -187,26 +187,7 @@
     border-color: var(--ring);
 }
 
-/* Theme Toggle */
-.theme-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--muted-foreground);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
 
-.theme-toggle:hover {
-    background: var(--muted);
-    color: var(--foreground);
-    border-color: var(--ring);
-}
 
 /* Auth Buttons */
 .auth-buttons {
@@ -731,7 +712,6 @@
 .nav-link,
 .search-input,
 .mobile-search-toggle,
-.theme-toggle,
 .login-btn,
 .signup-btn,
 .profile-trigger,
@@ -749,7 +729,6 @@
 .logo:focus-visible,
 .nav-link:focus-visible,
 .mobile-search-toggle:focus-visible,
-.theme-toggle:focus-visible,
 .login-btn:focus-visible,
 .signup-btn:focus-visible,
 .profile-trigger:focus-visible,
@@ -773,7 +752,6 @@
 .logo:focus:not(:focus-visible),
 .nav-link:focus:not(:focus-visible),
 .mobile-search-toggle:focus:not(:focus-visible),
-.theme-toggle:focus:not(:focus-visible),
 .login-btn:focus:not(:focus-visible),
 .signup-btn:focus:not(:focus-visible),
 .profile-trigger:focus:not(:focus-visible),

@@ -1,5 +1,5 @@
-import { Component, OnInit, Renderer2, Inject, OnDestroy } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService, User } from '../../core/services/auth.service';
@@ -13,25 +13,15 @@ import { Subscription } from 'rxjs';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
-  isDarkMode = false;
   searchQuery = '';
   isSearchOpen = false;
   isLoggedIn = false;
   currentUser: User | null = null;
   private authSubscription: Subscription = new Subscription();
 
-  constructor(
-    private renderer: Renderer2,
-    @Inject(DOCUMENT) private document: Document,
-    private authService: AuthService
-  ) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    // Check for saved theme preference or default to light mode
-    const savedTheme = localStorage.getItem('theme');
-    this.isDarkMode = savedTheme === 'dark';
-    this.updateTheme();
-
     // Subscribe to authentication state
     this.authSubscription.add(
       this.authService.currentUser$.subscribe((user) => {
@@ -68,20 +58,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isSearchOpen = false;
   }
 
-  toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-    this.updateTheme();
-    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
-  }
-
-  private updateTheme() {
-    if (this.isDarkMode) {
-      this.renderer.addClass(this.document.documentElement, 'dark');
-    } else {
-      this.renderer.removeClass(this.document.documentElement, 'dark');
-    }
-  }
-
   onSearch() {
     if (this.searchQuery.trim()) {
       console.log('Searching for:', this.searchQuery);
@@ -93,7 +69,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // Navigate to signin page
     window.location.href = '/auth/signin';
   }
-  
+
   onSignup() {
     // Navigate to signup page
     window.location.href = '/auth/signup';

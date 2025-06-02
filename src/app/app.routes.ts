@@ -56,6 +56,16 @@ export const routes: Routes = [
       ).then((m) => m.JobSeekerDashboardComponent),
   },
 
+  // Settings page (accessible to all authenticated users)
+  {
+    path: 'settings',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('./features/settings/settings.component').then(
+        (m) => m.SettingsComponent
+      ),
+  },
+
   // Protected routes for admins
   {
     path: 'admin',
