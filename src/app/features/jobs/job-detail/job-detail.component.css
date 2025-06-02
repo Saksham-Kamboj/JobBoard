@@ -267,9 +267,56 @@
   line-height: 1.6;
 }
 
+.description-content {
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.description-content:not(.expanded) {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.6;
+  max-height: calc(1.6em * 3);
+}
+
+.description-content.expanded {
+  display: block;
+  overflow: visible;
+  max-height: none;
+}
+
 .job-description p {
   margin: 0 0 1rem 0;
   white-space: pre-line;
+  line-height: 1.6;
+}
+
+.description-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  transition: all 0.2s ease;
+}
+
+.description-toggle-btn:hover {
+  color: var(--primary);
+  opacity: 0.8;
+}
+
+.description-toggle-btn svg {
+  transition: transform 0.2s ease;
 }
 
 /* Requirements and Benefits Lists */
@@ -493,7 +540,7 @@
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .job-sidebar {
     order: -1;
   }
@@ -503,40 +550,40 @@
   .job-detail-container {
     padding: 1rem;
   }
-  
+
   .job-header {
     padding: 1.5rem;
   }
-  
+
   .job-header-content {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .job-title {
     font-size: 1.5rem;
   }
-  
+
   .job-meta {
     flex-direction: column;
     gap: 0.75rem;
   }
-  
+
   .job-header-actions {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
-  
+
   .application-info {
     align-items: flex-start;
     text-align: left;
   }
-  
+
   .job-section {
     padding: 1.5rem;
   }
-  
+
   .header-actions {
     flex-direction: column;
     gap: 1rem;
@@ -547,18 +594,18 @@
   .skills-container {
     gap: 0.25rem;
   }
-  
+
   .skill-tag {
     font-size: 0.75rem;
     padding: 0.375rem 0.75rem;
   }
-  
+
   .detail-item {
     flex-direction: column;
     align-items: stretch;
     gap: 0.5rem;
   }
-  
+
   .detail-value {
     text-align: left;
   }
