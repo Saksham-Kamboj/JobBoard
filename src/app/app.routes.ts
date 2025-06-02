@@ -66,6 +66,16 @@ export const routes: Routes = [
       ),
   },
 
+  // Profile page (accessible to all authenticated users)
+  {
+    path: 'profile',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('./features/profile/profile.component').then(
+        (m) => m.ProfileComponent
+      ),
+  },
+
   // Protected routes for admins
   {
     path: 'admin',

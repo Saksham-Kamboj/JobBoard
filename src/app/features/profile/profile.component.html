@@ -1,0 +1,405 @@
+<div class="profile-container">
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <div class="avatar-circle">
+        {{ getUserInitials() }}
+      </div>
+    </div>
+    <div class="profile-info">
+      <h1 class="profile-name">{{ getUserFullName() }}</h1>
+      <p class="profile-role">{{ getRoleDisplayName() }}</p>
+      <p class="profile-email">{{ currentUser?.email }}</p>
+    </div>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div *ngIf="profileUpdateSuccess" class="alert alert-success">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+    </svg>
+    Profile updated successfully!
+  </div>
+
+  <div *ngIf="passwordUpdateSuccess" class="alert alert-success">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+    </svg>
+    Password changed successfully!
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-error">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+      <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2"/>
+      <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2"/>
+    </svg>
+    {{ errorMessage }}
+  </div>
+
+  <div class="profile-layout">
+    <!-- Profile Sidebar -->
+    <div class="profile-sidebar">
+      <nav class="profile-nav">
+        <button
+          *ngFor="let section of profileSections"
+          (click)="setActiveSection(section.id)"
+          class="profile-nav-item"
+          [class.active]="activeSection === section.id"
+        >
+          <div class="nav-icon">
+            <!-- User Icon -->
+            <svg *ngIf="section.icon === 'user'" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+              <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <!-- Mail Icon -->
+            <svg *ngIf="section.icon === 'mail'" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2"/>
+              <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <!-- Shield Icon -->
+            <svg *ngIf="section.icon === 'shield'" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <!-- Settings Icon -->
+            <svg *ngIf="section.icon === 'settings'" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="nav-content">
+            <span class="nav-title">{{ section.title }}</span>
+            <span class="nav-description">{{ section.description }}</span>
+          </div>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Profile Content -->
+    <div class="profile-content">
+      <!-- Personal Information Section -->
+      <div *ngIf="activeSection === 'personal'" class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">Personal Information</h2>
+          <button 
+            *ngIf="!isEditingProfile" 
+            (click)="toggleEditProfile()" 
+            class="btn-secondary"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            Edit Profile
+          </button>
+        </div>
+
+        <form *ngIf="isEditingProfile" [formGroup]="profileForm" (ngSubmit)="onProfileSubmit()" class="profile-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="firstName" class="form-label">First Name *</label>
+              <input
+                type="text"
+                id="firstName"
+                formControlName="firstName"
+                class="form-input"
+                [class.error]="getFieldError('firstName')"
+              >
+              <div *ngIf="getFieldError('firstName')" class="field-error">
+                {{ getFieldError('firstName') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="lastName" class="form-label">Last Name *</label>
+              <input
+                type="text"
+                id="lastName"
+                formControlName="lastName"
+                class="form-input"
+                [class.error]="getFieldError('lastName')"
+              >
+              <div *ngIf="getFieldError('lastName')" class="field-error">
+                {{ getFieldError('lastName') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email" class="form-label">Email Address *</label>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                class="form-input"
+                [class.error]="getFieldError('email')"
+              >
+              <div *ngIf="getFieldError('email')" class="field-error">
+                {{ getFieldError('email') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="phone" class="form-label">Phone Number</label>
+              <input
+                type="tel"
+                id="phone"
+                formControlName="phone"
+                class="form-input"
+                [class.error]="getFieldError('phone')"
+                placeholder="+1 (555) 123-4567"
+              >
+              <div *ngIf="getFieldError('phone')" class="field-error">
+                {{ getFieldError('phone') }}
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="location" class="form-label">Location</label>
+              <input
+                type="text"
+                id="location"
+                formControlName="location"
+                class="form-input"
+                placeholder="City, State, Country"
+              >
+            </div>
+
+            <div class="form-group full-width">
+              <label for="bio" class="form-label">Bio</label>
+              <textarea
+                id="bio"
+                formControlName="bio"
+                class="form-textarea"
+                rows="4"
+                placeholder="Tell us about yourself..."
+                [class.error]="getFieldError('bio')"
+              ></textarea>
+              <div *ngIf="getFieldError('bio')" class="field-error">
+                {{ getFieldError('bio') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" (click)="toggleEditProfile()" class="btn-secondary">
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="isLoading">
+              <span *ngIf="isLoading" class="loading-spinner"></span>
+              {{ isLoading ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+        </form>
+
+        <div *ngIf="!isEditingProfile" class="profile-display">
+          <div class="display-grid">
+            <div class="display-item">
+              <label class="display-label">First Name</label>
+              <span class="display-value">{{ currentUser?.firstName || 'Not provided' }}</span>
+            </div>
+            <div class="display-item">
+              <label class="display-label">Last Name</label>
+              <span class="display-value">{{ currentUser?.lastName || 'Not provided' }}</span>
+            </div>
+            <div class="display-item">
+              <label class="display-label">Email</label>
+              <span class="display-value">{{ currentUser?.email }}</span>
+            </div>
+            <div class="display-item">
+              <label class="display-label">Phone</label>
+              <span class="display-value">{{ currentUser?.phone || 'Not provided' }}</span>
+            </div>
+            <div class="display-item full-width">
+              <label class="display-label">Location</label>
+              <span class="display-value">{{ currentUser?.location || 'Not provided' }}</span>
+            </div>
+            <div class="display-item full-width">
+              <label class="display-label">Bio</label>
+              <span class="display-value">{{ currentUser?.bio || 'Not provided' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Details Section -->
+      <div *ngIf="activeSection === 'contact'" class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">Contact Details</h2>
+          <p class="section-description">Manage your contact information and social profiles</p>
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="onProfileSubmit()" class="profile-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="website" class="form-label">Website</label>
+              <input
+                type="url"
+                id="website"
+                formControlName="website"
+                class="form-input"
+                placeholder="https://yourwebsite.com"
+                [class.error]="getFieldError('website')"
+              >
+              <div *ngIf="getFieldError('website')" class="field-error">
+                {{ getFieldError('website') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="linkedin" class="form-label">LinkedIn</label>
+              <input
+                type="text"
+                id="linkedin"
+                formControlName="linkedin"
+                class="form-input"
+                placeholder="linkedin.com/in/username"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="github" class="form-label">GitHub</label>
+              <input
+                type="text"
+                id="github"
+                formControlName="github"
+                class="form-input"
+                placeholder="github.com/username"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="twitter" class="form-label">Twitter</label>
+              <input
+                type="text"
+                id="twitter"
+                formControlName="twitter"
+                class="form-input"
+                placeholder="@username"
+              >
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" [disabled]="isLoading">
+              <span *ngIf="isLoading" class="loading-spinner"></span>
+              {{ isLoading ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Security Section -->
+      <div *ngIf="activeSection === 'security'" class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">Security</h2>
+          <p class="section-description">Manage your password and security settings</p>
+        </div>
+
+        <div class="security-item">
+          <div class="security-info">
+            <h3 class="security-title">Password</h3>
+            <p class="security-description">Change your account password</p>
+          </div>
+          <button 
+            *ngIf="!isChangingPassword" 
+            (click)="toggleChangePassword()" 
+            class="btn-secondary"
+          >
+            Change Password
+          </button>
+        </div>
+
+        <form *ngIf="isChangingPassword" [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()" class="password-form">
+          <div class="form-group">
+            <label for="currentPassword" class="form-label">Current Password *</label>
+            <input
+              type="password"
+              id="currentPassword"
+              formControlName="currentPassword"
+              class="form-input"
+              [class.error]="getFieldError('currentPassword', passwordForm)"
+            >
+            <div *ngIf="getFieldError('currentPassword', passwordForm)" class="field-error">
+              {{ getFieldError('currentPassword', passwordForm) }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="newPassword" class="form-label">New Password *</label>
+            <input
+              type="password"
+              id="newPassword"
+              formControlName="newPassword"
+              class="form-input"
+              [class.error]="getFieldError('newPassword', passwordForm)"
+            >
+            <div *ngIf="getFieldError('newPassword', passwordForm)" class="field-error">
+              {{ getFieldError('newPassword', passwordForm) }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword" class="form-label">Confirm New Password *</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              formControlName="confirmPassword"
+              class="form-input"
+              [class.error]="getFieldError('confirmPassword', passwordForm)"
+            >
+            <div *ngIf="getFieldError('confirmPassword', passwordForm)" class="field-error">
+              {{ getFieldError('confirmPassword', passwordForm) }}
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" (click)="toggleChangePassword()" class="btn-secondary">
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="isLoading">
+              <span *ngIf="isLoading" class="loading-spinner"></span>
+              {{ isLoading ? 'Changing...' : 'Change Password' }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Preferences Section -->
+      <div *ngIf="activeSection === 'preferences'" class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">Preferences</h2>
+          <p class="section-description">Customize your experience</p>
+        </div>
+
+        <div class="preferences-list">
+          <div class="preference-item">
+            <div class="preference-info">
+              <h3 class="preference-title">Application Settings</h3>
+              <p class="preference-description">Manage your application preferences</p>
+            </div>
+            <a routerLink="/settings" class="btn-secondary">
+              Go to Settings
+            </a>
+          </div>
+
+          <div class="preference-item">
+            <div class="preference-info">
+              <h3 class="preference-title">Account Type</h3>
+              <p class="preference-description">Current role: {{ getRoleDisplayName() }}</p>
+            </div>
+          </div>
+
+          <div class="preference-item">
+            <div class="preference-info">
+              <h3 class="preference-title">Member Since</h3>
+              <p class="preference-description">{{ currentUser?.createdAt | date:'mediumDate' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

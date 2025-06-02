@@ -13,6 +13,13 @@ export interface User {
   password?: string;
   createdAt: string;
   isActive: boolean;
+  phone?: string;
+  location?: string;
+  bio?: string;
+  website?: string;
+  linkedin?: string;
+  github?: string;
+  twitter?: string;
 }
 
 export interface LoginRequest {
@@ -248,5 +255,16 @@ export class AuthService {
           throw error;
         })
       );
+  }
+
+  updateUserProfile(updatedUser: User): void {
+    // Update the user in local storage
+    this.storeAuth(updatedUser, this.getToken() || '');
+
+    // Update the current user subject
+    this.currentUserSubject.next(updatedUser);
+
+    // In a real application, you would also update the user on the server
+    // this.http.put<User>(`${this.API_URL}/users/${updatedUser.id}`, updatedUser).subscribe();
   }
 }

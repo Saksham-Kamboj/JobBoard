@@ -78,9 +78,4 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onLogout() {
     this.authService.logout();
   }
-
-  onProfile() {
-    // Navigate to profile
-    console.log('Profile clicked');
-  }
 }
