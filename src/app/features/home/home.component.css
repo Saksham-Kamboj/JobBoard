@@ -71,6 +71,43 @@
   line-height: 1.1;
 }
 
+/* Typing Animation Styles */
+.typing-text {
+  display: inline-block;
+}
+
+.typing-word {
+  display: inline-block;
+  min-width: 200px;
+  text-align: left;
+  color: var(--primary);
+}
+
+.typing-cursor {
+  display: inline-block;
+  color: var(--primary);
+  animation: blink 1s infinite;
+  font-weight: 400;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.static-text {
+  color: var(--foreground);
+}
+
 .text-primary {
   color: var(--primary);
 }
@@ -717,6 +754,10 @@
     font-size: 3rem;
   }
 
+  .typing-word {
+    min-width: 180px;
+  }
+
   .section-title {
     font-size: 2rem;
   }
@@ -733,6 +774,10 @@
 
   .hero-title {
     font-size: 2.5rem;
+  }
+
+  .typing-word {
+    min-width: 150px;
   }
 
   .hero-subtitle {
@@ -798,6 +843,10 @@
 
   .hero-title {
     font-size: 2rem;
+  }
+
+  .typing-word {
+    min-width: 120px;
   }
 
   .section-title {
