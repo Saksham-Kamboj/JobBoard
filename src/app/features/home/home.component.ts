@@ -4,6 +4,11 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { JobService, Job } from '../../core/services/job.service';
 import { AuthService } from '../../core/services/auth.service';
+import {
+  DataService,
+  JobCategory,
+  Testimonial,
+} from '../../core/services/data.service';
 
 @Component({
   selector: 'app-home',
@@ -43,83 +48,22 @@ export class HomeComponent implements OnInit, OnDestroy {
     successfulPlacements: 0,
   };
 
-  // Job categories
-  jobCategories = [
-    {
-      name: 'Technology',
-      icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-      count: 0,
-      color: 'bg-blue-100 text-blue-600',
-    },
-    {
-      name: 'Design',
-      icon: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z',
-      count: 0,
-      color: 'bg-purple-100 text-purple-600',
-    },
-    {
-      name: 'Marketing',
-      icon: 'M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z',
-      count: 0,
-      color: 'bg-green-100 text-green-600',
-    },
-    {
-      name: 'Sales',
-      icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
-      count: 0,
-      color: 'bg-orange-100 text-orange-600',
-    },
-    {
-      name: 'Finance',
-      icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1',
-      count: 0,
-      color: 'bg-yellow-100 text-yellow-600',
-    },
-    {
-      name: 'Healthcare',
-      icon: 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z',
-      count: 0,
-      color: 'bg-red-100 text-red-600',
-    },
-  ];
-
-  // Testimonials
-  testimonials = [
-    {
-      name: 'Sarah Johnson',
-      role: 'Software Engineer',
-      company: 'TechCorp',
-      content:
-        'Found my dream job within 2 weeks! The platform made it so easy to connect with great companies.',
-      avatar: 'SJ',
-    },
-    {
-      name: 'Michael Chen',
-      role: 'Product Manager',
-      company: 'InnovateCorp',
-      content:
-        'As a hiring manager, this platform has helped us find exceptional talent quickly and efficiently.',
-      avatar: 'MC',
-    },
-    {
-      name: 'Emily Rodriguez',
-      role: 'UX Designer',
-      company: 'Design Studio Pro',
-      content:
-        'The job matching algorithm is incredible. I received relevant opportunities that matched my skills perfectly.',
-      avatar: 'ER',
-    },
-  ];
+  // Job categories and testimonials from API
+  jobCategories: JobCategory[] = [];
+  testimonials: Testimonial[] = [];
 
   constructor(
     private jobService: JobService,
-    private authService: AuthService
+    private authService: AuthService,
+    private dataService: DataService
   ) {}
 
   ngOnInit(): void {
     this.isAuthenticated = this.authService.isAuthenticated();
     this.loadFeaturedJobs();
     this.loadStats();
+    this.loadJobCategories();
+    this.loadTestimonials();
     this.startTypingAnimation();
   }
 
@@ -162,30 +106,99 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  loadJobCategories(): void {
+    this.dataService.getJobCategories().subscribe({
+      next: (categories) => {
+        this.jobCategories = categories;
+        // Update counts based on current jobs
+        this.jobService.getAllJobs().subscribe({
+          next: (jobs) => {
+            this.updateCategoryCounts(jobs);
+          },
+        });
+      },
+      error: (error) => {
+        console.error('Error loading job categories:', error);
+      },
+    });
+  }
+
+  loadTestimonials(): void {
+    this.dataService.getTestimonials().subscribe({
+      next: (testimonials) => {
+        this.testimonials = testimonials;
+      },
+      error: (error) => {
+        console.error('Error loading testimonials:', error);
+      },
+    });
+  }
+
   updateCategoryCounts(jobs: Job[]): void {
+    // Reset counts
+    this.jobCategories.forEach((category) => (category.count = 0));
+
     // Simple categorization based on job titles
     jobs.forEach((job) => {
       const title = job.title.toLowerCase();
+
       if (
         title.includes('developer') ||
         title.includes('engineer') ||
-        title.includes('tech')
+        title.includes('tech') ||
+        title.includes('software')
       ) {
-        this.jobCategories[0].count++;
+        const techCategory = this.jobCategories.find(
+          (cat) => cat.name === 'Technology'
+        );
+        if (techCategory) techCategory.count++;
       } else if (
         title.includes('design') ||
         title.includes('ui') ||
-        title.includes('ux')
+        title.includes('ux') ||
+        title.includes('graphic')
       ) {
-        this.jobCategories[1].count++;
-      } else if (title.includes('marketing') || title.includes('content')) {
-        this.jobCategories[2].count++;
-      } else if (title.includes('sales') || title.includes('business')) {
-        this.jobCategories[3].count++;
-      } else if (title.includes('finance') || title.includes('accounting')) {
-        this.jobCategories[4].count++;
-      } else if (title.includes('health') || title.includes('medical')) {
-        this.jobCategories[5].count++;
+        const designCategory = this.jobCategories.find(
+          (cat) => cat.name === 'Design'
+        );
+        if (designCategory) designCategory.count++;
+      } else if (
+        title.includes('marketing') ||
+        title.includes('content') ||
+        title.includes('digital')
+      ) {
+        const marketingCategory = this.jobCategories.find(
+          (cat) => cat.name === 'Marketing'
+        );
+        if (marketingCategory) marketingCategory.count++;
+      } else if (
+        title.includes('sales') ||
+        title.includes('business') ||
+        title.includes('manager')
+      ) {
+        const salesCategory = this.jobCategories.find(
+          (cat) => cat.name === 'Sales'
+        );
+        if (salesCategory) salesCategory.count++;
+      } else if (
+        title.includes('finance') ||
+        title.includes('accounting') ||
+        title.includes('financial')
+      ) {
+        const financeCategory = this.jobCategories.find(
+          (cat) => cat.name === 'Finance'
+        );
+        if (financeCategory) financeCategory.count++;
+      } else if (
+        title.includes('health') ||
+        title.includes('medical') ||
+        title.includes('nurse') ||
+        title.includes('healthcare')
+      ) {
+        const healthCategory = this.jobCategories.find(
+          (cat) => cat.name === 'Healthcare'
+        );
+        if (healthCategory) healthCategory.count++;
       }
     });
   }
