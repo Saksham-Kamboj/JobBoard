@@ -7,6 +7,34 @@
   min-height: calc(100vh - 200px);
 }
 
+/* Global autocomplete fix for all inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+select:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--background) inset !important;
+  -webkit-text-fill-color: var(--foreground) !important;
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+input:-moz-autofill,
+select:-moz-autofill {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+input:autofill,
+select:autofill {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
 /* Compact Search & Filters Section */
 .search-filters-section {
   background: var(--card);
@@ -60,6 +88,27 @@
   box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1);
 }
 
+/* Fix autocomplete styling */
+.search-input:-webkit-autofill,
+.search-input:-webkit-autofill:hover,
+.search-input:-webkit-autofill:focus,
+.search-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--background) inset !important;
+  -webkit-text-fill-color: var(--foreground) !important;
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+.search-input:-moz-autofill {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+.search-input:autofill {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
 .search-button {
   padding: 0.625rem 1rem;
   background: var(--primary);
@@ -109,10 +158,31 @@
   box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1);
 }
 
+/* Fix autocomplete styling for filters */
+.compact-filter:-webkit-autofill,
+.compact-filter:-webkit-autofill:hover,
+.compact-filter:-webkit-autofill:focus,
+.compact-filter:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--background) inset !important;
+  -webkit-text-fill-color: var(--foreground) !important;
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+.compact-filter:-moz-autofill {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+.compact-filter:autofill {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
 .clear-filters-compact {
   padding: 0.5rem 0.75rem;
-  background: var(--primary);
-  color: var(--primary-foreground);
+  background: var(--destructive);
+  color: var(--destructive-foreground);
   border: none;
   border-radius: 6px;
   font-size: 0.8rem;
@@ -122,6 +192,7 @@
   gap: 0.375rem;
   transition: all 0.2s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .clear-filters-compact:hover {
@@ -191,13 +262,9 @@
   box-shadow: 0 0 0 2px var(--ring);
 }
 
-.filter-actions {
-  margin-top: 0.75rem;
-}
-
+/* Active Filters Display */
 .active-filters {
-  flex: 1;
-  min-width: 0;
+  margin-top: 0.75rem;
 }
 
 .active-filters-label {
@@ -247,29 +314,6 @@
 
 .remove-filter:hover {
   background: rgba(255, 255, 255, 0.2);
-}
-
-.clear-filters-btn {
-  padding: 0.375rem 0.75rem;
-  background: var(--secondary);
-  color: var(--secondary-foreground);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  flex-shrink: 0;
-  margin-top: 0.5rem;
-}
-
-.clear-filters-btn:hover {
-  background: var(--secondary);
-  opacity: 0.8;
-  transform: translateY(-1px);
 }
 
 /* Results Header */
