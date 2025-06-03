@@ -1,7 +1,9 @@
-import { Component, OnInit, Renderer2, Inject } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { AuthService, User } from '../../core/services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -9,28 +11,28 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
-  isDarkMode = false;
   searchQuery = '';
   isSearchOpen = false;
-  isLoggedIn = false; // This would typically come from an auth service
-  userProfile = {
-    name: 'John Doe',
-    avatar:
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face',
-  };
+  isLoggedIn = false;
+  currentUser: User | null = null;
+  private authSubscription: Subscription = new Subscription();
 
-  constructor(
-    private renderer: Renderer2,
-    @Inject(DOCUMENT) private document: Document
-  ) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    // Check for saved theme preference or default to light mode
-    const savedTheme = localStorage.getItem('theme');
-    this.isDarkMode = savedTheme === 'dark';
-    this.updateTheme();
+    // Subscribe to authentication state
+    this.authSubscription.add(
+      this.authService.currentUser$.subscribe((user) => {
+        this.currentUser = user;
+        this.isLoggedIn = !!user;
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.authSubscription.unsubscribe();
   }
 
   toggleMenu() {
@@ -56,20 +58,6 @@ export class HeaderComponent implements OnInit {
     this.isSearchOpen = false;
   }
 
-  toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-    this.updateTheme();
-    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
-  }
-
-  private updateTheme() {
-    if (this.isDarkMode) {
-      this.renderer.addClass(this.document.documentElement, 'dark');
-    } else {
-      this.renderer.removeClass(this.document.documentElement, 'dark');
-    }
-  }
-
   onSearch() {
     if (this.searchQuery.trim()) {
       console.log('Searching for:', this.searchQuery);
@@ -77,19 +65,17 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  onLogin() {
-    // Implement login functionality
-    console.log('Login clicked');
+  onSignin() {
+    // Navigate to signin page
+    window.location.href = '/auth/signin';
+  }
+
+  onSignup() {
+    // Navigate to signup page
+    window.location.href = '/auth/signup';
   }
 
   onLogout() {
-    // Implement logout functionality
-    console.log('Logout clicked');
-    this.isLoggedIn = false;
-  }
-
-  onProfile() {
-    // Navigate to profile
-    console.log('Profile clicked');
+    this.authService.logout();
   }
 }

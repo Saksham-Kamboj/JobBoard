@@ -1,0 +1,315 @@
+{
+  "users": [
+    {
+      "id": "demo-job-seeker",
+      "email": "jobseeker@demo.com",
+      "firstName": "John",
+      "lastName": "Doe",
+      "role": "job-seeker",
+      "password": "password123",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "isActive": true
+    },
+    {
+      "id": "demo-admin",
+      "email": "admin@demo.com",
+      "firstName": "Admin",
+      "lastName": "User",
+      "role": "admin",
+      "password": "password123",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "isActive": true
+    },
+    {
+      "id": "mbep7e5zdmrlik6v66j",
+      "email": "saksham@ekvayu.com",
+      "firstName": "Saksham",
+      "lastName": "Kamboj",
+      "role": "job-seeker",
+      "createdAt": "2025-06-02T06:17:57.623Z",
+      "isActive": true,
+      "password": "Saksham1@"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "1",
+      "title": "Senior Frontend Developer",
+      "company": "TechCorp Solutions",
+      "location": "San Francisco, CA",
+      "type": "full-time",
+      "salary": "$120,000 - $150,000",
+      "description": "We are seeking a talented Senior Frontend Developer to join our dynamic team. You will be responsible for developing user-facing web applications using modern JavaScript frameworks and ensuring excellent user experience across all platforms.\n\nKey Responsibilities:\n• Develop and maintain responsive web applications using React, Angular, or Vue.js\n• Collaborate with UX/UI designers to implement pixel-perfect designs\n• Optimize applications for maximum speed and scalability\n• Write clean, maintainable, and well-documented code\n• Participate in code reviews and mentor junior developers\n• Stay up-to-date with the latest frontend technologies and best practices\n\nWhat You'll Do:\n• Build cutting-edge web applications that serve millions of users\n• Work with a talented team of designers and engineers\n• Contribute to our open-source projects and technical blog\n• Participate in technical decision-making and architecture discussions",
+      "requirements": [
+        "5+ years of experience in frontend development",
+        "Expert knowledge of JavaScript, HTML5, and CSS3",
+        "Experience with React, Angular, or Vue.js",
+        "Proficiency in TypeScript",
+        "Experience with state management (Redux, NgRx, Vuex)",
+        "Knowledge of build tools (Webpack, Vite, etc.)",
+        "Experience with version control (Git)",
+        "Understanding of responsive design principles",
+        "Bachelor's degree in Computer Science or related field",
+        "Experience with testing frameworks (Jest, Cypress)",
+        "Knowledge of web performance optimization"
+      ],
+      "benefits": [
+        "Competitive salary and equity package",
+        "Comprehensive health, dental, and vision insurance",
+        "Flexible work arrangements and remote work options",
+        "Professional development budget ($2,000/year)",
+        "Unlimited PTO policy",
+        "Modern office with free meals and snacks",
+        "401(k) with company matching",
+        "Gym membership reimbursement",
+        "Latest MacBook Pro and equipment",
+        "Conference and training opportunities"
+      ],
+      "postedDate": "2025-05-01",
+      "applicationDeadline": "2025-06-10",
+      "companyDescription": "TechCorp Solutions is a leading technology company specializing in innovative software solutions for enterprise clients. We pride ourselves on creating cutting-edge products that solve real-world problems and help businesses scale efficiently.",
+      "contactEmail": "careers@techcorp.com",
+      "experienceLevel": "senior",
+      "skills": [
+        "JavaScript",
+        "React",
+        "TypeScript",
+        "CSS3",
+        "HTML5",
+        "Git",
+        "Webpack",
+        "Redux"
+      ],
+      "isActive": true,
+      "applicationCount": 45,
+      "featured": true
+    },
+    {
+      "id": "2",
+      "title": "UX/UI Designer",
+      "company": "Design Studio Pro",
+      "location": "New York, NY",
+      "type": "full-time",
+      "salary": "$80,000 - $100,000",
+      "description": "Join our creative team as a UX/UI Designer and help shape the future of digital experiences. You'll work on exciting projects for diverse clients, from startups to Fortune 500 companies.\n\nKey Responsibilities:\n• Create user-centered designs through research, wireframing, and prototyping\n• Develop design systems and maintain brand consistency\n• Collaborate with developers to ensure design feasibility\n• Conduct user testing and iterate based on feedback\n• Present design concepts to clients and stakeholders\n• Work closely with product managers to define user requirements\n\nWhat Makes This Role Special:\n• Work with high-profile clients across various industries\n• Access to the latest design tools and technologies\n• Collaborative environment with talented designers\n• Opportunity to lead design projects from concept to launch",
+      "requirements": [
+        "3+ years of UX/UI design experience",
+        "Proficiency in Figma, Sketch, or Adobe Creative Suite",
+        "Strong portfolio demonstrating design process",
+        "Understanding of user research methodologies",
+        "Knowledge of design systems and component libraries",
+        "Experience with prototyping tools",
+        "Excellent communication and presentation skills",
+        "Understanding of web and mobile design principles",
+        "Experience with user testing and analytics"
+      ],
+      "benefits": [
+        "Creative and collaborative work environment",
+        "Health and dental insurance",
+        "Flexible working hours",
+        "Professional development opportunities",
+        "Modern design tools and equipment",
+        "Team building events and retreats",
+        "Work-from-home options",
+        "Creative project bonuses"
+      ],
+      "postedDate": "2024-11-28",
+      "applicationDeadline": "2025-01-10",
+      "companyDescription": "Design Studio Pro is a full-service design agency that creates beautiful and functional digital experiences. We work with clients across various industries to bring their visions to life through innovative design solutions.",
+      "contactEmail": "jobs@designstudiopro.com",
+      "experienceLevel": "mid",
+      "skills": [
+        "Figma",
+        "Sketch",
+        "Adobe Creative Suite",
+        "Prototyping",
+        "User Research",
+        "Design Systems"
+      ],
+      "isActive": true,
+      "applicationCount": 28,
+      "featured": false
+    },
+    {
+      "id": "3",
+      "title": "Full Stack Developer",
+      "company": "StartupXYZ",
+      "location": "Austin, TX",
+      "type": "full-time",
+      "salary": "$90,000 - $120,000",
+      "description": "We're looking for a versatile Full Stack Developer to join our growing startup. You'll work on both frontend and backend technologies, helping us build scalable web applications that serve thousands of users.\n\nKey Responsibilities:\n• Develop and maintain full-stack web applications\n• Work with modern JavaScript frameworks and backend technologies\n• Design and implement RESTful APIs\n• Collaborate with cross-functional teams\n• Participate in code reviews and technical discussions\n• Help scale our infrastructure as we grow\n\nStartup Environment:\n• Fast-paced, dynamic work environment\n• Direct impact on product development\n• Opportunity to wear multiple hats\n• Work directly with founders and leadership team",
+      "requirements": [
+        "3+ years of full-stack development experience",
+        "Proficiency in JavaScript/TypeScript",
+        "Experience with React or Vue.js",
+        "Backend experience with Node.js, Python, or similar",
+        "Database experience (PostgreSQL, MongoDB)",
+        "Understanding of RESTful API design",
+        "Experience with cloud platforms (AWS, GCP)",
+        "Knowledge of version control (Git)",
+        "Startup experience preferred"
+      ],
+      "benefits": [
+        "Competitive salary with equity options",
+        "Health and dental insurance",
+        "Flexible work schedule",
+        "Remote work opportunities",
+        "Learning and development budget",
+        "Startup culture and fast growth",
+        "Modern tech stack",
+        "Catered lunches"
+      ],
+      "postedDate": "2024-11-30",
+      "applicationDeadline": "2025-01-12",
+      "companyDescription": "StartupXYZ is an innovative tech startup focused on revolutionizing how people interact with technology. We're building the next generation of web applications with a focus on user experience and scalability.",
+      "contactEmail": "hiring@startupxyz.com",
+      "experienceLevel": "mid",
+      "skills": [
+        "JavaScript",
+        "React",
+        "Node.js",
+        "PostgreSQL",
+        "AWS",
+        "TypeScript"
+      ],
+      "isActive": true,
+      "applicationCount": 32,
+      "featured": false
+    },
+    {
+      "id": "4",
+      "title": "Product Manager",
+      "company": "InnovateCorp",
+      "location": "Seattle, WA",
+      "type": "full-time",
+      "salary": "$110,000 - $140,000",
+      "description": "We're seeking an experienced Product Manager to lead our product development initiatives. You'll work closely with engineering, design, and business teams to deliver products that delight our customers.\n\nKey Responsibilities:\n• Define product strategy and roadmap\n• Gather and prioritize product requirements\n• Work closely with engineering teams to deliver features\n• Analyze user feedback and market trends\n• Coordinate product launches and go-to-market strategies\n• Monitor product performance and iterate based on data\n\nLeadership Opportunities:\n• Lead cross-functional product teams\n• Present to executive leadership\n• Drive product vision and strategy\n• Mentor junior product team members",
+      "requirements": [
+        "4+ years of product management experience",
+        "Experience with agile development methodologies",
+        "Strong analytical and problem-solving skills",
+        "Excellent communication and leadership abilities",
+        "Experience with product analytics tools",
+        "Understanding of user experience principles",
+        "Technical background preferred",
+        "MBA or relevant degree preferred"
+      ],
+      "benefits": [
+        "Competitive salary and bonus structure",
+        "Comprehensive benefits package",
+        "Stock options",
+        "Professional development opportunities",
+        "Flexible work arrangements",
+        "Modern office environment",
+        "Team retreats and events",
+        "Product management training"
+      ],
+      "postedDate": "2024-11-25",
+      "applicationDeadline": "2025-01-08",
+      "companyDescription": "InnovateCorp is a technology company focused on creating innovative solutions for modern businesses. We pride ourselves on building products that make a real difference in our customers' lives.",
+      "contactEmail": "careers@innovatecorp.com",
+      "experienceLevel": "senior",
+      "skills": [
+        "Product Management",
+        "Analytics",
+        "Agile",
+        "Leadership",
+        "Strategy"
+      ],
+      "isActive": true,
+      "applicationCount": 19,
+      "featured": true
+    },
+    {
+      "id": "5",
+      "title": "DevOps Engineer",
+      "company": "CloudTech Systems",
+      "location": "Denver, CO",
+      "type": "full-time",
+      "salary": "$100,000 - $130,000",
+      "description": "Join our DevOps team to help build and maintain scalable infrastructure. You'll work with cutting-edge cloud technologies and help our development teams deploy code efficiently and reliably.\n\nKey Responsibilities:\n• Design and maintain CI/CD pipelines\n• Manage cloud infrastructure on AWS/Azure\n• Implement monitoring and alerting systems\n• Automate deployment processes\n• Ensure system security and compliance\n• Collaborate with development teams on infrastructure needs\n\nTechnical Environment:\n• Modern cloud-native architecture\n• Kubernetes and containerization\n• Infrastructure as Code (Terraform)\n• Monitoring with Prometheus and Grafana",
+      "requirements": [
+        "3+ years of DevOps/Infrastructure experience",
+        "Experience with AWS or Azure",
+        "Proficiency in Docker and Kubernetes",
+        "Knowledge of CI/CD tools (Jenkins, GitLab CI)",
+        "Experience with Infrastructure as Code",
+        "Scripting skills (Python, Bash)",
+        "Understanding of networking and security",
+        "Experience with monitoring tools"
+      ],
+      "benefits": [
+        "Competitive salary",
+        "Health, dental, and vision insurance",
+        "401(k) with matching",
+        "Flexible PTO",
+        "Remote work options",
+        "Professional certifications support",
+        "Latest tools and equipment",
+        "Conference attendance"
+      ],
+      "postedDate": "2024-12-02",
+      "applicationDeadline": "2025-01-14",
+      "companyDescription": "CloudTech Systems specializes in cloud infrastructure solutions for enterprise clients. We help companies migrate to the cloud and optimize their infrastructure for performance and cost.",
+      "contactEmail": "devops-jobs@cloudtech.com",
+      "experienceLevel": "mid",
+      "skills": [
+        "AWS",
+        "Kubernetes",
+        "Docker",
+        "Terraform",
+        "Python",
+        "Jenkins"
+      ],
+      "isActive": true,
+      "applicationCount": 23,
+      "featured": false
+    }
+  ],
+  "applications": [
+    {
+      "id": "1",
+      "jobId": "1",
+      "userId": "demo-job-seeker",
+      "status": "pending",
+      "appliedAt": "2024-01-16T12:00:00.000Z",
+      "coverLetter": "I am very interested in this position...",
+      "resume": "john-doe-resume.pdf"
+    }
+  ],
+  "companies": [
+    {
+      "id": "1",
+      "name": "TechCorp Inc.",
+      "description": "Leading technology company specializing in innovative solutions",
+      "website": "https://techcorp.com",
+      "location": "San Francisco, CA",
+      "size": "100-500 employees",
+      "industry": "Technology",
+      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=100&h=100&fit=crop",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "name": "DataSoft Solutions",
+      "description": "Data analytics and software development company",
+      "website": "https://datasoft.com",
+      "location": "New York, NY",
+      "size": "50-100 employees",
+      "industry": "Software",
+      "logo": "https://images.unsplash.com/photo-1551434678-e076c223a692?w=100&h=100&fit=crop",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "name": "Creative Agency",
+      "description": "Full-service creative and digital marketing agency",
+      "website": "https://creativeagency.com",
+      "location": "Los Angeles, CA",
+      "size": "10-50 employees",
+      "industry": "Marketing",
+      "logo": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=100&h=100&fit=crop",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ]
+}

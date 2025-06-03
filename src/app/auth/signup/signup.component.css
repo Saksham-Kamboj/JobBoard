@@ -1,0 +1,257 @@
+/* Import base auth styles */
+@import '../signin/signin.component.css';
+
+/* Role Selection Styles */
+.role-selection {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.role-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.role-btn:hover {
+  border-color: var(--primary);
+  background: var(--muted);
+}
+
+.role-btn.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.role-btn svg {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+}
+
+.role-btn.active svg {
+  color: var(--primary-foreground);
+}
+
+.role-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.role-title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+
+.role-btn.active .role-title {
+  color: var(--primary-foreground);
+}
+
+.role-subtitle {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.role-btn.active .role-subtitle {
+  color: var(--primary-foreground);
+  opacity: 0.9;
+}
+
+/* Name Row */
+.name-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.name-row .form-group {
+  flex: 1;
+}
+
+.name-input {
+  padding-left: 1rem;
+}
+
+/* Terms Agreement */
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.checkbox-label.error .checkbox-text {
+  color: var(--destructive);
+}
+
+.checkbox-text {
+  color: var(--foreground);
+  font-size: 0.875rem;
+}
+
+.terms-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.terms-link:hover {
+  color: var(--primary);
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .role-selection {
+    flex-direction: column;
+  }
+  
+  .name-row {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .role-btn {
+    padding: 0.75rem;
+  }
+  
+  .checkbox-label {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem;
+  }
+  
+  .role-btn {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .role-content {
+    align-items: center;
+  }
+}
+
+/* Enhanced form validation styles */
+.form-group .error-message {
+  display: block;
+  color: var(--destructive);
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  min-height: 1rem;
+}
+
+.input-group.error {
+  border-color: var(--destructive);
+  box-shadow: 0 0 0 1px var(--destructive);
+}
+
+.form-input.error {
+  color: var(--destructive);
+}
+
+/* Password strength indicator (optional enhancement) */
+.password-strength {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.strength-bar {
+  flex: 1;
+  height: 2px;
+  background: var(--muted);
+  border-radius: 1px;
+  transition: background-color 0.2s ease;
+}
+
+.strength-bar.weak {
+  background: var(--destructive);
+}
+
+.strength-bar.medium {
+  background: #f59e0b;
+}
+
+.strength-bar.strong {
+  background: #10b981;
+}
+
+/* Loading state enhancements */
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Focus improvements */
+.role-btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.checkbox:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Success state (for future use) */
+.success-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #10b981;
+  color: white;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+}
+
+/* Form spacing adjustments for signup */
+.auth-form {
+  gap: 1.25rem;
+}
+
+.auth-card {
+  max-width: 480px;
+}
+
+/* Enhanced checkbox styling */
+.checkbox {
+  width: 1.125rem;
+  height: 1.125rem;
+  accent-color: var(--primary);
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+}
+
+/* Better error state for checkbox */
+.checkbox-label.error .checkbox {
+  accent-color: var(--destructive);
+}
