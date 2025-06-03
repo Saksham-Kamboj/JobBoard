@@ -7,6 +7,80 @@
   min-height: calc(100vh - 200px);
 }
 
+/* Search Section */
+.search-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-form {
+  width: 100%;
+}
+
+.search-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.search-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted-foreground);
+  z-index: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: var(--background);
+  color: var(--foreground);
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+}
+
+.search-button {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.search-button:hover {
+  background: var(--primary);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
 /* Header */
 .job-list-header {
   text-align: center;
@@ -67,6 +141,91 @@
   outline: none;
   border-color: var(--ring);
   box-shadow: 0 0 0 2px var(--ring);
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.active-filters {
+  flex: 1;
+  min-width: 0;
+}
+
+.active-filters-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.filter-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.remove-filter {
+  background: none;
+  border: none;
+  color: var(--primary-foreground);
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+.remove-filter:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.clear-filters-btn {
+  padding: 0.5rem 1rem;
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.clear-filters-btn:hover {
+  background: var(--secondary);
+  opacity: 0.8;
+  transform: translateY(-1px);
 }
 
 /* Results Header */
@@ -394,4 +553,71 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0 0 1rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .job-list-container {
+    padding: 1rem;
+  }
+
+  .search-section {
+    padding: 1.5rem;
+  }
+
+  .search-inputs {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .search-button {
+    justify-self: stretch;
+  }
+
+  .job-filters {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .active-filters {
+    order: 1;
+  }
+
+  .clear-filters-btn {
+    order: 2;
+    align-self: center;
+  }
+
+  .results-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .sort-options {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-section {
+    padding: 1rem;
+  }
+
+  .search-input {
+    padding: 0.625rem 0.75rem 0.625rem 2.5rem;
+    font-size: 0.875rem;
+  }
+
+  .search-button {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
 }

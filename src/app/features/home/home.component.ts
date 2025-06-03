@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { JobService, Job } from '../../core/services/job.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -9,6 +9,7 @@ import {
   JobCategory,
   Testimonial,
 } from '../../core/services/data.service';
+import { SearchService } from '../../core/services/search.service';
 
 @Component({
   selector: 'app-home',
@@ -55,7 +56,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private jobService: JobService,
     private authService: AuthService,
-    private dataService: DataService
+    private dataService: DataService,
+    private searchService: SearchService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -204,6 +207,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onSearch(): void {
+    // Update search service with current search parameters
+    this.searchService.updateFilters({
+      query: this.searchQuery.trim() || undefined,
+      location: this.searchLocation.trim() || undefined,
+    });
+
     // Navigate to jobs page with search parameters
     const queryParams: any = {};
     if (this.searchQuery.trim()) {
@@ -213,9 +222,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       queryParams.location = this.searchLocation.trim();
     }
 
-    // For now, just navigate to jobs page
-    // In a real app, you'd pass these as query parameters
-    window.location.href = '/jobs';
+    // Navigate using Angular router with query parameters
+    this.router.navigate(['/jobs'], { queryParams });
   }
 
   getTimeAgo(dateString: string): string {

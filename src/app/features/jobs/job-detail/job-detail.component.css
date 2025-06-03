@@ -99,6 +99,27 @@
   margin-bottom: 2rem;
 }
 
+.back-button {
+  position: relative;
+}
+
+.back-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.back-main {
+  font-weight: 600;
+}
+
+.back-filters {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  font-weight: 400;
+}
+
 /* Job Header */
 .job-header {
   background: var(--card);

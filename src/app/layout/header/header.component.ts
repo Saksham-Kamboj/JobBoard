@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService, User } from '../../core/services/auth.service';
+import { SearchService } from '../../core/services/search.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -19,7 +20,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   private authSubscription: Subscription = new Subscription();
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private searchService: SearchService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     // Subscribe to authentication state
@@ -60,8 +65,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onSearch() {
     if (this.searchQuery.trim()) {
-      console.log('Searching for:', this.searchQuery);
-      // Implement search functionality here
+      // Update search service with query
+      this.searchService.updateFilters({
+        query: this.searchQuery.trim(),
+      });
+
+      // Navigate to jobs page with search query
+      this.router.navigate(['/jobs'], {
+        queryParams: { q: this.searchQuery.trim() },
+      });
+
+      // Close mobile search popup
+      this.closeSearch();
+
+      // Clear search query after navigation
+      this.searchQuery = '';
     }
   }
 

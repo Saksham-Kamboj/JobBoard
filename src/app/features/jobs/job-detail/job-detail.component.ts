@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService, User } from '../../../core/services/auth.service';
 import { JobService, Job } from '../../../core/services/job.service';
+import { NavigationService } from '../../../core/services/navigation.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -27,7 +28,8 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private jobService: JobService
+    private jobService: JobService,
+    private navigationService: NavigationService
   ) {}
 
   ngOnInit() {
@@ -117,7 +119,16 @@ export class JobDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack() {
-    this.router.navigate(['/jobs']);
+    // Use navigation service to go back with preserved filters
+    this.navigationService.navigateBackToJobs();
+  }
+
+  hasStoredFilters(): boolean {
+    return this.navigationService.hasStoredFilters();
+  }
+
+  getStoredFiltersDescription(): string {
+    return this.navigationService.getStoredFiltersDescription();
   }
 
   shareJob() {

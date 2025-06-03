@@ -48,13 +48,16 @@
   <div *ngIf="!isLoading && job" class="job-content">
     <!-- Header Actions -->
     <div class="header-actions">
-      <button (click)="goBack()" class="btn-secondary">
+      <button (click)="goBack()" class="btn-secondary back-button"
+        [title]="hasStoredFilters() ? 'Back to jobs with filters: ' + getStoredFiltersDescription() : 'Back to all jobs'">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           <path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
             stroke-linejoin="round" />
         </svg>
-        Back to Jobs
+        <span class="back-text">
+          <span class="back-main">Back to Jobs</span>
+        </span>
       </button>
       <button (click)="shareJob()" class="btn-secondary">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

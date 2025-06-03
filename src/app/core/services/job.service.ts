@@ -58,19 +58,42 @@ export class JobService {
     );
   }
 
-  searchJobs(query: string): Observable<Job[]> {
+  searchJobs(query: string, location?: string): Observable<Job[]> {
     return this.getAllJobs().pipe(
-      map((jobs) =>
-        jobs.filter(
-          (job) =>
-            job.title.toLowerCase().includes(query.toLowerCase()) ||
-            job.company.toLowerCase().includes(query.toLowerCase()) ||
-            job.location.toLowerCase().includes(query.toLowerCase()) ||
-            job.skills.some((skill) =>
-              skill.toLowerCase().includes(query.toLowerCase())
-            )
-        )
-      )
+      map((jobs) => {
+        let filteredJobs = jobs;
+
+        // Filter by search query
+        if (query && query.trim()) {
+          const searchQuery = query.toLowerCase().trim();
+          filteredJobs = filteredJobs.filter(
+            (job) =>
+              job.title.toLowerCase().includes(searchQuery) ||
+              job.company.toLowerCase().includes(searchQuery) ||
+              job.description.toLowerCase().includes(searchQuery) ||
+              job.skills.some((skill) =>
+                skill.toLowerCase().includes(searchQuery)
+              ) ||
+              job.requirements.some((req) =>
+                req.toLowerCase().includes(searchQuery)
+              )
+          );
+        }
+
+        // Filter by location
+        if (location && location.trim()) {
+          const searchLocation = location.toLowerCase().trim();
+          filteredJobs = filteredJobs.filter(
+            (job) =>
+              job.location.toLowerCase().includes(searchLocation) ||
+              (searchLocation === 'remote' &&
+                (job.type === 'remote' ||
+                  job.location.toLowerCase().includes('remote')))
+          );
+        }
+
+        return filteredJobs;
+      })
     );
   }
 
