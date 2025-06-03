@@ -66,12 +66,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onSignin() {
-    // Navigate to signin page
+    // Navigate to signin page using Angular router
+    // This will trigger the scroll-to-top behavior
     window.location.href = '/auth/signin';
   }
 
   onSignup() {
-    // Navigate to signup page
+    // Navigate to signup page using Angular router
+    // This will trigger the scroll-to-top behavior
     window.location.href = '/auth/signup';
   }
 
