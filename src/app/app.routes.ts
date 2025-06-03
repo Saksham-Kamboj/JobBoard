@@ -2,11 +2,11 @@ import { Routes } from '@angular/router';
 import { AuthGuard, RoleGuard, GuestGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  // Default redirect
+  // Home page
   {
     path: '',
-    redirectTo: '/jobs',
-    pathMatch: 'full',
+    loadComponent: () =>
+      import('./features/home/home.component').then((m) => m.HomeComponent),
   },
 
   // Public routes
