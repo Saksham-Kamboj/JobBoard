@@ -4,12 +4,13 @@
     <p class="page-subtitle">Discover amazing opportunities from top companies</p>
   </div>
 
-  <!-- Search Section -->
-  <div class="search-section">
+  <!-- Compact Search & Filters Section -->
+  <div class="search-filters-section">
     <form (ngSubmit)="onSearch()" class="search-form">
-      <div class="search-inputs">
+      <!-- Main Search Row -->
+      <div class="search-row">
         <div class="search-field">
-          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
             xmlns="http://www.w3.org/2000/svg">
             <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
             <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" />
@@ -18,7 +19,7 @@
             class="search-input" (input)="onSearch()">
         </div>
         <div class="search-field">
-          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
             xmlns="http://www.w3.org/2000/svg">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" />
             <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" />
@@ -27,76 +28,65 @@
             class="search-input" (input)="onSearch()">
         </div>
         <button type="submit" class="search-button">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
             <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" />
           </svg>
-          Search
+          <span class="search-text">Search</span>
+        </button>
+      </div>
+
+      <!-- Compact Filters Row -->
+      <div class="filters-row">
+        <select class="compact-filter" [(ngModel)]="selectedJobType" name="jobType" (change)="onFilterChange()">
+          <option *ngFor="let type of jobTypes" [value]="type.value">{{ type.label }}</option>
+        </select>
+
+        <select class="compact-filter" [(ngModel)]="selectedExperienceLevel" name="experienceLevel"
+          (change)="onFilterChange()">
+          <option *ngFor="let level of experienceLevels" [value]="level.value">{{ level.label }}</option>
+        </select>
+
+        <select class="compact-filter" [(ngModel)]="selectedSalaryRange" name="salaryRange" (change)="onFilterChange()">
+          <option *ngFor="let range of salaryRanges" [value]="range.value">{{ range.label }}</option>
+        </select>
+
+        <button *ngIf="hasActiveFilters()" class="clear-filters-compact" (click)="clearFilters()" type="button"
+          title="Clear all filters">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          <span class="clear-text">Clear</span>
         </button>
       </div>
     </form>
-  </div>
 
-  <!-- Filters Section -->
-  <div class="job-filters">
-    <div class="filter-group">
-      <label class="filter-label">Job Type</label>
-      <select class="filter-select" [(ngModel)]="selectedJobType" name="jobType" (change)="onFilterChange()">
-        <option *ngFor="let type of jobTypes" [value]="type.value">{{ type.label }}</option>
-      </select>
-    </div>
-
-    <div class="filter-group">
-      <label class="filter-label">Experience Level</label>
-      <select class="filter-select" [(ngModel)]="selectedExperienceLevel" name="experienceLevel"
-        (change)="onFilterChange()">
-        <option *ngFor="let level of experienceLevels" [value]="level.value">{{ level.label }}</option>
-      </select>
-    </div>
-
-    <div class="filter-group">
-      <label class="filter-label">Salary Range</label>
-      <select class="filter-select" [(ngModel)]="selectedSalaryRange" name="salaryRange" (change)="onFilterChange()">
-        <option *ngFor="let range of salaryRanges" [value]="range.value">{{ range.label }}</option>
-      </select>
-    </div>
-
-    <div class="filter-actions">
-      <!-- Active Filters Display -->
-      <div *ngIf="hasActiveFilters()" class="active-filters">
-        <span class="active-filters-label">Active filters:</span>
-        <div class="filter-badges">
-          <span *ngIf="searchQuery" class="filter-badge">
-            Search: "{{ searchQuery }}"
-            <button (click)="searchQuery = ''; onSearch()" class="remove-filter">×</button>
-          </span>
-          <span *ngIf="searchLocation" class="filter-badge">
-            Location: "{{ searchLocation }}"
-            <button (click)="searchLocation = ''; onSearch()" class="remove-filter">×</button>
-          </span>
-          <span *ngIf="selectedJobType" class="filter-badge">
-            Type: {{ getJobTypeDisplay(selectedJobType) }}
-            <button (click)="selectedJobType = ''; onFilterChange()" class="remove-filter">×</button>
-          </span>
-          <span *ngIf="selectedExperienceLevel" class="filter-badge">
-            Level: {{ getExperienceLevelDisplay(selectedExperienceLevel) }}
-            <button (click)="selectedExperienceLevel = ''; onFilterChange()" class="remove-filter">×</button>
-          </span>
-          <span *ngIf="selectedSalaryRange" class="filter-badge">
-            Salary: {{ getSalaryRangeDisplay(selectedSalaryRange) }}
-            <button (click)="selectedSalaryRange = ''; onFilterChange()" class="remove-filter">×</button>
-          </span>
-        </div>
+    <!-- Active Filters Display -->
+    <div *ngIf="hasActiveFilters()" class="active-filters">
+      <span class="active-filters-label">Active filters:</span>
+      <div class="filter-badges">
+        <span *ngIf="searchQuery" class="filter-badge">
+          Search: "{{ searchQuery }}"
+          <button (click)="searchQuery = ''; onSearch()" class="remove-filter">×</button>
+        </span>
+        <span *ngIf="searchLocation" class="filter-badge">
+          Location: "{{ searchLocation }}"
+          <button (click)="searchLocation = ''; onSearch()" class="remove-filter">×</button>
+        </span>
+        <span *ngIf="selectedJobType" class="filter-badge">
+          Type: {{ getJobTypeDisplay(selectedJobType) }}
+          <button (click)="selectedJobType = ''; onFilterChange()" class="remove-filter">×</button>
+        </span>
+        <span *ngIf="selectedExperienceLevel" class="filter-badge">
+          Level: {{ getExperienceLevelDisplay(selectedExperienceLevel) }}
+          <button (click)="selectedExperienceLevel = ''; onFilterChange()" class="remove-filter">×</button>
+        </span>
+        <span *ngIf="selectedSalaryRange" class="filter-badge">
+          Salary: {{ getSalaryRangeDisplay(selectedSalaryRange) }}
+          <button (click)="selectedSalaryRange = ''; onFilterChange()" class="remove-filter">×</button>
+        </span>
       </div>
-
-      <button *ngIf="hasActiveFilters()" class="clear-filters-btn" (click)="clearFilters()" type="button">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14zM10 11v6M14 11v6"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-        Clear All Filters
-      </button>
     </div>
   </div>
 
