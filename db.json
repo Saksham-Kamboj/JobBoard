@@ -150,6 +150,41 @@
       "submittedAt": "2024-12-10T09:30:00.000Z",
       "updatedAt": "2024-12-10T09:30:00.000Z",
       "notes": ""
+    },
+    {
+      "jobId": "1",
+      "userId": "demo-job-seeker",
+      "applicationData": {
+        "personalInfo": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "jobseeker@demo.com",
+          "phone": "+1 (555) 123-4567",
+          "address": {
+            "street": "123 Main Street",
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94105",
+            "country": "United States"
+          },
+          "linkedinUrl": "https://linkedin.com/in/johndoe",
+          "portfolioUrl": "https://johndoe.dev",
+          "githubUrl": "https://github.com/johndoe"
+        },
+        "coverLetter": "Dear Hiring Manager,\n\nI am writing to express my interest in the Frontend Developer position at your esteemed organization. With a strong foundation in HTML, CSS, JavaScript, and modern frameworks like React.js and Angular, I bring over a year of hands-on experience building responsive and user-friendly web applications.\n\nIn my current role, I’ve collaborated closely with UI/UX teams to deliver seamless interfaces and have optimized performance using best practices like lazy loading, code splitting, and Lighthouse audits. I’m passionate about creating accessible, maintainable code and continuously learning new technologies to enhance the user experience.\n\nI thrive in dynamic, team-oriented environments and am excited about the opportunity to contribute my skills to a company focused on innovation and digital growth. I would welcome the chance to discuss how my expertise aligns with your goals.\n\nThank you for considering my application.\n\nSincerely,\n[Your Name]",
+        "resume": {
+          "fileName": "01 A B Testing.docx",
+          "fileUrl": "/uploads/resumes/01 A B Testing.docx",
+          "uploadedAt": "2025-06-05T09:06:49.815Z",
+          "fileSize": 179183
+        },
+        "additionalDocuments": []
+      },
+      "status": "submitted",
+      "notes": "",
+      "id": "lf5azwldi",
+      "submittedAt": "2025-06-05T09:10:33.323Z",
+      "updatedAt": "2025-06-05T09:10:33.323Z"
     }
   ],
   "jobs": [
@@ -1017,8 +1052,8 @@
         "Unlimited PTO",
         "Customer success training programs"
       ],
-      "postedDate": "2025-01-12",
-      "applicationDeadline": "2025-03-25",
+      "postedDate": "2025-06-05",
+      "applicationDeadline": "2025-06-30",
       "companyDescription": "SaaS Solutions Pro provides cloud-based software solutions that help businesses streamline their operations and improve productivity.",
       "contactEmail": "success-careers@saassolutions.com",
       "experienceLevel": "mid",

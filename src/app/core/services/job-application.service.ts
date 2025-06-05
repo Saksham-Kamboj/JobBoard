@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { PersonalInfo, Resume } from './user-profile.service';
 
 export interface JobApplicationData {
@@ -15,26 +16,34 @@ export interface JobApplication {
   jobId: string;
   userId: string;
   applicationData: JobApplicationData;
-  status: 'draft' | 'submitted' | 'under-review' | 'interview' | 'rejected' | 'accepted';
+  status:
+    | 'draft'
+    | 'submitted'
+    | 'under-review'
+    | 'interview'
+    | 'rejected'
+    | 'accepted';
   submittedAt: string;
   updatedAt: string;
   notes: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class JobApplicationService {
   private apiUrl = 'http://localhost:3000/jobApplications';
 
   constructor(private http: HttpClient) {}
 
-  submitJobApplication(application: Omit<JobApplication, 'id' | 'submittedAt' | 'updatedAt'>): Observable<JobApplication> {
+  submitJobApplication(
+    application: Omit<JobApplication, 'id' | 'submittedAt' | 'updatedAt'>
+  ): Observable<JobApplication> {
     const newApplication = {
       ...application,
       id: this.generateId(),
       submittedAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     return this.http.post<JobApplication>(this.apiUrl, newApplication);
@@ -52,27 +61,30 @@ export class JobApplicationService {
     return this.http.get<JobApplication>(`${this.apiUrl}/${applicationId}`);
   }
 
-  updateApplicationStatus(applicationId: string, status: JobApplication['status'], notes?: string): Observable<JobApplication> {
+  updateApplicationStatus(
+    applicationId: string,
+    status: JobApplication['status'],
+    notes?: string
+  ): Observable<JobApplication> {
     const updates = {
       status,
       updatedAt: new Date().toISOString(),
-      ...(notes && { notes })
+      ...(notes && { notes }),
     };
 
-    return this.http.patch<JobApplication>(`${this.apiUrl}/${applicationId}`, updates);
+    return this.http.patch<JobApplication>(
+      `${this.apiUrl}/${applicationId}`,
+      updates
+    );
   }
 
   checkIfUserApplied(userId: string, jobId: string): Observable<boolean> {
-    return this.http.get<JobApplication[]>(`${this.apiUrl}?userId=${userId}&jobId=${jobId}`)
-      .pipe(
-        map(applications => applications.length > 0)
-      );
+    return this.http
+      .get<JobApplication[]>(`${this.apiUrl}?userId=${userId}&jobId=${jobId}`)
+      .pipe(map((applications) => applications.length > 0));
   }
 
   private generateId(): string {
     return Math.random().toString(36).substr(2, 9);
   }
 }
-
-// Import map operator
-import { map } from 'rxjs/operators';

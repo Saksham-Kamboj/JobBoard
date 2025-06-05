@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService, User } from '../../../core/services/auth.service';
 import { JobService, Job } from '../../../core/services/job.service';
+import { JobApplicationService } from '../../../core/services/job-application.service';
 import { NavigationService } from '../../../core/services/navigation.service';
 import { Subscription } from 'rxjs';
 
@@ -29,6 +30,7 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService,
     private jobService: JobService,
+    private jobApplicationService: JobApplicationService,
     private navigationService: NavigationService
   ) {}
 
@@ -84,9 +86,21 @@ export class JobDetailComponent implements OnInit, OnDestroy {
   }
 
   private checkApplicationStatus() {
-    // In a real app, this would check if the user has already applied
-    // For now, we'll simulate this
-    this.hasApplied = false;
+    if (!this.currentUser || !this.job) {
+      return;
+    }
+
+    this.jobApplicationService
+      .checkIfUserApplied(this.currentUser.id, this.job.id)
+      .subscribe({
+        next: (hasApplied) => {
+          this.hasApplied = hasApplied;
+        },
+        error: (error) => {
+          console.error('Error checking application status:', error);
+          this.hasApplied = false;
+        },
+      });
   }
 
   goBack() {
