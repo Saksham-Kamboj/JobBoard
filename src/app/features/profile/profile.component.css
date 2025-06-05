@@ -218,12 +218,14 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
+  width: 100%;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  width: 100%;
 }
 
 .form-group.full-width {
@@ -238,6 +240,7 @@
 
 .form-input,
 .form-textarea {
+  width: 100%;
   padding: 0.75rem;
   background: var(--background);
   border: 1px solid var(--border);
@@ -245,6 +248,7 @@
   color: var(--foreground);
   font-size: 0.875rem;
   transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .form-input:focus,
@@ -520,4 +524,444 @@
   .nav-description {
     display: block;
   }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skills-display {
+    justify-content: flex-start;
+  }
+
+  .personal-info-item,
+  .professional-info-item,
+  .resume-item,
+  .preference-item,
+  .security-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .resume-actions {
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+}
+
+/* Professional Info Display */
+.professional-info {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.info-label {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.info-value {
+  color: var(--foreground);
+  font-size: 1rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.skills-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-tag {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* All tags (skills, job types, locations) use the same styling via .skill-tag class */
+
+/* Enhanced Form Design */
+.profile-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-card {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+}
+
+.form-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.form-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.form-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.form-card-title h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 0.25rem 0;
+}
+
+.form-card-title p {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.form-card-content {
+  padding: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-row:last-child {
+  margin-bottom: 0;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group:not(.form-row .form-group) {
+  margin-bottom: 1rem;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-actions-card {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-top: 0.5rem;
+}
+
+/* Responsive Design for Form Cards */
+@media (max-width: 768px) {
+  .form-card-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .form-card-icon {
+    align-self: center;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .form-card-content {
+    padding: 1rem;
+  }
+
+  .form-actions-card {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .form-actions-card button {
+    width: 100%;
+  }
+}
+
+/* Consistent Item-based Layout for All Sections */
+.personal-info-list,
+.professional-info-list,
+.resume-list,
+.preferences-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.personal-info-item,
+.professional-info-item,
+.resume-item,
+.preference-item,
+.security-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.5rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  gap: 1rem;
+}
+
+.personal-info-details,
+.professional-info-details,
+.resume-info,
+.preference-info,
+.security-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.personal-info-title,
+.professional-info-title,
+.resume-title,
+.preference-title,
+.security-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.personal-info-description,
+.professional-info-description,
+.resume-description,
+.preference-description,
+.security-description {
+  font-size: 1rem;
+  color: var(--foreground);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.personal-info-meta,
+.professional-info-meta,
+.resume-meta {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+.resume-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.links-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.profile-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--primary);
+  border-radius: 20px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.profile-link:hover {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.no-data {
+  color: var(--muted-foreground);
+  font-style: italic;
+  font-size: 0.875rem;
+}
+
+/* No Profile State */
+.no-profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  padding: 2rem;
+}
+
+.no-profile-content {
+  text-align: center;
+  max-width: 400px;
+}
+
+.no-profile-content svg {
+  color: var(--muted-foreground);
+  margin-bottom: 1rem;
+}
+
+.no-profile-content h3 {
+  color: var(--foreground);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.no-profile-content p {
+  color: var(--muted-foreground);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0 0 1.5rem 0;
+}
+
+/* Professional Edit Form */
+.professional-edit-form {
+  width: 100%;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.professional-edit-form form {
+  width: 100%;
+}
+
+.section-actions {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.skills-input {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.add-skill-container {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.add-skill-container .form-input {
+  flex: 1;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-tag {
+  position: relative;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: var(--primary-foreground);
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.remove-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.salary-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1rem;
+  align-items: end;
+  width: 100%;
+}
+
+.salary-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.salary-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+.loading-spinner.small {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
 }
