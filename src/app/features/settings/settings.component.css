@@ -1,6 +1,6 @@
 /* Settings Container */
 .settings-container {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem 1rem;
   background: var(--background);
@@ -288,12 +288,12 @@
   transition: all 0.3s ease;
 }
 
-.toggle-switch input:checked + .toggle-slider {
+.toggle-switch input:checked+.toggle-slider {
   background: var(--primary);
   border-color: var(--primary);
 }
 
-.toggle-switch input:checked + .toggle-slider:before {
+.toggle-switch input:checked+.toggle-slider:before {
   transform: translateX(1.25rem);
 }
 
@@ -353,28 +353,28 @@
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .settings-sidebar {
     position: static;
   }
-  
+
   .settings-nav {
     flex-direction: row;
     overflow-x: auto;
     gap: 0.25rem;
   }
-  
+
   .settings-nav-item {
     flex-direction: column;
     min-width: 120px;
     padding: 0.75rem;
     text-align: center;
   }
-  
+
   .nav-content {
     align-items: center;
   }
-  
+
   .nav-description {
     display: none;
   }
@@ -384,21 +384,21 @@
   .settings-container {
     padding: 1rem;
   }
-  
+
   .settings-content {
     padding: 1.5rem;
   }
-  
+
   .setting-item {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
-  
+
   .setting-control {
     justify-content: flex-start;
   }
-  
+
   .theme-toggle-container {
     justify-content: space-between;
   }
@@ -408,17 +408,17 @@
   .settings-title {
     font-size: 1.5rem;
   }
-  
+
   .settings-nav {
     flex-direction: column;
   }
-  
+
   .settings-nav-item {
     flex-direction: row;
     min-width: auto;
     text-align: left;
   }
-  
+
   .nav-description {
     display: block;
   }
