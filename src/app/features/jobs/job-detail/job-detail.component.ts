@@ -215,4 +215,10 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     // Navigate to job application page
     this.router.navigate(['/jobs', this.job.id, 'apply']);
   }
+
+  navigateToSignIn(): void {
+    this.router.navigate(['/auth/signin'], {
+      queryParams: { returnUrl: this.router.url },
+    });
+  }
 }

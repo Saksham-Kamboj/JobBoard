@@ -198,7 +198,7 @@
       <div class="job-sidebar">
         <!-- Application Card -->
         <div class="application-card">
-          <div *ngIf="!hasApplied && !isDeadlinePassed()" class="apply-section">
+          <div *ngIf="currentUser?.role === 'job-seeker' && !hasApplied && !isDeadlinePassed()" class="apply-section">
             <button (click)="applyForJob()" class="btn-primary apply-btn" [disabled]="isApplying">
               <span *ngIf="isApplying" class="loading-spinner small"></span>
               <svg *ngIf="!isApplying" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -243,6 +243,35 @@
               <span>Application Closed</span>
             </div>
             <p class="deadline-note">The application deadline for this position has passed.</p>
+          </div>
+
+          <!-- Message for non-job-seekers -->
+          <div *ngIf="currentUser && currentUser.role !== 'job-seeker'" class="role-restriction-section">
+            <div class="restriction-status">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" />
+                <line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" />
+              </svg>
+              <span>Job Seeker Access Only</span>
+            </div>
+            <p class="restriction-note">Only job seekers can apply for positions. Please create a job seeker account to
+              apply.</p>
+          </div>
+
+          <!-- Message for unauthenticated users -->
+          <div *ngIf="!currentUser && !isDeadlinePassed()" class="login-prompt-section">
+            <div class="login-status">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" />
+                <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+              </svg>
+              <span>Sign In Required</span>
+            </div>
+            <p class="login-note">Please sign in with a job seeker account to apply for this position.</p>
+            <button (click)="navigateToSignIn()" class="btn-secondary login-btn">
+              Sign In
+            </button>
           </div>
         </div>
 

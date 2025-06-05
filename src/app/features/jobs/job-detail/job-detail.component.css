@@ -428,12 +428,16 @@
 }
 
 .applied-section,
-.deadline-passed-section {
+.deadline-passed-section,
+.role-restriction-section,
+.login-prompt-section {
   text-align: center;
 }
 
 .applied-status,
-.deadline-status {
+.deadline-status,
+.restriction-status,
+.login-status {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -447,12 +451,26 @@
   color: var(--destructive);
 }
 
+.restriction-status {
+  color: var(--warning, #f59e0b);
+}
+
+.login-status {
+  color: var(--muted-foreground);
+}
+
 .applied-note,
-.deadline-note {
+.deadline-note,
+.restriction-note,
+.login-note {
   color: var(--muted-foreground);
   font-size: 0.875rem;
   line-height: 1.5;
-  margin: 0;
+  margin: 0 0 1rem 0;
+}
+
+.login-btn {
+  margin-top: 0.5rem;
 }
 
 /* Job Details Card */
