@@ -18,7 +18,38 @@
       "role": "admin",
       "password": "password123",
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "isActive": true
+      "isActive": true,
+      "phone": "+1 (555) 999-0001",
+      "location": "San Francisco, CA"
+    },
+    {
+      "id": "super-admin",
+      "email": "superadmin@jobboard.com",
+      "firstName": "Super",
+      "lastName": "Admin",
+      "role": "admin",
+      "password": "SuperAdmin123!",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "isActive": true,
+      "phone": "+1 (555) 999-0000",
+      "location": "New York, NY"
+    },
+    {
+      "id": "demo-company",
+      "email": "company@demo.com",
+      "firstName": "Company",
+      "lastName": "Representative",
+      "role": "company",
+      "password": "password123",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "isActive": true,
+      "phone": "+1 (555) 888-0001",
+      "location": "Austin, TX",
+      "companyName": "Demo Tech Solutions",
+      "companyDescription": "A leading technology company specializing in innovative software solutions for businesses worldwide.",
+      "companyWebsite": "https://demotechsolutions.com",
+      "companySize": "201-500",
+      "industry": "technology"
     },
     {
       "id": "mbep7e5zdmrlik6v66j",

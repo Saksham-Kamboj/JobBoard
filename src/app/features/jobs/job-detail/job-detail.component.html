@@ -255,8 +255,16 @@
               </svg>
               <span>Job Seeker Access Only</span>
             </div>
-            <p class="restriction-note">Only job seekers can apply for positions. Please create a job seeker account to
-              apply.</p>
+            <p class="restriction-note">
+              <span *ngIf="currentUser.role === 'company'">
+                As a company representative, you can post jobs but cannot apply for positions.
+                <a routerLink="/company/dashboard" class="link">Go to Company Dashboard</a>
+              </span>
+              <span *ngIf="currentUser.role === 'admin'">
+                As an administrator, you have platform management access but cannot apply for jobs.
+                <a routerLink="/admin/dashboard" class="link">Go to Admin Dashboard</a>
+              </span>
+            </p>
           </div>
 
           <!-- Message for unauthenticated users -->
