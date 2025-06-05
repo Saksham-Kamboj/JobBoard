@@ -1,81 +1,106 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { AuthService, User } from '../../../core/services/auth.service';
+import {
+  DashboardService,
+  AdminDashboardStats,
+  RecentJobPosting,
+  RecentApplicationForAdmin,
+} from '../../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-admin-dashboard',
   imports: [CommonModule, RouterModule],
   templateUrl: './admin-dashboard.component.html',
-  styleUrl: './admin-dashboard.component.css'
+  styleUrl: './admin-dashboard.component.css',
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   currentUser: User | null = null;
-  
-  stats = {
-    totalJobs: 45,
-    activeJobs: 32,
-    totalApplications: 234,
-    newApplications: 18
+  isLoading = true;
+
+  stats: AdminDashboardStats = {
+    id: '',
+    userId: '',
+    totalJobs: 0,
+    activeJobs: 0,
+    totalApplications: 0,
+    newApplications: 0,
+    lastUpdated: '',
   };
 
-  recentJobs = [
-    {
-      id: '1',
-      title: 'Frontend Developer',
-      company: 'TechCorp Inc.',
-      postedDate: '2024-01-16',
-      applications: 12,
-      status: 'active'
-    },
-    {
-      id: '2',
-      title: 'Backend Developer',
-      company: 'DataSoft Solutions',
-      postedDate: '2024-01-15',
-      applications: 8,
-      status: 'active'
-    },
-    {
-      id: '3',
-      title: 'UI/UX Designer',
-      company: 'Creative Agency',
-      postedDate: '2024-01-14',
-      applications: 15,
-      status: 'paused'
-    }
-  ];
+  recentJobs: RecentJobPosting[] = [];
+  recentApplications: RecentApplicationForAdmin[] = [];
 
-  recentApplications = [
-    {
-      id: '1',
-      applicantName: 'John Doe',
-      jobTitle: 'Frontend Developer',
-      appliedDate: '2024-01-16',
-      status: 'pending'
-    },
-    {
-      id: '2',
-      applicantName: 'Jane Smith',
-      jobTitle: 'UI/UX Designer',
-      appliedDate: '2024-01-16',
-      status: 'reviewed'
-    },
-    {
-      id: '3',
-      applicantName: 'Mike Johnson',
-      jobTitle: 'Backend Developer',
-      appliedDate: '2024-01-15',
-      status: 'interview'
-    }
-  ];
-
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private dashboardService: DashboardService
+  ) {}
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
-    });
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((user) => {
+        this.currentUser = user;
+        if (user) {
+          this.loadDashboardData(user.id);
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private loadDashboardData(userId: string): void {
+    this.isLoading = true;
+
+    // Load admin dashboard stats
+    this.dashboardService
+      .getAdminDashboardStats(userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (stats) => {
+          this.stats = stats;
+        },
+        error: (error) => {
+          console.error('Error loading admin dashboard stats:', error);
+        },
+      });
+
+    // Load recent job postings
+    this.dashboardService
+      .getRecentJobPostings(3)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (jobs) => {
+          this.recentJobs = jobs;
+        },
+        error: (error) => {
+          console.error('Error loading recent job postings:', error);
+        },
+      });
+
+    // Load recent applications
+    this.dashboardService
+      .getRecentApplicationsForAdmin(3)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => (this.isLoading = false))
+      )
+      .subscribe({
+        next: (applications) => {
+          this.recentApplications = applications;
+        },
+        error: (error) => {
+          console.error('Error loading recent applications:', error);
+        },
+      });
   }
 
   getJobStatusClass(status: string): string {

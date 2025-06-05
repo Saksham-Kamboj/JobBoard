@@ -8,15 +8,15 @@
     <div class="header-actions">
       <button class="btn-primary" routerLink="/jobs">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-          <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2"/>
+          <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+          <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" />
         </svg>
         Browse Jobs
       </button>
       <button class="btn-secondary" routerLink="/profile">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
-          <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" />
+          <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" />
         </svg>
         Edit Profile
       </button>
@@ -28,11 +28,11 @@
     <div class="stat-card">
       <div class="stat-icon applied">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
-          <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
-          <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2"/>
-          <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2"/>
-          <polyline points="10,9 9,9 8,9" stroke="currentColor" stroke-width="2"/>
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" />
+          <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" />
+          <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2" />
+          <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2" />
+          <polyline points="10,9 9,9 8,9" stroke="currentColor" stroke-width="2" />
         </svg>
       </div>
       <div class="stat-content">
@@ -44,7 +44,7 @@
     <div class="stat-card">
       <div class="stat-icon saved">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2"/>
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" />
         </svg>
       </div>
       <div class="stat-content">
@@ -56,8 +56,8 @@
     <div class="stat-card">
       <div class="stat-icon views">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
-          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" />
+          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
         </svg>
       </div>
       <div class="stat-content">
@@ -69,10 +69,10 @@
     <div class="stat-card">
       <div class="stat-icon interviews">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
-          <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2"/>
-          <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2"/>
-          <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+          <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2" />
+          <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2" />
+          <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2" />
         </svg>
       </div>
       <div class="stat-content">
@@ -91,11 +91,31 @@
         <a routerLink="/applications" class="view-all-link">View All</a>
       </div>
       <div class="applications-list">
+        <div *ngIf="isLoading" class="loading-state">
+          <p>Loading recent applications...</p>
+        </div>
+        <div *ngIf="!isLoading && recentApplications.length === 0" class="empty-state">
+          <p>No applications yet. <a routerLink="/jobs">Browse jobs</a> to get started!</p>
+        </div>
         <div *ngFor="let application of recentApplications" class="application-item">
           <div class="application-info">
             <h3 class="application-job-title">{{ application.jobTitle }}</h3>
             <p class="application-company">{{ application.company }}</p>
             <p class="application-date">Applied on {{ application.appliedDate }}</p>
+            <div *ngIf="application.nextSteps" class="application-next-steps">
+              <p class="next-steps-text">{{ application.nextSteps }}</p>
+            </div>
+            <div *ngIf="application.interviewDate" class="interview-info">
+              <p class="interview-date">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2" />
+                  <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2" />
+                  <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2" />
+                </svg>
+                Interview: {{ formatInterviewDate(application.interviewDate) }}
+              </p>
+            </div>
           </div>
           <div class="application-status">
             <span class="status-badge" [ngClass]="getStatusClass(application.status)">
@@ -103,9 +123,6 @@
             </span>
           </div>
         </div>
-      </div>
-      <div *ngIf="recentApplications.length === 0" class="empty-state">
-        <p>No applications yet. <a routerLink="/jobs">Start browsing jobs</a></p>
       </div>
     </div>
 
@@ -116,6 +133,12 @@
         <a routerLink="/jobs" class="view-all-link">View All</a>
       </div>
       <div class="recommendations-list">
+        <div *ngIf="isLoading" class="loading-state">
+          <p>Loading recommended jobs...</p>
+        </div>
+        <div *ngIf="!isLoading && recommendedJobs.length === 0" class="empty-state">
+          <p>Complete your <a routerLink="/profile">profile</a> to get personalized job recommendations!</p>
+        </div>
         <div *ngFor="let job of recommendedJobs" class="recommendation-item">
           <div class="recommendation-header">
             <div class="job-info">
@@ -133,7 +156,7 @@
             </div>
             <div class="job-actions">
               <button class="btn-outline" [routerLink]="['/jobs', job.id]">View</button>
-              <button class="btn-primary">Apply</button>
+              <button class="btn-primary" [routerLink]="['/jobs', job.id, 'apply']">Apply</button>
             </div>
           </div>
         </div>
@@ -148,8 +171,8 @@
       <a routerLink="/profile" class="action-card">
         <div class="action-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
-            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" />
+            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" />
           </svg>
         </div>
         <h3 class="action-title">Update Profile</h3>
@@ -159,8 +182,9 @@
       <a routerLink="/resume" class="action-card">
         <div class="action-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
-            <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor"
+              stroke-width="2" />
+            <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" />
           </svg>
         </div>
         <h3 class="action-title">Upload Resume</h3>
@@ -170,8 +194,8 @@
       <a routerLink="/job-alerts" class="action-card">
         <div class="action-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2"/>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2"/>
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" />
           </svg>
         </div>
         <h3 class="action-title">Set Job Alerts</h3>
@@ -181,9 +205,9 @@
       <a routerLink="/companies" class="action-card">
         <div class="action-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 21h18" stroke="currentColor" stroke-width="2"/>
-            <path d="M5 21V7l8-4v18" stroke="currentColor" stroke-width="2"/>
-            <path d="M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/>
+            <path d="M3 21h18" stroke="currentColor" stroke-width="2" />
+            <path d="M5 21V7l8-4v18" stroke="currentColor" stroke-width="2" />
+            <path d="M19 21V11l-6-4" stroke="currentColor" stroke-width="2" />
           </svg>
         </div>
         <h3 class="action-title">Explore Companies</h3>

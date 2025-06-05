@@ -1,87 +1,115 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { AuthService, User } from '../../../core/services/auth.service';
+import {
+  DashboardService,
+  DashboardStats,
+  RecentApplication,
+  RecommendedJob,
+} from '../../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-job-seeker-dashboard',
   imports: [CommonModule, RouterModule],
   templateUrl: './job-seeker-dashboard.component.html',
-  styleUrl: './job-seeker-dashboard.component.css'
+  styleUrl: './job-seeker-dashboard.component.css',
 })
-export class JobSeekerDashboardComponent implements OnInit {
+export class JobSeekerDashboardComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   currentUser: User | null = null;
-  
-  stats = {
-    appliedJobs: 12,
-    savedJobs: 8,
-    profileViews: 45,
-    interviewsScheduled: 3
+  isLoading = true;
+
+  stats: DashboardStats = {
+    id: '',
+    userId: '',
+    appliedJobs: 0,
+    savedJobs: 0,
+    profileViews: 0,
+    interviewsScheduled: 0,
+    lastUpdated: '',
   };
 
-  recentApplications = [
-    {
-      id: '1',
-      jobTitle: 'Frontend Developer',
-      company: 'TechCorp Inc.',
-      appliedDate: '2024-01-16',
-      status: 'pending'
-    },
-    {
-      id: '2',
-      jobTitle: 'UI/UX Designer',
-      company: 'Creative Agency',
-      appliedDate: '2024-01-15',
-      status: 'interview'
-    },
-    {
-      id: '3',
-      jobTitle: 'Full Stack Developer',
-      company: 'StartupXYZ',
-      appliedDate: '2024-01-14',
-      status: 'rejected'
-    }
-  ];
+  recentApplications: RecentApplication[] = [];
+  recommendedJobs: RecommendedJob[] = [];
 
-  recommendedJobs = [
-    {
-      id: '4',
-      title: 'React Developer',
-      company: 'InnovateTech',
-      location: 'Remote',
-      salary: '$85,000 - $110,000',
-      matchScore: 95
-    },
-    {
-      id: '5',
-      title: 'Frontend Engineer',
-      company: 'WebSolutions',
-      location: 'San Francisco, CA',
-      salary: '$90,000 - $125,000',
-      matchScore: 88
-    },
-    {
-      id: '6',
-      title: 'JavaScript Developer',
-      company: 'CodeCraft',
-      location: 'New York, NY',
-      salary: '$80,000 - $115,000',
-      matchScore: 82
-    }
-  ];
-
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private dashboardService: DashboardService
+  ) {}
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
-    });
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((user) => {
+        this.currentUser = user;
+        if (user) {
+          this.loadDashboardData(user.id);
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private loadDashboardData(userId: string): void {
+    this.isLoading = true;
+
+    // Load dashboard stats
+    this.dashboardService
+      .getDashboardStats(userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (stats) => {
+          this.stats = stats;
+        },
+        error: (error) => {
+          console.error('Error loading dashboard stats:', error);
+        },
+      });
+
+    // Load recent applications
+    this.dashboardService
+      .getRecentApplications(userId, 3)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (applications) => {
+          this.recentApplications = applications;
+        },
+        error: (error) => {
+          console.error('Error loading recent applications:', error);
+        },
+      });
+
+    // Load recommended jobs
+    this.dashboardService
+      .getRecommendedJobs(userId, 3)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => (this.isLoading = false))
+      )
+      .subscribe({
+        next: (jobs) => {
+          this.recommendedJobs = jobs;
+        },
+        error: (error) => {
+          console.error('Error loading recommended jobs:', error);
+        },
+      });
   }
 
   getStatusClass(status: string): string {
     switch (status) {
+      case 'submitted':
       case 'pending':
         return 'status-pending';
+      case 'under-review':
+        return 'status-review';
       case 'interview':
         return 'status-interview';
       case 'rejected':
@@ -95,7 +123,11 @@ export class JobSeekerDashboardComponent implements OnInit {
 
   getStatusText(status: string): string {
     switch (status) {
+      case 'submitted':
+        return 'Submitted';
       case 'pending':
+        return 'Under Review';
+      case 'under-review':
         return 'Under Review';
       case 'interview':
         return 'Interview Scheduled';
@@ -113,5 +145,22 @@ export class JobSeekerDashboardComponent implements OnInit {
     if (score >= 80) return 'match-good';
     if (score >= 70) return 'match-fair';
     return 'match-poor';
+  }
+
+  formatInterviewDate(dateString: string): string {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-IN', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'Asia/Kolkata', // IST timezone for India
+      });
+    } catch (error) {
+      return dateString;
+    }
   }
 }

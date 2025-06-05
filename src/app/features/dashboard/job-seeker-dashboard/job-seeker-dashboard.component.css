@@ -259,6 +259,11 @@
   color: #92400e;
 }
 
+.status-review {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
 .status-interview {
   background: #dbeafe;
   color: #1e40af;
@@ -425,6 +430,18 @@
   line-height: 1.5;
 }
 
+/* Loading State */
+.loading-state {
+  text-align: center;
+  padding: 2rem;
+  color: var(--muted-foreground);
+}
+
+.loading-state p {
+  margin: 0;
+  font-style: italic;
+}
+
 /* Empty State */
 .empty-state {
   text-align: center;
@@ -432,13 +449,48 @@
   color: var(--muted-foreground);
 }
 
+.empty-state p {
+  margin: 0;
+}
+
 .empty-state a {
   color: var(--primary);
   text-decoration: none;
+  font-weight: 500;
 }
 
 .empty-state a:hover {
   text-decoration: underline;
+}
+
+/* Application Status Enhancements */
+.application-next-steps {
+  margin-top: 0.5rem;
+}
+
+.next-steps-text {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  font-style: italic;
+  margin: 0;
+}
+
+.interview-info {
+  margin-top: 0.5rem;
+}
+
+.interview-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--primary);
+  font-weight: 500;
+  margin: 0;
+}
+
+.interview-date svg {
+  color: var(--primary);
 }
 
 /* Responsive Design */
