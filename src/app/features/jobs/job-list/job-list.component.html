@@ -122,45 +122,47 @@
 
     <div class="job-grid">
       <div *ngFor="let job of jobs" class="job-card">
-        <div class="job-header">
-          <div class="job-title-section">
-            <h3 class="job-title">{{ job.title }}</h3>
-            <p class="job-company">{{ job.company }}</p>
-          </div>
-          <div class="job-meta">
-            <span class="job-type">{{ getJobTypeDisplay(job.type) }}</span>
-            <span class="job-posted">{{ getTimeAgo(job.postedDate) }}</span>
-          </div>
-        </div>
-
-        <div class="job-details">
-          <div class="job-info">
-            <div class="info-item">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" />
-                <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" />
-              </svg>
-              <span>{{ job.location }}</span>
+        <div class="">
+          <div class="job-header">
+            <div class="job-title-section">
+              <h3 class="job-title">{{ job.title }}</h3>
+              <p class="job-company">{{ job.company }}</p>
             </div>
-            <div class="info-item">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <line x1="12" y1="1" x2="12" y2="23" stroke="currentColor" stroke-width="2" />
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2" />
-              </svg>
-              <span>{{ job.salary }}</span>
-            </div>
-            <div class="info-item">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" />
-                <circle cx="8.5" cy="7" r="4" stroke="currentColor" stroke-width="2" />
-                <line x1="20" y1="8" x2="20" y2="14" stroke="currentColor" stroke-width="2" />
-                <line x1="23" y1="11" x2="17" y2="11" stroke="currentColor" stroke-width="2" />
-              </svg>
-              <span>{{ job.applicationCount }} applicants</span>
+            <div class="job-meta">
+              <span class="job-type">{{ getJobTypeDisplay(job.type) }}</span>
+              <span class="job-posted">{{ getTimeAgo(job.postedDate) }}</span>
             </div>
           </div>
 
-          <p class="job-description">{{ job.description }}</p>
+          <div class="job-details">
+            <div class="job-info">
+              <div class="info-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" />
+                  <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" />
+                </svg>
+                <span>{{ job.location }}</span>
+              </div>
+              <div class="info-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="12" y1="1" x2="12" y2="23" stroke="currentColor" stroke-width="2" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2" />
+                </svg>
+                <span>{{ job.salary }}</span>
+              </div>
+              <div class="info-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" />
+                  <circle cx="8.5" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+                  <line x1="20" y1="8" x2="20" y2="14" stroke="currentColor" stroke-width="2" />
+                  <line x1="23" y1="11" x2="17" y2="11" stroke="currentColor" stroke-width="2" />
+                </svg>
+                <span>{{ job.applicationCount }} applicants</span>
+              </div>
+            </div>
+
+            <p class="job-description">{{ job.description }}</p>
+          </div>
         </div>
 
         <div class="job-actions">

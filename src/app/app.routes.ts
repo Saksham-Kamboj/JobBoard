@@ -24,6 +24,15 @@ export const routes: Routes = [
         (m) => m.JobDetailComponent
       ),
   },
+  {
+    path: 'jobs/:id/apply',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { role: 'job-seeker' },
+    loadComponent: () =>
+      import('./features/jobs/job-apply/job-apply.component').then(
+        (m) => m.JobApplyComponent
+      ),
+  },
 
   // Authentication routes (only for guests)
   {

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService, User } from '../../../core/services/auth.service';
 import { JobService, Job } from '../../../core/services/job.service';
+import { JobApplicationService } from '../../../core/services/job-application.service';
 import { NavigationService } from '../../../core/services/navigation.service';
 import { Subscription } from 'rxjs';
 
@@ -29,6 +30,7 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService,
     private jobService: JobService,
+    private jobApplicationService: JobApplicationService,
     private navigationService: NavigationService
   ) {}
 
@@ -84,38 +86,21 @@ export class JobDetailComponent implements OnInit, OnDestroy {
   }
 
   private checkApplicationStatus() {
-    // In a real app, this would check if the user has already applied
-    // For now, we'll simulate this
-    this.hasApplied = false;
-  }
+    if (!this.currentUser || !this.job) {
+      return;
+    }
 
-  applyForJob() {
-    if (!this.currentUser) {
-      this.router.navigate(['/auth/signin'], {
-        queryParams: { returnUrl: this.router.url },
+    this.jobApplicationService
+      .checkIfUserApplied(this.currentUser.id, this.job.id)
+      .subscribe({
+        next: (hasApplied) => {
+          this.hasApplied = hasApplied;
+        },
+        error: (error) => {
+          console.error('Error checking application status:', error);
+          this.hasApplied = false;
+        },
       });
-      return;
-    }
-
-    if (this.currentUser.role !== 'job-seeker') {
-      this.errorMessage = 'Only job seekers can apply for jobs';
-      return;
-    }
-
-    this.isApplying = true;
-    this.errorMessage = '';
-
-    // Simulate application submission
-    setTimeout(() => {
-      this.isApplying = false;
-      this.hasApplied = true;
-      this.successMessage = 'Application submitted successfully!';
-
-      // Clear success message after 5 seconds
-      setTimeout(() => {
-        this.successMessage = '';
-      }, 5000);
-    }, 1000);
   }
 
   goBack() {
@@ -203,5 +188,31 @@ export class JobDetailComponent implements OnInit, OnDestroy {
 
   isDeadlinePassed(): boolean {
     return this.getDaysUntilDeadline() < 0;
+  }
+
+  applyForJob(): void {
+    if (!this.job) {
+      return;
+    }
+
+    // Check if user is authenticated
+    if (!this.currentUser) {
+      this.router.navigate(['/auth/signin'], {
+        queryParams: { returnUrl: this.router.url },
+      });
+      return;
+    }
+
+    // Check if user is a job seeker
+    if (this.currentUser.role !== 'job-seeker') {
+      this.errorMessage = 'Only job seekers can apply for jobs';
+      setTimeout(() => {
+        this.errorMessage = '';
+      }, 3000);
+      return;
+    }
+
+    // Navigate to job application page
+    this.router.navigate(['/jobs', this.job.id, 'apply']);
   }
 }

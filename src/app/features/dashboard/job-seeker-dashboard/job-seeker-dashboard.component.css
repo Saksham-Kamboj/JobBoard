@@ -1,6 +1,6 @@
 /* Dashboard Container */
 .dashboard-container {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem 1rem;
   background: var(--background);
@@ -452,30 +452,30 @@
   .dashboard-container {
     padding: 1rem;
   }
-  
+
   .dashboard-header {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .header-actions {
     justify-content: stretch;
   }
-  
+
   .header-actions .btn-primary,
   .header-actions .btn-secondary {
     flex: 1;
     justify-content: center;
   }
-  
+
   .stats-grid {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
-  
+
   .welcome-title {
     font-size: 1.5rem;
   }
-  
+
   .actions-grid {
     grid-template-columns: 1fr;
   }
