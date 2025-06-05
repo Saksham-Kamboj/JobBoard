@@ -325,7 +325,7 @@ select:autofill {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -370,6 +370,9 @@ select:autofill {
   padding: 1.5rem;
   transition: all 0.2s ease;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .job-card:hover {
@@ -536,7 +539,14 @@ select:autofill {
 /* Responsive Design */
 @media (min-width: 768px) {
   .job-grid {
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .job-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
   }
 
   .job-filters {
