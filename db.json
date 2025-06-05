@@ -23,18 +23,6 @@
       "location": "San Francisco, CA"
     },
     {
-      "id": "super-admin",
-      "email": "superadmin@jobboard.com",
-      "firstName": "Super",
-      "lastName": "Admin",
-      "role": "admin",
-      "password": "SuperAdmin123!",
-      "createdAt": "2024-01-01T00:00:00.000Z",
-      "isActive": true,
-      "phone": "+1 (555) 999-0000",
-      "location": "New York, NY"
-    },
-    {
       "id": "demo-company",
       "email": "company@demo.com",
       "firstName": "Company",
