@@ -1,13 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { AuthService, User } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-settings',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css',
 })
@@ -15,6 +21,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
   isDarkMode = false;
   currentUser: User | null = null;
   private authSubscription: Subscription = new Subscription();
+
+  // Password change functionality
+  passwordForm: FormGroup;
+  isChangingPassword = false;
+  isLoading = false;
+  passwordUpdateSuccess = false;
+  errorMessage = '';
 
   // Settings categories
   settingsCategories = [
@@ -65,8 +78,19 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private themeService: ThemeService
-  ) {}
+    private themeService: ThemeService,
+    private formBuilder: FormBuilder
+  ) {
+    // Initialize password form
+    this.passwordForm = this.formBuilder.group(
+      {
+        currentPassword: ['', [Validators.required]],
+        newPassword: ['', [Validators.required, Validators.minLength(8)]],
+        confirmPassword: ['', [Validators.required]],
+      },
+      { validators: this.passwordMatchValidator }
+    );
+  }
 
   ngOnInit() {
     // Subscribe to theme changes
@@ -139,8 +163,89 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  changePassword() {
-    // Navigate to change password page or open modal
-    console.log('Change password clicked');
+  toggleChangePassword() {
+    this.isChangingPassword = !this.isChangingPassword;
+    if (!this.isChangingPassword) {
+      this.passwordForm.reset();
+    }
+    this.clearMessages();
+  }
+
+  onPasswordSubmit() {
+    if (this.passwordForm.valid && this.currentUser) {
+      this.isLoading = true;
+      this.clearMessages();
+
+      const { currentPassword, newPassword } = this.passwordForm.value;
+
+      this.authService.changePassword(currentPassword, newPassword).subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.isChangingPassword = false;
+          this.passwordUpdateSuccess = true;
+          this.passwordForm.reset();
+
+          setTimeout(() => {
+            this.passwordUpdateSuccess = false;
+          }, 3000);
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.errorMessage = error.message || 'Failed to change password';
+
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 5000);
+        },
+      });
+    } else {
+      this.markFormGroupTouched(this.passwordForm);
+    }
+  }
+
+  private passwordMatchValidator(form: FormGroup) {
+    const newPassword = form.get('newPassword');
+    const confirmPassword = form.get('confirmPassword');
+
+    if (
+      newPassword &&
+      confirmPassword &&
+      newPassword.value !== confirmPassword.value
+    ) {
+      confirmPassword.setErrors({ passwordMismatch: true });
+      return { passwordMismatch: true };
+    }
+
+    return null;
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((key) => {
+      const control = formGroup.get(key);
+      control?.markAsTouched();
+    });
+  }
+
+  private clearMessages() {
+    this.passwordUpdateSuccess = false;
+    this.errorMessage = '';
+  }
+
+  getFieldError(fieldName: string): string | null {
+    const field = this.passwordForm.get(fieldName);
+    if (field && field.touched && field.errors) {
+      if (field.errors['required']) {
+        return `${
+          fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+        } is required`;
+      }
+      if (field.errors['minlength']) {
+        return `Password must be at least ${field.errors['minlength'].requiredLength} characters`;
+      }
+      if (field.errors['passwordMismatch']) {
+        return 'Passwords do not match';
+      }
+    }
+    return null;
   }
 }

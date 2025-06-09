@@ -22,13 +22,7 @@
     Profile updated successfully!
   </div>
 
-  <div *ngIf="passwordUpdateSuccess" class="alert alert-success">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-    </svg>
-    Password changed successfully!
-  </div>
+
 
   <div *ngIf="errorMessage" class="alert alert-error">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -768,63 +762,7 @@
         </div>
       </div>
 
-      <!-- Security Section -->
-      <div *ngIf="activeSection === 'security'" class="profile-section">
-        <div class="section-header">
-          <h2 class="section-title">Security</h2>
-          <p class="section-description">Manage your password and security settings</p>
-        </div>
 
-        <div class="security-item">
-          <div class="security-info">
-            <h3 class="security-title">Password</h3>
-            <p class="security-description">Change your account password</p>
-          </div>
-          <button *ngIf="!isChangingPassword" (click)="toggleChangePassword()" class="btn-secondary">
-            Change Password
-          </button>
-        </div>
-
-        <form *ngIf="isChangingPassword" [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()"
-          class="password-form">
-          <div class="form-group">
-            <label for="currentPassword" class="form-label">Current Password *</label>
-            <input type="password" id="currentPassword" formControlName="currentPassword" class="form-input"
-              [class.error]="getFieldError('currentPassword', passwordForm)">
-            <div *ngIf="getFieldError('currentPassword', passwordForm)" class="field-error">
-              {{ getFieldError('currentPassword', passwordForm) }}
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="newPassword" class="form-label">New Password *</label>
-            <input type="password" id="newPassword" formControlName="newPassword" class="form-input"
-              [class.error]="getFieldError('newPassword', passwordForm)">
-            <div *ngIf="getFieldError('newPassword', passwordForm)" class="field-error">
-              {{ getFieldError('newPassword', passwordForm) }}
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="confirmPassword" class="form-label">Confirm New Password *</label>
-            <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-input"
-              [class.error]="getFieldError('confirmPassword', passwordForm)">
-            <div *ngIf="getFieldError('confirmPassword', passwordForm)" class="field-error">
-              {{ getFieldError('confirmPassword', passwordForm) }}
-            </div>
-          </div>
-
-          <div class="form-actions">
-            <button type="button" (click)="toggleChangePassword()" class="btn-secondary">
-              Cancel
-            </button>
-            <button type="submit" class="btn-primary" [disabled]="isLoading">
-              <span *ngIf="isLoading" class="loading-spinner"></span>
-              {{ isLoading ? 'Changing...' : 'Change Password' }}
-            </button>
-          </div>
-        </form>
-      </div>
 
       <!-- Professional Information Section -->
       <div *ngIf="activeSection === 'professional'" class="profile-section">

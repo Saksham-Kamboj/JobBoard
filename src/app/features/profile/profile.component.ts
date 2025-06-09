@@ -38,11 +38,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   profileForm: FormGroup;
   professionalForm: FormGroup;
   companyForm: FormGroup;
-  passwordForm: FormGroup;
   isEditingProfile = false;
   isEditingProfessional = false;
   isEditingCompany = false;
-  isChangingPassword = false;
 
   // Job and application data
   companyJobs: Job[] = [];
@@ -65,7 +63,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   adminSettingsForm: FormGroup;
   isLoading = false;
   profileUpdateSuccess = false;
-  passwordUpdateSuccess = false;
   errorMessage = '';
   newSkill = '';
   newJobType = '';
@@ -117,15 +114,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       companySize: [''],
       industry: [''],
     });
-
-    this.passwordForm = this.formBuilder.group(
-      {
-        currentPassword: ['', [Validators.required]],
-        newPassword: ['', [Validators.required, Validators.minLength(8)]],
-        confirmPassword: ['', [Validators.required]],
-      },
-      { validators: this.passwordMatchValidator }
-    );
 
     // Initialize admin settings form
     this.adminSettingsForm = this.formBuilder.group({
@@ -214,12 +202,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             icon: 'file',
             description: 'Upload and manage your resume',
           },
-          {
-            id: 'security',
-            title: 'Security',
-            icon: 'shield',
-            description: 'Change password and security settings',
-          },
+
           {
             id: 'preferences',
             title: 'Preferences',
@@ -254,12 +237,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             icon: 'users',
             description: 'Review job applications',
           },
-          {
-            id: 'security',
-            title: 'Security',
-            icon: 'shield',
-            description: 'Change password and security settings',
-          },
+
           {
             id: 'preferences',
             title: 'Preferences',
@@ -294,12 +272,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             icon: 'briefcase',
             description: 'Oversee all job postings',
           },
-          {
-            id: 'security',
-            title: 'Security',
-            icon: 'shield',
-            description: 'Change password and security settings',
-          },
+
           {
             id: 'preferences',
             title: 'Preferences',
@@ -316,12 +289,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
             icon: 'user',
             description: 'Update your basic information',
           },
-          {
-            id: 'security',
-            title: 'Security',
-            icon: 'shield',
-            description: 'Change password and security settings',
-          },
         ];
     }
   }
@@ -331,7 +298,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.isEditingProfile = false;
     this.isEditingProfessional = false;
     this.isEditingCompany = false;
-    this.isChangingPassword = false;
     this.clearMessages();
   }
 
@@ -434,14 +400,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.isEditingProfile = !this.isEditingProfile;
     if (!this.isEditingProfile) {
       this.loadUserProfile(); // Reset form if canceling
-    }
-    this.clearMessages();
-  }
-
-  toggleChangePassword() {
-    this.isChangingPassword = !this.isChangingPassword;
-    if (!this.isChangingPassword) {
-      this.passwordForm.reset();
     }
     this.clearMessages();
   }
@@ -684,54 +642,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  onPasswordSubmit() {
-    if (this.passwordForm.valid && this.currentUser) {
-      this.isLoading = true;
-      this.clearMessages();
-
-      const { currentPassword, newPassword } = this.passwordForm.value;
-
-      this.authService.changePassword(currentPassword, newPassword).subscribe({
-        next: () => {
-          this.isLoading = false;
-          this.isChangingPassword = false;
-          this.passwordUpdateSuccess = true;
-          this.passwordForm.reset();
-
-          setTimeout(() => {
-            this.passwordUpdateSuccess = false;
-          }, 3000);
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.errorMessage = error.message || 'Failed to change password';
-
-          setTimeout(() => {
-            this.errorMessage = '';
-          }, 5000);
-        },
-      });
-    } else {
-      this.markFormGroupTouched(this.passwordForm);
-    }
-  }
-
-  private passwordMatchValidator(form: FormGroup) {
-    const newPassword = form.get('newPassword');
-    const confirmPassword = form.get('confirmPassword');
-
-    if (
-      newPassword &&
-      confirmPassword &&
-      newPassword.value !== confirmPassword.value
-    ) {
-      confirmPassword.setErrors({ passwordMismatch: true });
-      return { passwordMismatch: true };
-    }
-
-    return null;
-  }
-
   private markFormGroupTouched(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);
@@ -741,7 +651,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private clearMessages() {
     this.profileUpdateSuccess = false;
-    this.passwordUpdateSuccess = false;
     this.errorMessage = '';
   }
 
