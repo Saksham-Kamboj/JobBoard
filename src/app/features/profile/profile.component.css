@@ -1147,18 +1147,42 @@
 .resume-item,
 .preference-item,
 .security-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.personal-info-item:hover,
+.professional-info-item:hover,
+.resume-item:hover,
+.preference-item:hover,
+.security-item:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Admin-pattern headers */
+.personal-info-header,
+.professional-info-header,
+.company-info-header,
+.resume-header,
+.preference-header,
+.security-header {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
+  align-items: flex-start;
   padding: 1.5rem;
   background: var(--background);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  gap: 1rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .personal-info-details,
 .professional-info-details,
+.company-info-details,
 .resume-info,
 .preference-info,
 .security-info {
@@ -1168,34 +1192,156 @@
   gap: 0.5rem;
 }
 
-.personal-info-title,
-.professional-info-title,
-.resume-title,
-.preference-title,
-.security-title {
+/* Admin-pattern content areas */
+.personal-info-content,
+.professional-info-content,
+.company-info-content,
+.resume-content,
+.preference-content,
+.security-content {
+  padding: 1.5rem;
+  background: var(--background);
+}
+
+/* Admin-pattern grids */
+.personal-info-grid,
+.professional-info-grid,
+.company-info-grid,
+.resume-grid,
+.preference-grid,
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Admin-pattern value containers */
+.personal-info-value,
+.professional-info-value,
+.company-info-value,
+.resume-value,
+.preference-value,
+.security-value {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.25rem;
+  background: var(--muted);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.personal-info-value.full-width,
+.professional-info-value.full-width,
+.company-info-value.full-width,
+.resume-value.full-width,
+.preference-value.full-width,
+.security-value.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Admin-pattern labels and text */
+.personal-info-label,
+.professional-info-label,
+.company-info-label,
+.resume-label,
+.preference-label,
+.security-label {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.personal-info-text,
+.professional-info-text,
+.company-info-text,
+.resume-text,
+.preference-text,
+.security-text {
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--foreground);
-  margin: 0;
+}
+
+/* Admin-pattern links */
+.personal-info-link,
+.professional-info-link,
+.company-info-link,
+.resume-link,
+.preference-link,
+.security-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.125rem;
+  transition: all 0.2s ease;
+}
+
+.personal-info-link:hover,
+.professional-info-link:hover,
+.company-info-link:hover,
+.resume-link:hover,
+.preference-link:hover,
+.security-link:hover {
+  color: var(--primary);
+  opacity: 0.8;
+}
+
+.personal-info-title,
+.professional-info-title,
+.company-info-title,
+.resume-title,
+.preference-title,
+.security-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 0.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.personal-info-title::before,
+.professional-info-title::before,
+.company-info-title::before,
+.resume-title::before,
+.preference-title::before,
+.security-title::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .personal-info-description,
 .professional-info-description,
+.company-info-description,
 .resume-description,
 .preference-description,
 .security-description {
+  color: var(--muted-foreground);
   font-size: 1rem;
-  color: var(--foreground);
-  margin: 0;
-  line-height: 1.5;
+  margin: 0 0 0.25rem 0;
+  font-weight: 500;
 }
 
 .personal-info-meta,
 .professional-info-meta,
-.resume-meta {
-  font-size: 0.875rem;
+.company-info-meta,
+.resume-meta,
+.preference-meta,
+.security-meta {
   color: var(--muted-foreground);
+  font-size: 0.875rem;
   margin: 0;
+  font-style: italic;
 }
 
 .resume-actions {

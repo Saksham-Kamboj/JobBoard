@@ -1555,7 +1555,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return this.adminManagementService.getJobStatusClass(job);
   }
 
-  formatDate(dateString: string): string {
+  formatDate(dateString: string | undefined): string {
+    if (!dateString) return 'Unknown';
     return this.adminManagementService.formatDate(dateString);
   }
 

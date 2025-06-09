@@ -17,7 +17,7 @@
       "firstName": "Admin",
       "lastName": "User",
       "role": "admin",
-      "password": "password123",
+      "password": "Admin@123",
       "createdAt": "2024-01-01T00:00:00.000Z",
       "isActive": true,
       "phone": "+1 (555) 999-0001",
@@ -49,7 +49,7 @@
       "createdAt": "2025-06-02T06:17:57.623Z",
       "isActive": true,
       "password": "Saksham1@",
-      "updatedAt": "2025-06-09T07:54:57.155Z"
+      "updatedAt": "2025-06-09T10:27:03.397Z"
     }
   ],
   "userProfiles": [
@@ -176,6 +176,43 @@
       "id": "h71fplzmg",
       "createdAt": "2025-06-09T06:30:34.722Z",
       "updatedAt": "2025-06-09T06:30:34.723Z"
+    },
+    {
+      "userId": "demo-admin",
+      "personalInfo": {
+        "firstName": "Admin",
+        "lastName": "User",
+        "email": "admin@demo.com",
+        "phone": "+1 (555) 999-0001",
+        "address": {
+          "street": "123 Main Street",
+          "city": "San Francisco",
+          "state": "CA",
+          "zipCode": "94105",
+          "country": "United States"
+        },
+        "linkedinUrl": "https://linkedin.com/in/johndoe",
+        "portfolioUrl": "https://johndoe.dev",
+        "githubUrl": "https://github.com/johndoe"
+      },
+      "professionalInfo": {
+        "currentTitle": "",
+        "yearsOfExperience": 0,
+        "summary": "",
+        "skills": [],
+        "preferredJobTypes": [],
+        "preferredLocations": [],
+        "expectedSalary": {
+          "min": 0,
+          "max": 0,
+          "currency": "USD"
+        }
+      },
+      "education": [],
+      "experience": [],
+      "id": "4sftsdosq",
+      "createdAt": "2025-06-09T10:16:29.555Z",
+      "updatedAt": "2025-06-09T10:25:31.529Z"
     }
   ],
   "savedJobs": [
@@ -1393,10 +1430,10 @@
         "CRM",
         "Account Management"
       ],
-      "isActive": false,
+      "isActive": true,
       "applicationCount": 26,
       "featured": false,
-      "updatedAt": "2025-06-09T09:59:05.005Z"
+      "updatedAt": "2025-06-09T10:27:39.749Z"
     }
   ],
   "companies": [
@@ -1487,7 +1524,7 @@
   "adminSettings": [
     {
       "id": "main-settings",
-      "platformName": "JobBoard Pro",
+      "platformName": "JobBoard",
       "platformDescription": "Professional job board platform connecting talent with opportunities worldwide",
       "allowRegistration": true,
       "requireEmailVerification": false,
@@ -1498,7 +1535,7 @@
       "supportEmail": "support@jobboard.com",
       "privacyPolicyUrl": "/privacy-policy",
       "termsOfServiceUrl": "/terms-of-service",
-      "updatedAt": "2025-06-09T07:38:50.828Z",
+      "updatedAt": "2025-06-09T10:26:23.901Z",
       "updatedBy": "admin"
     }
   ],
