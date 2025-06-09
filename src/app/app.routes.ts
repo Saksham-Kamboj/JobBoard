@@ -9,6 +9,17 @@ export const routes: Routes = [
       import('./features/home/home.component').then((m) => m.HomeComponent),
   },
 
+  // Job posting route (for admin and company roles) - MUST come before jobs/:id
+  {
+    path: 'post-job',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['admin', 'company'] },
+    loadComponent: () =>
+      import('./features/jobs/job-post/job-post.component').then(
+        (m) => m.JobPostComponent
+      ),
+  },
+
   // Public routes
   {
     path: 'jobs',
@@ -17,11 +28,19 @@ export const routes: Routes = [
         (m) => m.JobListComponent
       ),
   },
+  // Redirect old job creation route to new one
   {
-    path: 'jobs/:id',
+    path: 'jobs/create',
+    redirectTo: '/post-job',
+    pathMatch: 'full',
+  },
+  {
+    path: 'jobs/:id/edit',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['admin', 'company'] },
     loadComponent: () =>
-      import('./features/jobs/job-detail/job-detail.component').then(
-        (m) => m.JobDetailComponent
+      import('./features/jobs/job-edit/job-edit.component').then(
+        (m) => m.JobEditComponent
       ),
   },
   {
@@ -31,6 +50,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/jobs/job-apply/job-apply.component').then(
         (m) => m.JobApplyComponent
+      ),
+  },
+  {
+    path: 'jobs/:id',
+    loadComponent: () =>
+      import('./features/jobs/job-detail/job-detail.component').then(
+        (m) => m.JobDetailComponent
       ),
   },
 
@@ -104,6 +130,13 @@ export const routes: Routes = [
           import(
             './features/dashboard/admin-dashboard/admin-dashboard.component'
           ).then((m) => m.AdminDashboardComponent),
+      },
+      {
+        path: 'jobs',
+        loadComponent: () =>
+          import(
+            './features/jobs/job-management/job-management.component'
+          ).then((m) => m.JobManagementComponent),
       },
       {
         path: '',

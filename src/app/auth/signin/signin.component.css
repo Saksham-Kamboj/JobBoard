@@ -104,13 +104,14 @@
   background: var(--muted);
 }
 
-.demo-btn.admin {
-  background: var(--accent);
-  color: var(--accent-foreground);
+.demo-btn.company {
+  background: var(--primary);
+  color: var(--primary-foreground);
 }
 
-.demo-btn.admin:hover:not(:disabled) {
-  background: var(--muted);
+.demo-btn.company:hover:not(:disabled) {
+  background: var(--primary);
+  opacity: 0.9;
 }
 
 .demo-btn:disabled {
@@ -314,8 +315,13 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Auth Footer */
@@ -349,11 +355,11 @@
   .auth-card {
     padding: 1.5rem;
   }
-  
+
   .demo-buttons {
     flex-direction: column;
   }
-  
+
   .form-options {
     flex-direction: column;
     align-items: flex-start;

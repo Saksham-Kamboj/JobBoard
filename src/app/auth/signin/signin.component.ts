@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService, LoginRequest } from '../../core/services/auth.service';
 
@@ -8,7 +13,7 @@ import { AuthService, LoginRequest } from '../../core/services/auth.service';
   selector: 'app-signin',
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './signin.component.html',
-  styleUrl: './signin.component.css'
+  styleUrl: './signin.component.css',
 })
 export class SigninComponent implements OnInit {
   signinForm: FormGroup;
@@ -26,7 +31,7 @@ export class SigninComponent implements OnInit {
     this.signinForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      rememberMe: [false]
+      rememberMe: [false],
     });
   }
 
@@ -35,8 +40,12 @@ export class SigninComponent implements OnInit {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-  get email() { return this.signinForm.get('email'); }
-  get password() { return this.signinForm.get('password'); }
+  get email() {
+    return this.signinForm.get('email');
+  }
+  get password() {
+    return this.signinForm.get('password');
+  }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -49,24 +58,27 @@ export class SigninComponent implements OnInit {
 
       const loginRequest: LoginRequest = {
         email: this.signinForm.value.email,
-        password: this.signinForm.value.password
+        password: this.signinForm.value.password,
       };
 
       this.authService.login(loginRequest).subscribe({
         next: (response) => {
           this.isLoading = false;
-          
+
           // Redirect based on user role
           if (response.user.role === 'admin') {
             this.router.navigate(['/admin/dashboard']);
+          } else if (response.user.role === 'company') {
+            this.router.navigate(['/company/dashboard']);
           } else {
             this.router.navigate(['/dashboard']);
           }
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.message || 'Login failed. Please try again.';
-        }
+          this.errorMessage =
+            error.message || 'Login failed. Please try again.';
+        },
       });
     } else {
       this.markFormGroupTouched();
@@ -74,7 +86,7 @@ export class SigninComponent implements OnInit {
   }
 
   private markFormGroupTouched(): void {
-    Object.keys(this.signinForm.controls).forEach(key => {
+    Object.keys(this.signinForm.controls).forEach((key) => {
       const control = this.signinForm.get(key);
       control?.markAsTouched();
     });
@@ -84,15 +96,15 @@ export class SigninComponent implements OnInit {
   loginAsJobSeeker(): void {
     this.signinForm.patchValue({
       email: 'jobseeker@demo.com',
-      password: 'password123'
+      password: 'password123',
     });
     this.onSubmit();
   }
 
-  loginAsAdmin(): void {
+  loginAsCompany(): void {
     this.signinForm.patchValue({
-      email: 'admin@demo.com',
-      password: 'password123'
+      email: 'company@demo.com',
+      password: 'password123',
     });
     this.onSubmit();
   }
@@ -107,7 +119,9 @@ export class SigninComponent implements OnInit {
         return 'Please enter a valid email address';
       }
       if (field.errors['minlength']) {
-        return `${this.getFieldDisplayName(fieldName)} must be at least ${field.errors['minlength'].requiredLength} characters`;
+        return `${this.getFieldDisplayName(fieldName)} must be at least ${
+          field.errors['minlength'].requiredLength
+        } characters`;
       }
     }
     return '';
@@ -116,7 +130,7 @@ export class SigninComponent implements OnInit {
   private getFieldDisplayName(fieldName: string): string {
     const displayNames: { [key: string]: string } = {
       email: 'Email',
-      password: 'Password'
+      password: 'Password',
     };
     return displayNames[fieldName] || fieldName;
   }

@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+} from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService, RegisterRequest } from '../../core/services/auth.service';
 
@@ -8,7 +14,7 @@ import { AuthService, RegisterRequest } from '../../core/services/auth.service';
   selector: 'app-signup',
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './signup.component.html',
-  styleUrl: './signup.component.css'
+  styleUrl: './signup.component.css',
 })
 export class SignupComponent implements OnInit {
   signupForm: FormGroup;
@@ -22,40 +28,82 @@ export class SignupComponent implements OnInit {
     private authService: AuthService,
     private router: Router
   ) {
-    this.signupForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
-      role: ['job-seeker', [Validators.required]],
-      agreeToTerms: [false, [Validators.requiredTrue]]
-    }, {
-      validators: this.passwordMatchValidator
-    });
+    this.signupForm = this.fb.group(
+      {
+        firstName: ['', [Validators.required, Validators.minLength(2)]],
+        lastName: ['', [Validators.required, Validators.minLength(2)]],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', [Validators.required]],
+        role: ['job-seeker', [Validators.required]],
+        agreeToTerms: [false, [Validators.requiredTrue]],
+        // Company-specific fields
+        companyName: [''],
+        companyDescription: [''],
+        companyWebsite: [''],
+        companySize: [''],
+        industry: [''],
+      },
+      {
+        validators: this.passwordMatchValidator,
+      }
+    );
   }
 
   ngOnInit(): void {}
 
   // Custom validator for password confirmation
-  passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
+  passwordMatchValidator(
+    control: AbstractControl
+  ): { [key: string]: boolean } | null {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
-    
+
     if (!password || !confirmPassword) {
       return null;
     }
-    
-    return password.value === confirmPassword.value ? null : { passwordMismatch: true };
+
+    return password.value === confirmPassword.value
+      ? null
+      : { passwordMismatch: true };
   }
 
-  get firstName() { return this.signupForm.get('firstName'); }
-  get lastName() { return this.signupForm.get('lastName'); }
-  get email() { return this.signupForm.get('email'); }
-  get password() { return this.signupForm.get('password'); }
-  get confirmPassword() { return this.signupForm.get('confirmPassword'); }
-  get role() { return this.signupForm.get('role'); }
-  get agreeToTerms() { return this.signupForm.get('agreeToTerms'); }
+  get firstName() {
+    return this.signupForm.get('firstName');
+  }
+  get lastName() {
+    return this.signupForm.get('lastName');
+  }
+  get email() {
+    return this.signupForm.get('email');
+  }
+  get password() {
+    return this.signupForm.get('password');
+  }
+  get confirmPassword() {
+    return this.signupForm.get('confirmPassword');
+  }
+  get role() {
+    return this.signupForm.get('role');
+  }
+  get agreeToTerms() {
+    return this.signupForm.get('agreeToTerms');
+  }
+  get companyName() {
+    return this.signupForm.get('companyName');
+  }
+  get companyDescription() {
+    return this.signupForm.get('companyDescription');
+  }
+  get companyWebsite() {
+    return this.signupForm.get('companyWebsite');
+  }
+  get companySize() {
+    return this.signupForm.get('companySize');
+  }
+  get industry() {
+    return this.signupForm.get('industry');
+  }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -75,24 +123,33 @@ export class SignupComponent implements OnInit {
         lastName: this.signupForm.value.lastName,
         email: this.signupForm.value.email,
         password: this.signupForm.value.password,
-        role: this.signupForm.value.role
+        role: this.signupForm.value.role,
+        // Include company fields if role is company
+        ...(this.signupForm.value.role === 'company' && {
+          companyName: this.signupForm.value.companyName,
+          companyDescription: this.signupForm.value.companyDescription,
+          companyWebsite: this.signupForm.value.companyWebsite,
+          companySize: this.signupForm.value.companySize,
+          industry: this.signupForm.value.industry,
+        }),
       };
 
       this.authService.register(registerRequest).subscribe({
         next: (response) => {
           this.isLoading = false;
-          
+
           // Redirect based on user role
-          if (response.user.role === 'admin') {
-            this.router.navigate(['/admin/dashboard']);
+          if (response.user.role === 'company') {
+            this.router.navigate(['/company/dashboard']);
           } else {
             this.router.navigate(['/dashboard']);
           }
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.message || 'Registration failed. Please try again.';
-        }
+          this.errorMessage =
+            error.message || 'Registration failed. Please try again.';
+        },
       });
     } else {
       this.markFormGroupTouched();
@@ -100,7 +157,7 @@ export class SignupComponent implements OnInit {
   }
 
   private markFormGroupTouched(): void {
-    Object.keys(this.signupForm.controls).forEach(key => {
+    Object.keys(this.signupForm.controls).forEach((key) => {
       const control = this.signupForm.get(key);
       control?.markAsTouched();
     });
@@ -116,7 +173,9 @@ export class SignupComponent implements OnInit {
         return 'Please enter a valid email address';
       }
       if (field.errors['minlength']) {
-        return `${this.getFieldDisplayName(fieldName)} must be at least ${field.errors['minlength'].requiredLength} characters`;
+        return `${this.getFieldDisplayName(fieldName)} must be at least ${
+          field.errors['minlength'].requiredLength
+        } characters`;
       }
       if (field.errors['requiredTrue']) {
         return 'You must agree to the terms and conditions';
@@ -124,7 +183,11 @@ export class SignupComponent implements OnInit {
     }
 
     // Check for password mismatch
-    if (fieldName === 'confirmPassword' && this.signupForm.errors?.['passwordMismatch'] && field?.touched) {
+    if (
+      fieldName === 'confirmPassword' &&
+      this.signupForm.errors?.['passwordMismatch'] &&
+      field?.touched
+    ) {
       return 'Passwords do not match';
     }
 
@@ -139,7 +202,12 @@ export class SignupComponent implements OnInit {
       password: 'Password',
       confirmPassword: 'Confirm password',
       role: 'Role',
-      agreeToTerms: 'Terms agreement'
+      agreeToTerms: 'Terms agreement',
+      companyName: 'Company name',
+      companyDescription: 'Company description',
+      companyWebsite: 'Company website',
+      companySize: 'Company size',
+      industry: 'Industry',
     };
     return displayNames[fieldName] || fieldName;
   }
@@ -147,16 +215,45 @@ export class SignupComponent implements OnInit {
   hasFieldError(fieldName: string): boolean {
     const field = this.signupForm.get(fieldName);
     const hasFieldError = !!(field?.errors && field?.touched);
-    
+
     // Special case for confirm password
     if (fieldName === 'confirmPassword') {
-      return hasFieldError || (this.signupForm.errors?.['passwordMismatch'] && field?.touched);
+      return (
+        hasFieldError ||
+        (this.signupForm.errors?.['passwordMismatch'] && field?.touched)
+      );
     }
-    
+
     return hasFieldError;
   }
 
-  onRoleChange(role: 'job-seeker' | 'admin'): void {
+  onRoleChange(role: 'job-seeker' | 'company'): void {
     this.signupForm.patchValue({ role });
+
+    // Add/remove validators based on role
+    if (role === 'company') {
+      this.companyName?.setValidators([
+        Validators.required,
+        Validators.minLength(2),
+      ]);
+      this.companyWebsite?.setValidators([
+        Validators.pattern(/^https?:\/\/.+/),
+      ]);
+      this.companySize?.setValidators([Validators.required]);
+      this.industry?.setValidators([Validators.required]);
+    } else {
+      this.companyName?.clearValidators();
+      this.companyWebsite?.clearValidators();
+      this.companySize?.clearValidators();
+      this.industry?.clearValidators();
+      this.companyDescription?.clearValidators();
+    }
+
+    // Update validation status
+    this.companyName?.updateValueAndValidity();
+    this.companyWebsite?.updateValueAndValidity();
+    this.companySize?.updateValueAndValidity();
+    this.industry?.updateValueAndValidity();
+    this.companyDescription?.updateValueAndValidity();
   }
 }

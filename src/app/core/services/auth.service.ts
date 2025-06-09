@@ -9,7 +9,7 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
-  role: 'job-seeker' | 'admin';
+  role: 'job-seeker' | 'company' | 'admin';
   password?: string;
   createdAt: string;
   isActive: boolean;
@@ -20,6 +20,12 @@ export interface User {
   linkedin?: string;
   github?: string;
   twitter?: string;
+  // Company-specific fields
+  companyName?: string;
+  companyDescription?: string;
+  companyWebsite?: string;
+  companySize?: string;
+  industry?: string;
 }
 
 export interface LoginRequest {
@@ -32,7 +38,13 @@ export interface RegisterRequest {
   password: string;
   firstName: string;
   lastName: string;
-  role: 'job-seeker' | 'admin';
+  role: 'job-seeker' | 'company'; // Admin accounts are pre-created in database
+  // Company-specific fields for registration
+  companyName?: string;
+  companyDescription?: string;
+  companyWebsite?: string;
+  companySize?: string;
+  industry?: string;
 }
 
 export interface AuthResponse {
@@ -57,8 +69,8 @@ export class AuthService {
   }
 
   private loadStoredAuth(): void {
-    const token = localStorage.getItem('auth_token');
-    const user = localStorage.getItem('current_user');
+    const token = sessionStorage.getItem('auth_token');
+    const user = sessionStorage.getItem('current_user');
 
     if (token && user) {
       try {
@@ -72,20 +84,21 @@ export class AuthService {
   }
 
   private storeAuth(user: User, token: string): void {
-    localStorage.setItem('auth_token', token);
-    localStorage.setItem('current_user', JSON.stringify(user));
+    sessionStorage.setItem('auth_token', token);
+    sessionStorage.setItem('current_user', JSON.stringify(user));
     this.tokenSubject.next(token);
     this.currentUserSubject.next(user);
   }
 
   private clearStoredAuth(): void {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('current_user');
+    sessionStorage.removeItem('auth_token');
+    sessionStorage.removeItem('current_user');
     this.tokenSubject.next(null);
     this.currentUserSubject.next(null);
   }
 
   register(request: RegisterRequest): Observable<AuthResponse> {
+    // Admin registration is prevented by interface type restriction
     const newUser: User = {
       id: this.generateId(),
       email: request.email,
@@ -94,6 +107,14 @@ export class AuthService {
       role: request.role,
       createdAt: new Date().toISOString(),
       isActive: true,
+      // Add company-specific fields if role is company
+      ...(request.role === 'company' && {
+        companyName: request.companyName,
+        companyDescription: request.companyDescription,
+        companyWebsite: request.companyWebsite,
+        companySize: request.companySize,
+        industry: request.industry,
+      }),
     };
 
     // First check if user already exists
@@ -176,13 +197,17 @@ export class AuthService {
     return !!this.getCurrentUser();
   }
 
-  hasRole(role: 'job-seeker' | 'admin'): boolean {
+  hasRole(role: 'job-seeker' | 'company' | 'admin'): boolean {
     const user = this.getCurrentUser();
     return user?.role === role;
   }
 
   isJobSeeker(): boolean {
     return this.hasRole('job-seeker');
+  }
+
+  isCompany(): boolean {
+    return this.hasRole('company');
   }
 
   isAdmin(): boolean {
@@ -214,7 +239,7 @@ export class AuthService {
         tap((user) => {
           const { password, ...userWithoutPassword } = user;
           this.currentUserSubject.next(userWithoutPassword);
-          localStorage.setItem(
+          sessionStorage.setItem(
             'current_user',
             JSON.stringify(userWithoutPassword)
           );

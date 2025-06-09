@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -18,12 +18,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isSearchOpen = false;
   isLoggedIn = false;
   currentUser: User | null = null;
+  isScrolled = false;
   private authSubscription: Subscription = new Subscription();
 
   constructor(
     private authService: AuthService,
     private searchService: SearchService,
-    private router: Router
+    private router: Router,
+    private elementRef: ElementRef
   ) {}
 
   ngOnInit() {
@@ -34,10 +36,45 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.isLoggedIn = !!user;
       })
     );
+
+    // Setup fixed header scroll detection
+    this.setupIntersectionObserver();
   }
 
   ngOnDestroy() {
     this.authSubscription.unsubscribe();
+  }
+
+  private setupIntersectionObserver() {
+    // Create a sentinel element at the top of the page to detect scroll
+    const sentinel = document.createElement('div');
+    sentinel.style.position = 'absolute';
+    sentinel.style.top = '0';
+    sentinel.style.height = '10px';
+    sentinel.style.width = '100%';
+    sentinel.style.pointerEvents = 'none';
+    sentinel.style.visibility = 'hidden';
+    document.body.insertBefore(sentinel, document.body.firstChild);
+
+    // Create intersection observer to detect when we scroll past the top
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // When sentinel is not visible, we've scrolled past the threshold
+          const newScrolled = !entry.isIntersecting;
+
+          if (newScrolled !== this.isScrolled) {
+            this.isScrolled = newScrolled;
+          }
+        });
+      },
+      {
+        threshold: 0,
+        rootMargin: '0px',
+      }
+    );
+
+    observer.observe(sentinel);
   }
 
   toggleMenu() {

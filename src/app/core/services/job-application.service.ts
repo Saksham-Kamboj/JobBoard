@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PersonalInfo, Resume } from './user-profile.service';
+import { ApplicationStatus } from './dashboard.service';
 
 export interface JobApplicationData {
   personalInfo: PersonalInfo;
@@ -26,6 +27,7 @@ export interface JobApplication {
   submittedAt: string;
   updatedAt: string;
   notes: string;
+  applicationStatus?: ApplicationStatus;
 }
 
 @Injectable({

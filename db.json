@@ -8,7 +8,8 @@
       "role": "job-seeker",
       "password": "password123",
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "isActive": true
+      "isActive": true,
+      "updatedAt": "2025-06-09T08:55:38.086Z"
     },
     {
       "id": "demo-admin",
@@ -16,9 +17,27 @@
       "firstName": "Admin",
       "lastName": "User",
       "role": "admin",
-      "password": "password123",
+      "password": "Admin@123",
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "isActive": true
+      "isActive": true,
+      "phone": "+1 (555) 999-0001",
+      "location": "San Francisco, CA"
+    },
+    {
+      "id": "demo-company",
+      "email": "company@demo.com",
+      "firstName": "Company",
+      "lastName": "Representative",
+      "role": "company",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "isActive": true,
+      "phone": "+1 (555) 888-0001",
+      "location": "Austin, TX",
+      "companyName": "Demo Tech Solutions",
+      "companyDescription": "A leading technology company specializing in innovative software solutions for businesses worldwide.",
+      "companyWebsite": "https://demotechsolutions.com",
+      "companySize": "201-500",
+      "industry": "technology"
     },
     {
       "id": "mbep7e5zdmrlik6v66j",
@@ -28,7 +47,8 @@
       "role": "job-seeker",
       "createdAt": "2025-06-02T06:17:57.623Z",
       "isActive": true,
-      "password": "Saksham1@"
+      "password": "Saksham1@",
+      "updatedAt": "2025-06-09T10:27:03.397Z"
     }
   ],
   "userProfiles": [
@@ -71,36 +91,37 @@
           "remote"
         ],
         "preferredLocations": [
-          "San Francisco, CA",
+          "Bangalore, Karnataka",
+          "Mumbai, Maharashtra",
           "Remote"
         ],
         "expectedSalary": {
-          "min": 90000,
-          "max": 120000,
-          "currency": "USD"
+          "min": 1200000,
+          "max": 2000000,
+          "currency": "INR"
         }
       },
       "education": [
         {
           "id": "edu1",
-          "institution": "University of California, Berkeley",
-          "degree": "Bachelor of Science",
-          "field": "Computer Science",
+          "institution": "Indian Institute of Technology, Bangalore",
+          "degree": "Bachelor of Technology",
+          "field": "Computer Science and Engineering",
           "startDate": "2012-08",
           "endDate": "2016-05",
-          "gpa": "3.8",
-          "description": "Focused on software engineering and web development"
+          "gpa": "8.5",
+          "description": "Focused on software engineering and web development with specialization in modern web technologies"
         }
       ],
       "experience": [
         {
           "id": "exp1",
-          "company": "Tech Solutions Inc",
+          "company": "Wipro Technologies",
           "position": "Frontend Developer",
           "startDate": "2020-01",
           "endDate": null,
           "current": true,
-          "location": "San Francisco, CA",
+          "location": "Bangalore, Karnataka",
           "description": "Develop and maintain React-based web applications serving 100k+ users. Collaborate with design and backend teams to deliver high-quality user experiences.",
           "achievements": [
             "Improved application performance by 40% through code optimization",
@@ -117,28 +138,211 @@
       },
       "createdAt": "2024-12-01T10:00:00.000Z",
       "updatedAt": "2025-06-05T09:06:50.823Z"
+    },
+    {
+      "userId": "demo-company",
+      "personalInfo": {
+        "firstName": "Company",
+        "lastName": "Representative",
+        "email": "company@demo.com",
+        "phone": "+1 (555) 888-0001",
+        "address": {
+          "street": "123 Main Street",
+          "city": "San Francisco",
+          "state": "CA",
+          "zipCode": "94105",
+          "country": "United States"
+        },
+        "linkedinUrl": "https://linkedin.com/in/johndoe",
+        "portfolioUrl": "https://johndoe.dev",
+        "githubUrl": "https://github.com/johndoe"
+      },
+      "professionalInfo": {
+        "currentTitle": "",
+        "yearsOfExperience": 0,
+        "summary": "",
+        "skills": [],
+        "preferredJobTypes": [],
+        "preferredLocations": [],
+        "expectedSalary": {
+          "min": 0,
+          "max": 0,
+          "currency": "USD"
+        }
+      },
+      "education": [],
+      "experience": [],
+      "id": "h71fplzmg",
+      "createdAt": "2025-06-09T06:30:34.722Z",
+      "updatedAt": "2025-06-09T06:30:34.723Z"
+    },
+    {
+      "userId": "demo-admin",
+      "personalInfo": {
+        "firstName": "Admin",
+        "lastName": "User",
+        "email": "admin@demo.com",
+        "phone": "+1 (555) 999-0001",
+        "address": {
+          "street": "123 Main Street",
+          "city": "San Francisco",
+          "state": "CA",
+          "zipCode": "94105",
+          "country": "United States"
+        },
+        "linkedinUrl": "https://linkedin.com/in/johndoe",
+        "portfolioUrl": "https://johndoe.dev",
+        "githubUrl": "https://github.com/johndoe"
+      },
+      "professionalInfo": {
+        "currentTitle": "",
+        "yearsOfExperience": 0,
+        "summary": "",
+        "skills": [],
+        "preferredJobTypes": [],
+        "preferredLocations": [],
+        "expectedSalary": {
+          "min": 0,
+          "max": 0,
+          "currency": "USD"
+        }
+      },
+      "education": [],
+      "experience": [],
+      "id": "4sftsdosq",
+      "createdAt": "2025-06-09T10:16:29.555Z",
+      "updatedAt": "2025-06-09T10:25:31.529Z"
+    }
+  ],
+  "savedJobs": [
+    {
+      "id": "saved1",
+      "userId": "demo-job-seeker",
+      "jobId": null,
+      "savedAt": "2024-12-08T10:30:00.000Z"
+    },
+    {
+      "id": "saved2",
+      "userId": "demo-job-seeker",
+      "jobId": "4",
+      "savedAt": "2024-12-07T15:20:00.000Z"
+    },
+    {
+      "id": "saved3",
+      "userId": "demo-job-seeker",
+      "jobId": "6",
+      "savedAt": "2024-12-06T09:45:00.000Z"
+    },
+    {
+      "id": "saved4",
+      "userId": "mbep7e5zdmrlik6v66j",
+      "jobId": "2",
+      "savedAt": "2025-06-02T08:15:00.000Z"
+    }
+  ],
+  "dashboardStats": [
+    {
+      "id": "stats-demo-job-seeker",
+      "userId": "demo-job-seeker",
+      "appliedJobs": 3,
+      "savedJobs": 3,
+      "profileViews": 45,
+      "interviewsScheduled": 1,
+      "lastUpdated": "2024-12-15T10:00:00.000Z"
+    },
+    {
+      "id": "stats-mbep7e5zdmrlik6v66j",
+      "userId": "mbep7e5zdmrlik6v66j",
+      "appliedJobs": 1,
+      "savedJobs": 1,
+      "profileViews": 12,
+      "interviewsScheduled": 0,
+      "lastUpdated": "2025-06-05T09:10:33.323Z"
+    },
+    {
+      "id": "admin-stats-demo-admin",
+      "userId": "demo-admin",
+      "totalJobs": 10,
+      "activeJobs": 8,
+      "totalApplications": 89,
+      "newApplications": 5,
+      "lastUpdated": "2024-12-15T10:00:00.000Z"
     }
   ],
   "jobApplications": [
     {
       "id": "app1",
-      "jobId": "1",
+      "jobId": null,
       "userId": "demo-job-seeker",
       "applicationData": {
         "personalInfo": {
-          "firstName": "John",
-          "lastName": "Doe",
+          "firstName": "Rahul",
+          "lastName": "Sharma",
           "email": "jobseeker@demo.com",
-          "phone": "+1 (555) 123-4567",
+          "phone": "+91 98765 43210",
           "address": {
-            "street": "123 Main Street",
-            "city": "San Francisco",
-            "state": "CA",
-            "zipCode": "94105",
-            "country": "United States"
+            "street": "123 MG Road",
+            "city": "Bangalore",
+            "state": "Karnataka",
+            "zipCode": "560001",
+            "country": "India"
           }
         },
-        "coverLetter": "I am excited to apply for the Senior Frontend Developer position at TechCorp Solutions. With over 5 years of experience in frontend development and expertise in React and TypeScript, I believe I would be a valuable addition to your team.",
+        "coverLetter": "I am excited to apply for the Senior Frontend Developer position at TechMahindra. With over 5 years of experience in frontend development and expertise in React and TypeScript, I believe I would be a valuable addition to your team.",
+        "resume": {
+          "fileName": "john_doe_resume.pdf",
+          "fileUrl": "/uploads/resumes/john_doe_resume.pdf",
+          "fileSize": 245760
+        },
+        "additionalDocuments": []
+      },
+      "status": "pending",
+      "submittedAt": "2024-12-10T09:30:00.000Z",
+      "updatedAt": "2025-06-09T07:15:26.045Z",
+      "notes": "",
+      "applicationStatus": {
+        "current": "interview",
+        "history": [
+          {
+            "status": "submitted",
+            "timestamp": "2024-12-10T09:30:00.000Z",
+            "note": "Application submitted successfully"
+          },
+          {
+            "status": "reviewed",
+            "timestamp": "2024-12-11T10:15:00.000Z",
+            "note": "Application reviewed by HR team"
+          },
+          {
+            "status": "interview",
+            "timestamp": "2024-12-12T14:20:00.000Z",
+            "note": "Interview scheduled for December 15th"
+          }
+        ],
+        "nextSteps": "Interview scheduled for December 15th",
+        "interviewDate": "2024-12-15T08:30:00.000Z",
+        "feedback": ""
+      }
+    },
+    {
+      "id": "app2",
+      "jobId": "2",
+      "userId": "demo-job-seeker",
+      "applicationData": {
+        "personalInfo": {
+          "firstName": "Rahul",
+          "lastName": "Sharma",
+          "email": "jobseeker@demo.com",
+          "phone": "+91 98765 43210",
+          "address": {
+            "street": "123 MG Road",
+            "city": "Bangalore",
+            "state": "Karnataka",
+            "zipCode": "560001",
+            "country": "India"
+          }
+        },
+        "coverLetter": "I am interested in the UX/UI Designer position at Flipkart. My background in frontend development gives me a unique perspective on design implementation and user experience.",
         "resume": {
           "fileName": "john_doe_resume.pdf",
           "fileUrl": "/uploads/resumes/john_doe_resume.pdf",
@@ -147,12 +351,26 @@
         "additionalDocuments": []
       },
       "status": "submitted",
-      "submittedAt": "2024-12-10T09:30:00.000Z",
-      "updatedAt": "2024-12-10T09:30:00.000Z",
-      "notes": ""
+      "submittedAt": "2024-12-08T15:45:00.000Z",
+      "updatedAt": "2024-12-08T15:45:00.000Z",
+      "notes": "",
+      "applicationStatus": {
+        "current": "submitted",
+        "history": [
+          {
+            "status": "submitted",
+            "timestamp": "2024-12-08T15:45:00.000Z",
+            "note": "Application submitted successfully"
+          }
+        ],
+        "nextSteps": "Application is under review by the hiring team",
+        "interviewDate": null,
+        "feedback": ""
+      }
     },
     {
-      "jobId": "1",
+      "id": "simkt5xwh",
+      "jobId": null,
       "userId": "demo-job-seeker",
       "applicationData": {
         "personalInfo": {
@@ -171,7 +389,7 @@
           "portfolioUrl": "https://johndoe.dev",
           "githubUrl": "https://github.com/johndoe"
         },
-        "coverLetter": "Dear Hiring Manager,\n\nI am writing to express my interest in the Frontend Developer position at your esteemed organization. With a strong foundation in HTML, CSS, JavaScript, and modern frameworks like React.js and Angular, I bring over a year of hands-on experience building responsive and user-friendly web applications.\n\nIn my current role, I’ve collaborated closely with UI/UX teams to deliver seamless interfaces and have optimized performance using best practices like lazy loading, code splitting, and Lighthouse audits. I’m passionate about creating accessible, maintainable code and continuously learning new technologies to enhance the user experience.\n\nI thrive in dynamic, team-oriented environments and am excited about the opportunity to contribute my skills to a company focused on innovation and digital growth. I would welcome the chance to discuss how my expertise aligns with your goals.\n\nThank you for considering my application.\n\nSincerely,\n[Your Name]",
+        "coverLetter": "I am interested in the UX/UI Designer position at Design Studio Pro. My background in frontend development gives me a unique perspective on design implementation and user experience.",
         "resume": {
           "fileName": "01 A B Testing.docx",
           "fileUrl": "/uploads/resumes/01 A B Testing.docx",
@@ -180,73 +398,161 @@
         },
         "additionalDocuments": []
       },
-      "status": "submitted",
+      "status": "shortlisted",
       "notes": "",
-      "id": "lf5azwldi",
-      "submittedAt": "2025-06-05T09:10:33.323Z",
-      "updatedAt": "2025-06-05T09:10:33.323Z"
+      "submittedAt": "2025-06-05T10:17:36.561Z",
+      "updatedAt": "2025-06-09T07:15:55.118Z",
+      "applicationStatus": {
+        "current": "submitted",
+        "history": [
+          {
+            "status": "submitted",
+            "timestamp": "2025-06-05T10:17:36.561Z",
+            "note": "Application submitted successfully"
+          }
+        ],
+        "nextSteps": "Application is under review by the hiring team",
+        "interviewDate": null,
+        "feedback": ""
+      }
+    },
+    {
+      "id": "qu3wruc2t",
+      "jobId": null,
+      "userId": "demo-job-seeker",
+      "applicationData": {
+        "personalInfo": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "jobseeker@demo.com",
+          "phone": "+1 (555) 123-4567",
+          "address": {
+            "street": "123 Main Street",
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94105",
+            "country": "United States"
+          },
+          "linkedinUrl": "https://linkedin.com/in/johndoe",
+          "portfolioUrl": "https://johndoe.dev",
+          "githubUrl": "https://github.com/johndoe"
+        },
+        "coverLetter": "I am interested in the UX/UI Designer position at Design Studio Pro. My background in frontend development gives me a unique perspective on design implementation and user experience.",
+        "resume": {
+          "fileName": "01 A B Testing.docx",
+          "fileUrl": "/uploads/resumes/01 A B Testing.docx",
+          "uploadedAt": "2025-06-05T09:06:49.815Z",
+          "fileSize": 179183
+        },
+        "additionalDocuments": []
+      },
+      "status": "pending",
+      "notes": "",
+      "submittedAt": "2025-06-05T10:25:12.037Z",
+      "updatedAt": "2025-06-09T07:15:34.129Z"
+    },
+    {
+      "id": "demo-app-1",
+      "jobId": null,
+      "userId": "demo-job-seeker",
+      "applicationData": {
+        "personalInfo": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "jobseeker@demo.com",
+          "phone": "+1 (555) 123-4567",
+          "address": {
+            "street": "123 Main Street",
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94105",
+            "country": "United States"
+          }
+        },
+        "coverLetter": "I am excited to apply for the Senior Frontend Developer position at Demo Tech Solutions. With over 5 years of experience in React and TypeScript, I believe I would be a valuable addition to your team.",
+        "resume": {
+          "fileName": "john_doe_resume.pdf",
+          "fileUrl": "/uploads/resumes/john_doe_resume.pdf",
+          "fileSize": 245760
+        },
+        "additionalDocuments": []
+      },
+      "status": "pending",
+      "submittedAt": "2025-06-09T10:30:00.000Z",
+      "updatedAt": "2025-06-09T10:30:00.000Z",
+      "notes": ""
+    },
+    {
+      "id": "demo-app-2",
+      "jobId": null,
+      "userId": "mbep7e5zdmrlik6v66j",
+      "applicationData": {
+        "personalInfo": {
+          "firstName": "Saksham",
+          "lastName": "Kamboj",
+          "email": "saksham@ekvayu.com",
+          "phone": "+91 98765 43210",
+          "address": {
+            "street": "456 Tech Street",
+            "city": "Bangalore",
+            "state": "Karnataka",
+            "zipCode": "560001",
+            "country": "India"
+          }
+        },
+        "coverLetter": "I am interested in the Software Engineer position at Demo Tech Solutions. My experience with modern web technologies and passion for building scalable applications makes me an ideal candidate.",
+        "resume": {
+          "fileName": "saksham_kamboj_resume.pdf",
+          "fileUrl": "/uploads/resumes/saksham_kamboj_resume.pdf",
+          "fileSize": 198432
+        },
+        "additionalDocuments": []
+      },
+      "status": "reviewed",
+      "submittedAt": "2025-06-08T14:20:00.000Z",
+      "updatedAt": "2025-06-09T09:15:00.000Z",
+      "notes": "Strong technical background"
+    },
+    {
+      "id": "demo-app-3",
+      "jobId": null,
+      "userId": "demo-job-seeker",
+      "applicationData": {
+        "personalInfo": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "jobseeker@demo.com",
+          "phone": "+1 (555) 123-4567",
+          "address": {
+            "street": "123 Main Street",
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94105",
+            "country": "United States"
+          }
+        },
+        "coverLetter": "I am applying for the Quality Assurance Engineer position. My attention to detail and experience with automated testing frameworks would be valuable for ensuring software quality.",
+        "resume": {
+          "fileName": "john_doe_resume.pdf",
+          "fileUrl": "/uploads/resumes/john_doe_resume.pdf",
+          "fileSize": 245760
+        },
+        "additionalDocuments": []
+      },
+      "status": "shortlisted",
+      "submittedAt": "2025-06-07T11:45:00.000Z",
+      "updatedAt": "2025-06-08T16:30:00.000Z",
+      "notes": "Excellent QA experience"
     }
   ],
   "jobs": [
     {
-      "id": "1",
-      "title": "Senior Frontend Developer",
-      "company": "TechCorp Solutions",
-      "location": "San Francisco, CA",
-      "type": "full-time",
-      "salary": "$120,000 - $150,000",
-      "description": "We are seeking a talented Senior Frontend Developer to join our dynamic team. You will be responsible for developing user-facing web applications using modern JavaScript frameworks and ensuring excellent user experience across all platforms.\n\nKey Responsibilities:\n• Develop and maintain responsive web applications using React, Angular, or Vue.js\n• Collaborate with UX/UI designers to implement pixel-perfect designs\n• Optimize applications for maximum speed and scalability\n• Write clean, maintainable, and well-documented code\n• Participate in code reviews and mentor junior developers\n• Stay up-to-date with the latest frontend technologies and best practices\n\nWhat You'll Do:\n• Build cutting-edge web applications that serve millions of users\n• Work with a talented team of designers and engineers\n• Contribute to our open-source projects and technical blog\n• Participate in technical decision-making and architecture discussions",
-      "requirements": [
-        "5+ years of experience in frontend development",
-        "Expert knowledge of JavaScript, HTML5, and CSS3",
-        "Experience with React, Angular, or Vue.js",
-        "Proficiency in TypeScript",
-        "Experience with state management (Redux, NgRx, Vuex)",
-        "Knowledge of build tools (Webpack, Vite, etc.)",
-        "Experience with version control (Git)",
-        "Understanding of responsive design principles",
-        "Bachelor's degree in Computer Science or related field",
-        "Experience with testing frameworks (Jest, Cypress)",
-        "Knowledge of web performance optimization"
-      ],
-      "benefits": [
-        "Competitive salary and equity package",
-        "Comprehensive health, dental, and vision insurance",
-        "Flexible work arrangements and remote work options",
-        "Professional development budget ($2,000/year)",
-        "Unlimited PTO policy",
-        "Modern office with free meals and snacks",
-        "401(k) with company matching",
-        "Gym membership reimbursement",
-        "Latest MacBook Pro and equipment",
-        "Conference and training opportunities"
-      ],
-      "postedDate": "2025-05-01",
-      "applicationDeadline": "2025-06-10",
-      "companyDescription": "TechCorp Solutions is a leading technology company specializing in innovative software solutions for enterprise clients. We pride ourselves on creating cutting-edge products that solve real-world problems and help businesses scale efficiently.",
-      "contactEmail": "careers@techcorp.com",
-      "experienceLevel": "senior",
-      "skills": [
-        "JavaScript",
-        "React",
-        "TypeScript",
-        "CSS3",
-        "HTML5",
-        "Git",
-        "Webpack",
-        "Redux"
-      ],
-      "isActive": true,
-      "applicationCount": 45,
-      "featured": true
-    },
-    {
       "id": "2",
       "title": "UX/UI Designer",
-      "company": "Design Studio Pro",
-      "location": "New York, NY",
+      "company": "Flipkart",
+      "location": "Bangalore, Karnataka",
       "type": "full-time",
-      "salary": "$80,000 - $100,000",
+      "salary": "₹8,00,000 - ₹15,00,000",
       "description": "Join our creative team as a UX/UI Designer and help shape the future of digital experiences. You'll work on exciting projects for diverse clients, from startups to Fortune 500 companies.\n\nKey Responsibilities:\n• Create user-centered designs through research, wireframing, and prototyping\n• Develop design systems and maintain brand consistency\n• Collaborate with developers to ensure design feasibility\n• Conduct user testing and iterate based on feedback\n• Present design concepts to clients and stakeholders\n• Work closely with product managers to define user requirements\n\nWhat Makes This Role Special:\n• Work with high-profile clients across various industries\n• Access to the latest design tools and technologies\n• Collaborative environment with talented designers\n• Opportunity to lead design projects from concept to launch",
       "requirements": [
         "3+ years of UX/UI design experience",
@@ -271,8 +577,8 @@
       ],
       "postedDate": "2024-11-28",
       "applicationDeadline": "2025-01-10",
-      "companyDescription": "Design Studio Pro is a full-service design agency that creates beautiful and functional digital experiences. We work with clients across various industries to bring their visions to life through innovative design solutions.",
-      "contactEmail": "jobs@designstudiopro.com",
+      "companyDescription": "Flipkart is India's leading e-commerce marketplace offering a wide range of products. We are committed to transforming commerce in India through technology and innovation, providing exceptional customer experiences.",
+      "contactEmail": "careers@flipkart.com",
       "experienceLevel": "mid",
       "skills": [
         "Figma",
@@ -289,10 +595,10 @@
     {
       "id": "3",
       "title": "Full Stack Developer",
-      "company": "StartupXYZ",
-      "location": "Austin, TX",
+      "company": "Zomato",
+      "location": "Gurgaon, Haryana",
       "type": "full-time",
-      "salary": "$90,000 - $120,000",
+      "salary": "₹12,00,000 - ₹20,00,000",
       "description": "We're looking for a versatile Full Stack Developer to join our growing startup. You'll work on both frontend and backend technologies, helping us build scalable web applications that serve thousands of users.\n\nKey Responsibilities:\n• Develop and maintain full-stack web applications\n• Work with modern JavaScript frameworks and backend technologies\n• Design and implement RESTful APIs\n• Collaborate with cross-functional teams\n• Participate in code reviews and technical discussions\n• Help scale our infrastructure as we grow\n\nStartup Environment:\n• Fast-paced, dynamic work environment\n• Direct impact on product development\n• Opportunity to wear multiple hats\n• Work directly with founders and leadership team",
       "requirements": [
         "3+ years of full-stack development experience",
@@ -317,8 +623,8 @@
       ],
       "postedDate": "2024-11-30",
       "applicationDeadline": "2025-01-12",
-      "companyDescription": "StartupXYZ is an innovative tech startup focused on revolutionizing how people interact with technology. We're building the next generation of web applications with a focus on user experience and scalability.",
-      "contactEmail": "hiring@startupxyz.com",
+      "companyDescription": "Zomato is India's largest food aggregator and delivery platform. We connect millions of customers with restaurants and delivery partners, leveraging technology to transform the food industry in India and globally.",
+      "contactEmail": "careers@zomato.com",
       "experienceLevel": "mid",
       "skills": [
         "JavaScript",
@@ -335,10 +641,10 @@
     {
       "id": "4",
       "title": "Product Manager",
-      "company": "InnovateCorp",
-      "location": "Seattle, WA",
+      "company": "Paytm",
+      "location": "Noida, Uttar Pradesh",
       "type": "full-time",
-      "salary": "$110,000 - $140,000",
+      "salary": "₹18,00,000 - ₹30,00,000",
       "description": "We're seeking an experienced Product Manager to lead our product development initiatives. You'll work closely with engineering, design, and business teams to deliver products that delight our customers.\n\nKey Responsibilities:\n• Define product strategy and roadmap\n• Gather and prioritize product requirements\n• Work closely with engineering teams to deliver features\n• Analyze user feedback and market trends\n• Coordinate product launches and go-to-market strategies\n• Monitor product performance and iterate based on data\n\nLeadership Opportunities:\n• Lead cross-functional product teams\n• Present to executive leadership\n• Drive product vision and strategy\n• Mentor junior product team members",
       "requirements": [
         "4+ years of product management experience",
@@ -362,8 +668,8 @@
       ],
       "postedDate": "2024-11-25",
       "applicationDeadline": "2025-01-08",
-      "companyDescription": "InnovateCorp is a technology company focused on creating innovative solutions for modern businesses. We pride ourselves on building products that make a real difference in our customers' lives.",
-      "contactEmail": "careers@innovatecorp.com",
+      "companyDescription": "Paytm is India's leading digital payments and financial services company. We are building India's largest digital ecosystem for consumers and merchants, offering payment solutions, financial services, and commerce.",
+      "contactEmail": "careers@paytm.com",
       "experienceLevel": "senior",
       "skills": [
         "Product Management",
@@ -379,10 +685,10 @@
     {
       "id": "5",
       "title": "DevOps Engineer",
-      "company": "CloudTech Systems",
-      "location": "Denver, CO",
+      "company": "Infosys",
+      "location": "Pune, Maharashtra",
       "type": "full-time",
-      "salary": "$100,000 - $130,000",
+      "salary": "₹10,00,000 - ₹18,00,000",
       "description": "Join our DevOps team to help build and maintain scalable infrastructure. You'll work with cutting-edge cloud technologies and help our development teams deploy code efficiently and reliably.\n\nKey Responsibilities:\n• Design and maintain CI/CD pipelines\n• Manage cloud infrastructure on AWS/Azure\n• Implement monitoring and alerting systems\n• Automate deployment processes\n• Ensure system security and compliance\n• Collaborate with development teams on infrastructure needs\n\nTechnical Environment:\n• Modern cloud-native architecture\n• Kubernetes and containerization\n• Infrastructure as Code (Terraform)\n• Monitoring with Prometheus and Grafana",
       "requirements": [
         "3+ years of DevOps/Infrastructure experience",
@@ -406,8 +712,8 @@
       ],
       "postedDate": "2024-12-02",
       "applicationDeadline": "2025-01-14",
-      "companyDescription": "CloudTech Systems specializes in cloud infrastructure solutions for enterprise clients. We help companies migrate to the cloud and optimize their infrastructure for performance and cost.",
-      "contactEmail": "devops-jobs@cloudtech.com",
+      "companyDescription": "Infosys is a global leader in next-generation digital services and consulting. We enable clients in 46 countries to navigate their digital transformation powered by cloud, AI, and automation technologies.",
+      "contactEmail": "careers@infosys.com",
       "experienceLevel": "mid",
       "skills": [
         "AWS",
@@ -424,10 +730,10 @@
     {
       "id": "6",
       "title": "Data Scientist",
-      "company": "AI Innovations Lab",
-      "location": "Boston, MA",
+      "company": "Swiggy",
+      "location": "Bangalore, Karnataka",
       "type": "full-time",
-      "salary": "$130,000 - $160,000",
+      "salary": "₹20,00,000 - ₹35,00,000",
       "description": "Join our AI team to develop machine learning models and extract insights from large datasets. You'll work on cutting-edge projects in natural language processing and computer vision.",
       "requirements": [
         "PhD or Master's in Data Science, Statistics, or related field",
@@ -449,8 +755,8 @@
       ],
       "postedDate": "2024-12-05",
       "applicationDeadline": "2025-01-20",
-      "companyDescription": "AI Innovations Lab is at the forefront of artificial intelligence research, developing solutions that transform industries.",
-      "contactEmail": "careers@ailab.com",
+      "companyDescription": "Swiggy is India's leading on-demand delivery platform. We use cutting-edge technology and data science to connect millions of consumers with restaurants and delivery partners across India.",
+      "contactEmail": "careers@swiggy.in",
       "experienceLevel": "senior",
       "skills": [
         "Python",
@@ -724,50 +1030,6 @@
       "featured": false
     },
     {
-      "id": "13",
-      "title": "Software Engineer",
-      "company": "TechFlow Systems",
-      "location": "Remote",
-      "type": "remote",
-      "salary": "$110,000 - $140,000",
-      "description": "Build scalable software solutions using modern technologies. You'll work on distributed systems, APIs, and cloud-native applications in a fully remote environment.",
-      "requirements": [
-        "Bachelor's degree in Computer Science or related field",
-        "4+ years of software development experience",
-        "Proficiency in Java, Python, or Go",
-        "Experience with microservices architecture",
-        "Knowledge of cloud platforms (AWS, GCP, Azure)",
-        "Understanding of containerization (Docker, Kubernetes)",
-        "Experience with agile development methodologies"
-      ],
-      "benefits": [
-        "Fully remote work",
-        "Competitive salary and equity",
-        "Comprehensive health benefits",
-        "Home office setup allowance",
-        "Unlimited PTO",
-        "Professional development budget",
-        "Annual team retreats"
-      ],
-      "postedDate": "2024-12-22",
-      "applicationDeadline": "2025-02-20",
-      "companyDescription": "TechFlow Systems develops enterprise software solutions that help businesses streamline their operations and improve efficiency.",
-      "contactEmail": "engineering@techflow.com",
-      "experienceLevel": "mid",
-      "skills": [
-        "Java",
-        "Python",
-        "Microservices",
-        "AWS",
-        "Docker",
-        "Kubernetes",
-        "API Development"
-      ],
-      "isActive": true,
-      "applicationCount": 35,
-      "featured": true
-    },
-    {
       "id": "14",
       "title": "HR Business Partner",
       "company": "PeopleFirst Solutions",
@@ -808,49 +1070,6 @@
       ],
       "isActive": true,
       "applicationCount": 29,
-      "featured": false
-    },
-    {
-      "id": "15",
-      "title": "Quality Assurance Engineer",
-      "company": "TestPro Technologies",
-      "location": "Phoenix, AZ",
-      "type": "full-time",
-      "salary": "$75,000 - $95,000",
-      "description": "Ensure software quality through comprehensive testing strategies. You'll design test cases, automate testing processes, and work closely with development teams to deliver bug-free software.",
-      "requirements": [
-        "Bachelor's degree in Computer Science or related field",
-        "3+ years of QA testing experience",
-        "Experience with automated testing tools",
-        "Knowledge of testing methodologies",
-        "Proficiency in scripting languages (Python, JavaScript)",
-        "Experience with CI/CD pipelines",
-        "ISTQB certification preferred"
-      ],
-      "benefits": [
-        "Competitive salary",
-        "Health and dental insurance",
-        "Professional development budget",
-        "Flexible work hours",
-        "Remote work options",
-        "Testing tool licenses",
-        "Quality assurance training"
-      ],
-      "postedDate": "2024-12-28",
-      "applicationDeadline": "2025-03-01",
-      "companyDescription": "TestPro Technologies specializes in quality assurance and testing services, helping companies deliver reliable software products to market.",
-      "contactEmail": "qa-jobs@testpro.com",
-      "experienceLevel": "mid",
-      "skills": [
-        "Quality Assurance",
-        "Test Automation",
-        "Python",
-        "Selenium",
-        "CI/CD",
-        "Testing Methodologies"
-      ],
-      "isActive": true,
-      "applicationCount": 21,
       "featured": false
     },
     {
@@ -1067,18 +1286,41 @@
       ],
       "isActive": true,
       "applicationCount": 26,
-      "featured": false
-    }
-  ],
-  "applications": [
+      "featured": false,
+      "updatedAt": "2025-06-09T10:27:39.749Z"
+    },
     {
-      "id": "1",
-      "jobId": "1",
-      "userId": "demo-job-seeker",
-      "status": "pending",
-      "appliedAt": "2024-01-16T12:00:00.000Z",
-      "coverLetter": "I am very interested in this position...",
-      "resume": "john-doe-resume.pdf"
+      "id": "dc05",
+      "title": "Frontend Developer",
+      "company": "Demo Tech Solutions",
+      "location": "Sector-62, Noida, UP-201301",
+      "type": "full-time",
+      "salary": "₹30000-₹50000",
+      "description": "Job Description\nWe're looking for a versatile Full Stack Developer to join our growing startup. You'll work on both frontend and backend technologies, helping us build scalable web applications that serve thousands of users.\n\nKey Responsibilities:\n• Develop and maintain full-stack web applications\n• Work with modern JavaScript frameworks and backend technologies\n• Design and implement RESTful APIs\n• Collaborate with cross-functional teams\n• Participate in code reviews and technical discussions\n• Help scale our infrastructure as we grow\n\nStartup Environment:\n• Fast-paced, dynamic work environment\n• Direct impact on product development\n• Opportunity to wear multiple hats\n• Work directly with founders and leadership team",
+      "requirements": [
+        "1 year of experience"
+      ],
+      "benefits": [
+        "Work From Home"
+      ],
+      "skills": [
+        "HTML",
+        "CSS",
+        "React.js",
+        "Tailwindcss",
+        "JavaScript",
+        "TypeScript",
+        "Redux Toolkit"
+      ],
+      "experienceLevel": "mid",
+      "contactEmail": "company@demo.com",
+      "companyDescription": "A leading technology company specializing in innovative software solutions for businesses worldwide.",
+      "applicationDeadline": "2025-06-30",
+      "isActive": true,
+      "featured": false,
+      "postedDate": "2025-06-09",
+      "applicationCount": 0,
+      "companyId": "demo-company"
     }
   ],
   "companies": [
@@ -1114,6 +1356,138 @@
       "industry": "Marketing",
       "logo": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=100&h=100&fit=crop",
       "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "userSettings": [
+    {
+      "id": "settings-demo-job-seeker",
+      "userId": "demo-job-seeker",
+      "appearance": {
+        "theme": "light",
+        "language": "en",
+        "fontSize": "medium",
+        "compactMode": false
+      },
+      "notifications": {
+        "emailNotifications": true,
+        "jobAlerts": true,
+        "applicationUpdates": true,
+        "profileViews": true,
+        "pushNotifications": false,
+        "marketingEmails": false
+      },
+      "privacy": {
+        "profileVisibility": "public",
+        "showEmail": false,
+        "showPhone": false,
+        "allowSearchEngines": true,
+        "showOnlineStatus": true
+      },
+      "jobPreferences": {
+        "preferredJobTypes": [
+          "full-time",
+          "remote"
+        ],
+        "salaryRange": {
+          "min": 80000,
+          "max": 120000,
+          "currency": "USD"
+        },
+        "preferredLocations": [
+          "San Francisco, CA",
+          "Remote",
+          "New York, NY"
+        ],
+        "jobAlertFrequency": "weekly",
+        "autoApplyEnabled": false
+      },
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2025-06-09T12:00:00.000Z"
+    },
+    {
+      "id": "settings-demo-company",
+      "userId": "demo-company",
+      "appearance": {
+        "theme": "light",
+        "language": "en",
+        "fontSize": "medium",
+        "compactMode": false
+      },
+      "notifications": {
+        "emailNotifications": true,
+        "newApplications": true,
+        "jobPostingExpiry": true,
+        "weeklyReports": true,
+        "pushNotifications": true,
+        "marketingEmails": false
+      },
+      "companySettings": {
+        "companySize": "201-500",
+        "autoReplyToApplications": true,
+        "applicationDeadlineReminders": true,
+        "requireCoverLetter": false,
+        "allowAnonymousApplications": false
+      },
+      "billing": {
+        "currentPlan": "Professional",
+        "planPrice": 99,
+        "currency": "USD",
+        "billingCycle": "monthly",
+        "jobPostingsUsed": 15,
+        "jobPostingsLimit": 25,
+        "nextBillingDate": "2025-07-09T00:00:00.000Z"
+      },
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2025-06-09T12:00:00.000Z"
+    },
+    {
+      "id": "settings-demo-admin",
+      "userId": "demo-admin",
+      "appearance": {
+        "theme": "dark",
+        "language": "en",
+        "fontSize": "medium",
+        "compactMode": true
+      },
+      "notifications": {
+        "emailNotifications": true,
+        "systemAlerts": true,
+        "userReports": true,
+        "platformAnalytics": true,
+        "pushNotifications": true,
+        "marketingEmails": false
+      },
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2025-06-09T12:00:00.000Z"
+    }
+  ],
+  "systemSettings": [
+    {
+      "id": "platform-settings",
+      "platformName": "JobBoard",
+      "platformDescription": "Professional job board platform connecting talented individuals with leading companies worldwide.",
+      "supportEmail": "support@jobboardpro.com",
+      "allowRegistration": true,
+      "requireEmailVerification": true,
+      "maintenanceMode": false,
+      "maxJobPostingsPerCompany": 25,
+      "jobPostingDurationDays": 30,
+      "featuredJobPrice": 99.99,
+      "privacyPolicyUrl": "/privacy-policy",
+      "termsOfServiceUrl": "/terms-of-service",
+      "analytics": {
+        "trackingEnabled": true,
+        "weeklyReportsEnabled": true,
+        "dataRetentionDays": 90
+      },
+      "security": {
+        "requireTwoFactorAuth": false,
+        "sessionTimeoutMinutes": 30,
+        "passwordMinLength": 8,
+        "dataRetentionDays": 90
+      },
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2025-06-09T12:00:00.000Z"
     }
   ],
   "jobCategories": [
@@ -1166,60 +1540,78 @@
       "description": "Medical professionals, healthcare administration, and nursing"
     }
   ],
+  "adminSettings": [
+    {
+      "id": "main-settings",
+      "platformName": "JobBoard",
+      "platformDescription": "Professional job board platform connecting talent with opportunities worldwide",
+      "allowRegistration": true,
+      "requireEmailVerification": false,
+      "maxJobPostingsPerCompany": 50,
+      "jobPostingDurationDays": 30,
+      "featuredJobPrice": 99.99,
+      "maintenanceMode": false,
+      "supportEmail": "support@jobboard.com",
+      "privacyPolicyUrl": "/privacy-policy",
+      "termsOfServiceUrl": "/terms-of-service",
+      "updatedAt": "2025-06-09T10:26:23.901Z",
+      "updatedBy": "admin"
+    }
+  ],
   "testimonials": [
     {
       "id": "1",
-      "name": "Sarah Johnson",
+      "name": "Priya Sharma",
       "role": "Software Engineer",
-      "company": "TechCorp Solutions",
+      "company": "TechMahindra",
       "content": "Found my dream job within 2 weeks! The platform made it so easy to connect with great companies. The job matching algorithm is incredibly accurate.",
-      "avatar": "SJ",
+      "avatar": "PS",
       "rating": 5,
-      "location": "San Francisco, CA",
+      "location": "Bangalore, Karnataka",
       "joinedDate": "2024-01-15"
     },
     {
       "id": "2",
-      "name": "Michael Chen",
+      "name": "Arjun Patel",
       "role": "Product Manager",
-      "company": "InnovateCorp",
+      "company": "Paytm",
       "content": "As a hiring manager, this platform has helped us find exceptional talent quickly and efficiently. The quality of candidates is outstanding.",
-      "avatar": "MC",
+      "avatar": "AP",
       "rating": 5,
-      "location": "Seattle, WA",
+      "location": "Noida, Uttar Pradesh",
       "joinedDate": "2024-02-20"
     },
     {
       "id": "3",
-      "name": "Emily Rodriguez",
+      "name": "Sneha Gupta",
       "role": "UX Designer",
-      "company": "Design Studio Pro",
+      "company": "Flipkart",
       "content": "The job matching algorithm is incredible. I received relevant opportunities that matched my skills perfectly. Highly recommend to fellow designers!",
-      "avatar": "ER",
+      "avatar": "SG",
       "rating": 5,
-      "location": "New York, NY",
+      "location": "Bangalore, Karnataka",
       "joinedDate": "2024-03-10"
     },
     {
       "id": "4",
-      "name": "David Kim",
+      "name": "Vikram Singh",
       "role": "Data Scientist",
-      "company": "AI Innovations Lab",
+      "company": "Swiggy",
       "content": "The platform's focus on technical roles is impressive. I found multiple opportunities in machine learning and data science that were perfect for my background.",
-      "avatar": "DK",
+      "avatar": "VS",
       "rating": 5,
-      "location": "Boston, MA",
+      "location": "Bangalore, Karnataka",
       "joinedDate": "2024-04-05"
     },
     {
       "id": "5",
-      "name": "Lisa Thompson",
+      "name": "Kavya Reddy",
       "role": "Marketing Director",
-      "company": "Growth Marketing Co",
+      "company": "Zomato",
       "content": "The networking features and company insights helped me land my current role. The platform goes beyond just job listings - it's a complete career tool.",
-      "avatar": "LT",
+      "avatar": "KR",
       "rating": 5,
-      "location": "Los Angeles, CA",
+      "location": "Gurgaon, Haryana",
       "joinedDate": "2024-05-12"
     }
   ]

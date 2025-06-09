@@ -7,12 +7,24 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService, User } from '../../core/services/auth.service';
 import {
-  UserProfileService,
+  ProfileService,
   UserProfile,
-} from '../../core/services/user-profile.service';
+  DashboardStats,
+} from '../../core/services/profile.service';
+import {
+  JobManagementService,
+  Job,
+  JobApplication,
+} from '../../core/services/job-management.service';
+import {
+  AdminManagementService,
+  AdminSettings,
+  UserManagement,
+  JobManagementStats,
+} from '../../core/services/admin-management.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -26,13 +38,32 @@ export class ProfileComponent implements OnInit, OnDestroy {
   userProfile: UserProfile | null = null;
   profileForm: FormGroup;
   professionalForm: FormGroup;
-  passwordForm: FormGroup;
+  companyForm: FormGroup;
   isEditingProfile = false;
   isEditingProfessional = false;
-  isChangingPassword = false;
+  isEditingCompany = false;
+
+  // Job and application data
+  companyJobs: Job[] = [];
+  jobApplications: JobApplication[] = [];
+  filteredApplications: JobApplication[] = [];
+  selectedJobFilter = '';
+  selectedStatusFilter = '';
+
+  // Admin data
+  adminSettings: AdminSettings | null = null;
+  allUsers: UserManagement[] = [];
+  filteredUsers: UserManagement[] = [];
+  allJobsForAdmin: any[] = [];
+  filteredJobsForAdmin: any[] = [];
+  jobManagementStats: JobManagementStats | null = null;
+  selectedUserRoleFilter = '';
+  selectedUserStatusFilter = '';
+  selectedJobStatusFilter = '';
+  isEditingAdminSettings = false;
+  adminSettingsForm: FormGroup;
   isLoading = false;
   profileUpdateSuccess = false;
-  passwordUpdateSuccess = false;
   errorMessage = '';
   newSkill = '';
   newJobType = '';
@@ -40,46 +71,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private authSubscription: Subscription = new Subscription();
 
-  // Profile sections
-  profileSections = [
-    {
-      id: 'personal',
-      title: 'Personal Information',
-      icon: 'user',
-      description: 'Update your basic information',
-    },
-    {
-      id: 'professional',
-      title: 'Professional Info',
-      icon: 'briefcase',
-      description: 'Manage your professional details',
-    },
-    {
-      id: 'resume',
-      title: 'Resume',
-      icon: 'file',
-      description: 'Upload and manage your resume',
-    },
-    {
-      id: 'security',
-      title: 'Security',
-      icon: 'shield',
-      description: 'Change password and security settings',
-    },
-    {
-      id: 'preferences',
-      title: 'Preferences',
-      icon: 'settings',
-      description: 'Customize your experience',
-    },
-  ];
+  // Profile sections - will be dynamically set based on user role
+  profileSections: any[] = [];
 
   activeSection = 'personal';
 
   constructor(
     private authService: AuthService,
     private formBuilder: FormBuilder,
-    private userProfileService: UserProfileService
+    private profileService: ProfileService,
+    private jobManagementService: JobManagementService,
+    private adminManagementService: AdminManagementService,
+    private router: Router
   ) {
     this.profileForm = this.formBuilder.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
@@ -105,14 +108,28 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     this.professionalForm = this.createProfessionalForm();
 
-    this.passwordForm = this.formBuilder.group(
-      {
-        currentPassword: ['', [Validators.required]],
-        newPassword: ['', [Validators.required, Validators.minLength(8)]],
-        confirmPassword: ['', [Validators.required]],
-      },
-      { validators: this.passwordMatchValidator }
-    );
+    this.companyForm = this.formBuilder.group({
+      companyName: ['', [Validators.required, Validators.minLength(2)]],
+      companyDescription: [''],
+      companyWebsite: ['', [Validators.pattern(/^https?:\/\/.+/)]],
+      companySize: [''],
+      industry: [''],
+    });
+
+    // Initialize admin settings form
+    this.adminSettingsForm = this.formBuilder.group({
+      platformName: ['', [Validators.required]],
+      platformDescription: ['', [Validators.required]],
+      allowRegistration: [true],
+      requireEmailVerification: [false],
+      maxJobPostingsPerCompany: [50, [Validators.required, Validators.min(1)]],
+      jobPostingDurationDays: [30, [Validators.required, Validators.min(1)]],
+      featuredJobPrice: [99.99, [Validators.required, Validators.min(0)]],
+      maintenanceMode: [false],
+      supportEmail: ['', [Validators.required, Validators.email]],
+      privacyPolicyUrl: [''],
+      termsOfServiceUrl: [''],
+    });
   }
 
   private createProfessionalForm(): FormGroup {
@@ -135,7 +152,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.authService.currentUser$.subscribe((user) => {
         this.currentUser = user;
         if (user) {
+          this.setProfileSections(user.role);
           this.loadUserProfile();
+          this.loadCompanyData();
+          if (user.role === 'company') {
+            this.loadCompanyJobs();
+          } else if (user.role === 'admin') {
+            this.loadAdminData();
+          }
         }
       })
     );
@@ -145,11 +169,136 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.authSubscription.unsubscribe();
   }
 
+  setProfileSections(role: string) {
+    switch (role) {
+      case 'job-seeker':
+        this.profileSections = [
+          {
+            id: 'personal',
+            title: 'Personal Information',
+            icon: 'user',
+            description: 'Update your basic information',
+          },
+          {
+            id: 'professional',
+            title: 'Professional Info',
+            icon: 'briefcase',
+            description: 'Manage your professional details',
+          },
+          {
+            id: 'education',
+            title: 'Education',
+            icon: 'book',
+            description: 'Add your educational background',
+          },
+          {
+            id: 'experience',
+            title: 'Work Experience',
+            icon: 'work',
+            description: 'Manage your work history',
+          },
+          {
+            id: 'resume',
+            title: 'Resume',
+            icon: 'file',
+            description: 'Upload and manage your resume',
+          },
+
+          {
+            id: 'preferences',
+            title: 'Preferences',
+            icon: 'settings',
+            description: 'Customize your experience',
+          },
+        ];
+        break;
+      case 'company':
+        this.profileSections = [
+          {
+            id: 'personal',
+            title: 'Contact Information',
+            icon: 'user',
+            description: 'Update contact details',
+          },
+          {
+            id: 'company',
+            title: 'Company Profile',
+            icon: 'building',
+            description: 'Manage company information',
+          },
+          {
+            id: 'jobs',
+            title: 'Job Postings',
+            icon: 'briefcase',
+            description: 'Manage your job listings',
+          },
+          {
+            id: 'applications',
+            title: 'Applications',
+            icon: 'users',
+            description: 'Review job applications',
+          },
+
+          {
+            id: 'preferences',
+            title: 'Preferences',
+            icon: 'settings',
+            description: 'Customize your experience',
+          },
+        ];
+        break;
+      case 'admin':
+        this.profileSections = [
+          {
+            id: 'personal',
+            title: 'Personal Information',
+            icon: 'user',
+            description: 'Update your basic information',
+          },
+          {
+            id: 'admin',
+            title: 'Admin Settings',
+            icon: 'shield-check',
+            description: 'Platform administration settings',
+          },
+          {
+            id: 'users',
+            title: 'User Management',
+            icon: 'users',
+            description: 'Manage platform users',
+          },
+          {
+            id: 'jobs',
+            title: 'Job Management',
+            icon: 'briefcase',
+            description: 'Oversee all job postings',
+          },
+
+          {
+            id: 'preferences',
+            title: 'Preferences',
+            icon: 'settings',
+            description: 'Customize your experience',
+          },
+        ];
+        break;
+      default:
+        this.profileSections = [
+          {
+            id: 'personal',
+            title: 'Personal Information',
+            icon: 'user',
+            description: 'Update your basic information',
+          },
+        ];
+    }
+  }
+
   setActiveSection(sectionId: string) {
     this.activeSection = sectionId;
     this.isEditingProfile = false;
     this.isEditingProfessional = false;
-    this.isChangingPassword = false;
+    this.isEditingCompany = false;
     this.clearMessages();
   }
 
@@ -159,7 +308,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
       // Load comprehensive profile from userProfiles table
       this.authSubscription.add(
-        this.userProfileService.getUserProfile(this.currentUser.id).subscribe({
+        this.profileService.getUserProfile(this.currentUser.id).subscribe({
           next: (profile) => {
             this.userProfile = profile;
             this.isLoading = false;
@@ -256,20 +405,75 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.clearMessages();
   }
 
-  toggleChangePassword() {
-    this.isChangingPassword = !this.isChangingPassword;
-    if (!this.isChangingPassword) {
-      this.passwordForm.reset();
-    }
-    this.clearMessages();
-  }
-
   toggleEditProfessional() {
     this.isEditingProfessional = !this.isEditingProfessional;
     if (!this.isEditingProfessional) {
       this.loadUserProfile(); // Reset form if canceling
     }
     this.clearMessages();
+  }
+
+  toggleEditCompany() {
+    this.isEditingCompany = !this.isEditingCompany;
+    if (!this.isEditingCompany) {
+      this.loadCompanyData(); // Reset form if canceling
+    }
+    this.clearMessages();
+  }
+
+  loadCompanyData() {
+    if (this.currentUser) {
+      this.companyForm.patchValue({
+        companyName: this.currentUser.companyName || '',
+        companyDescription: this.currentUser.companyDescription || '',
+        companyWebsite: this.currentUser.companyWebsite || '',
+        companySize: this.currentUser.companySize || '',
+        industry: this.currentUser.industry || '',
+      });
+    }
+  }
+
+  onCompanySubmit() {
+    if (this.companyForm.valid && this.currentUser) {
+      this.isLoading = true;
+      this.clearMessages();
+
+      const formValue = this.companyForm.value;
+      const updatedUser = {
+        ...this.currentUser,
+        companyName: formValue.companyName,
+        companyDescription: formValue.companyDescription,
+        companyWebsite: formValue.companyWebsite,
+        companySize: formValue.companySize,
+        industry: formValue.industry,
+      };
+
+      // Update user in the backend
+      this.authService.updateProfile(formValue).subscribe({
+        next: (user) => {
+          this.currentUser = user;
+          this.isLoading = false;
+          this.isEditingCompany = false;
+          this.profileUpdateSuccess = true;
+
+          setTimeout(() => {
+            this.profileUpdateSuccess = false;
+          }, 3000);
+        },
+        error: (error) => {
+          console.error('Error updating company profile:', error);
+          this.isLoading = false;
+          this.errorMessage =
+            'Failed to update company profile. Please try again.';
+
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 5000);
+        },
+      });
+    } else {
+      this.markFormGroupTouched(this.companyForm);
+    }
   }
 
   onProfileSubmit() {
@@ -321,37 +525,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
       if (this.userProfile) {
         // Update existing profile
         this.authSubscription.add(
-          this.userProfileService
-            .updateUserProfile(this.userProfile.id, profileData)
-            .subscribe({
-              next: (updatedProfile) => {
-                this.userProfile = updatedProfile;
-                this.isLoading = false;
-                this.isEditingProfile = false;
-                this.profileUpdateSuccess = true;
-
-                setTimeout(() => {
-                  this.profileUpdateSuccess = false;
-                }, 3000);
-              },
-              error: (error) => {
-                console.error('Error updating profile:', error);
-                this.isLoading = false;
-                this.errorMessage =
-                  'Failed to update profile. Please try again.';
-
-                setTimeout(() => {
-                  this.errorMessage = '';
-                }, 5000);
-              },
-            })
-        );
-      } else {
-        // Create new profile
-        this.authSubscription.add(
-          this.userProfileService.createUserProfile(profileData).subscribe({
-            next: (newProfile) => {
-              this.userProfile = newProfile;
+          this.profileService.updateUserProfile(profileData).subscribe({
+            next: (updatedProfile) => {
+              this.userProfile = updatedProfile;
               this.isLoading = false;
               this.isEditingProfile = false;
               this.profileUpdateSuccess = true;
@@ -361,6 +537,31 @@ export class ProfileComponent implements OnInit, OnDestroy {
               }, 3000);
             },
             error: (error) => {
+              console.error('Error updating profile:', error);
+              this.isLoading = false;
+              this.errorMessage = 'Failed to update profile. Please try again.';
+
+              setTimeout(() => {
+                this.errorMessage = '';
+              }, 5000);
+            },
+          })
+        );
+      } else {
+        // Create new profile
+        this.authSubscription.add(
+          this.profileService.createUserProfile(profileData).subscribe({
+            next: (newProfile: UserProfile) => {
+              this.userProfile = newProfile;
+              this.isLoading = false;
+              this.isEditingProfile = false;
+              this.profileUpdateSuccess = true;
+
+              setTimeout(() => {
+                this.profileUpdateSuccess = false;
+              }, 3000);
+            },
+            error: (error: any) => {
               console.error('Error creating profile:', error);
               this.isLoading = false;
               this.errorMessage = 'Failed to create profile. Please try again.';
@@ -405,30 +606,28 @@ export class ProfileComponent implements OnInit, OnDestroy {
         };
 
         this.authSubscription.add(
-          this.userProfileService
-            .updateUserProfile(this.userProfile.id, updatedProfile)
-            .subscribe({
-              next: (profile) => {
-                this.userProfile = profile;
-                this.isLoading = false;
-                this.isEditingProfessional = false;
-                this.profileUpdateSuccess = true;
+          this.profileService.updateUserProfile(updatedProfile).subscribe({
+            next: (profile) => {
+              this.userProfile = profile;
+              this.isLoading = false;
+              this.isEditingProfessional = false;
+              this.profileUpdateSuccess = true;
 
-                setTimeout(() => {
-                  this.profileUpdateSuccess = false;
-                }, 3000);
-              },
-              error: (error) => {
-                console.error('Error updating professional info:', error);
-                this.isLoading = false;
-                this.errorMessage =
-                  'Failed to update professional information. Please try again.';
+              setTimeout(() => {
+                this.profileUpdateSuccess = false;
+              }, 3000);
+            },
+            error: (error) => {
+              console.error('Error updating professional info:', error);
+              this.isLoading = false;
+              this.errorMessage =
+                'Failed to update professional information. Please try again.';
 
-                setTimeout(() => {
-                  this.errorMessage = '';
-                }, 5000);
-              },
-            })
+              setTimeout(() => {
+                this.errorMessage = '';
+              }, 5000);
+            },
+          })
         );
       } else {
         // Create new profile with professional info
@@ -437,54 +636,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     } else {
       this.markFormGroupTouched(this.professionalForm);
     }
-  }
-
-  onPasswordSubmit() {
-    if (this.passwordForm.valid && this.currentUser) {
-      this.isLoading = true;
-      this.clearMessages();
-
-      const { currentPassword, newPassword } = this.passwordForm.value;
-
-      this.authService.changePassword(currentPassword, newPassword).subscribe({
-        next: () => {
-          this.isLoading = false;
-          this.isChangingPassword = false;
-          this.passwordUpdateSuccess = true;
-          this.passwordForm.reset();
-
-          setTimeout(() => {
-            this.passwordUpdateSuccess = false;
-          }, 3000);
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.errorMessage = error.message || 'Failed to change password';
-
-          setTimeout(() => {
-            this.errorMessage = '';
-          }, 5000);
-        },
-      });
-    } else {
-      this.markFormGroupTouched(this.passwordForm);
-    }
-  }
-
-  private passwordMatchValidator(form: FormGroup) {
-    const newPassword = form.get('newPassword');
-    const confirmPassword = form.get('confirmPassword');
-
-    if (
-      newPassword &&
-      confirmPassword &&
-      newPassword.value !== confirmPassword.value
-    ) {
-      confirmPassword.setErrors({ passwordMismatch: true });
-      return { passwordMismatch: true };
-    }
-
-    return null;
   }
 
   private markFormGroupTouched(formGroup: FormGroup) {
@@ -496,7 +647,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private clearMessages() {
     this.profileUpdateSuccess = false;
-    this.passwordUpdateSuccess = false;
     this.errorMessage = '';
   }
 
@@ -599,8 +749,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.clearMessages();
 
     this.authSubscription.add(
-      this.userProfileService.uploadResume(file).subscribe({
-        next: (resume) => {
+      this.profileService.uploadResume(file).subscribe({
+        next: (resume: any) => {
           // Update the user profile with new resume
           if (this.userProfile) {
             const updatedProfile = {
@@ -609,36 +759,34 @@ export class ProfileComponent implements OnInit, OnDestroy {
             };
 
             this.authSubscription.add(
-              this.userProfileService
-                .updateUserProfile(this.userProfile.id, updatedProfile)
-                .subscribe({
-                  next: (profile) => {
-                    this.userProfile = profile;
-                    this.isLoading = false;
-                    this.profileUpdateSuccess = true;
+              this.profileService.updateUserProfile(updatedProfile).subscribe({
+                next: (profile) => {
+                  this.userProfile = profile;
+                  this.isLoading = false;
+                  this.profileUpdateSuccess = true;
 
-                    setTimeout(() => {
-                      this.profileUpdateSuccess = false;
-                    }, 3000);
-                  },
-                  error: (error) => {
-                    console.error('Error updating profile with resume:', error);
-                    this.isLoading = false;
-                    this.errorMessage =
-                      'Failed to save resume. Please try again.';
+                  setTimeout(() => {
+                    this.profileUpdateSuccess = false;
+                  }, 3000);
+                },
+                error: (error) => {
+                  console.error('Error updating profile with resume:', error);
+                  this.isLoading = false;
+                  this.errorMessage =
+                    'Failed to save resume. Please try again.';
 
-                    setTimeout(() => {
-                      this.errorMessage = '';
-                    }, 5000);
-                  },
-                })
+                  setTimeout(() => {
+                    this.errorMessage = '';
+                  }, 5000);
+                },
+              })
             );
           } else {
             // Create new profile with resume
             this.createProfileWithResume(resume);
           }
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error uploading resume:', error);
           this.isLoading = false;
           this.errorMessage = 'Failed to upload resume. Please try again.';
@@ -688,8 +836,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     };
 
     this.authSubscription.add(
-      this.userProfileService.createUserProfile(profileData).subscribe({
-        next: (profile) => {
+      this.profileService.createUserProfile(profileData).subscribe({
+        next: (profile: UserProfile) => {
           this.userProfile = profile;
           this.isLoading = false;
           this.profileUpdateSuccess = true;
@@ -698,7 +846,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.profileUpdateSuccess = false;
           }, 3000);
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error creating profile:', error);
           this.isLoading = false;
           this.errorMessage = 'Failed to create profile. Please try again.';
@@ -711,12 +859,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
     );
   }
 
-  downloadResume(): void {
-    if (this.userProfile?.resume) {
-      // In a real application, this would download from the server
-      // For demo purposes, we'll show a message
+  downloadResume(resumeUrl?: string): void {
+    if (resumeUrl) {
+      // Download specific resume from application
+      console.log('Downloading resume:', resumeUrl);
+      alert('Resume download would start here');
+    } else if (this.userProfile?.resume) {
+      // Download user's own resume
       alert(`Downloading ${this.userProfile.resume.fileName}...`);
-
       // Real implementation would be:
       // window.open(this.userProfile.resume.fileUrl, '_blank');
     }
@@ -816,8 +966,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     };
 
     this.authSubscription.add(
-      this.userProfileService.createUserProfile(profileData).subscribe({
-        next: (profile) => {
+      this.profileService.createUserProfile(profileData).subscribe({
+        next: (profile: UserProfile) => {
           this.userProfile = profile;
           this.isLoading = false;
           this.isEditingProfessional = false;
@@ -827,7 +977,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.profileUpdateSuccess = false;
           }, 3000);
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error creating profile:', error);
           this.isLoading = false;
           this.errorMessage = 'Failed to create profile. Please try again.';
@@ -838,5 +988,482 @@ export class ProfileComponent implements OnInit, OnDestroy {
         },
       })
     );
+  }
+
+  // Job and Application Management Methods
+  loadCompanyJobs() {
+    if (this.currentUser?.role === 'company') {
+      this.isLoading = true;
+
+      // Get company name from user data
+      const companyName =
+        this.currentUser.companyName ||
+        this.currentUser.firstName + ' ' + this.currentUser.lastName;
+
+      this.authSubscription.add(
+        this.jobManagementService.getJobs().subscribe({
+          next: (jobs) => {
+            // Filter jobs by company name or company ID
+            this.companyJobs = jobs.filter(
+              (job) =>
+                job.company === companyName ||
+                job.companyId === this.currentUser?.id ||
+                job.company === this.currentUser?.companyName
+            );
+            this.isLoading = false;
+
+            // Load applications after jobs are loaded
+            this.loadJobApplications();
+          },
+          error: (error) => {
+            console.error('Error loading company jobs:', error);
+            this.isLoading = false;
+            this.companyJobs = [];
+          },
+        })
+      );
+    }
+  }
+
+  loadJobApplications() {
+    if (this.currentUser?.role === 'company' && this.companyJobs.length > 0) {
+      this.authSubscription.add(
+        this.jobManagementService
+          .getApplicationsByCompany(this.companyJobs)
+          .subscribe({
+            next: (applications) => {
+              this.jobApplications = applications;
+              this.filteredApplications = [...applications];
+            },
+            error: (error) => {
+              console.error('Error loading job applications:', error);
+              this.jobApplications = [];
+              this.filteredApplications = [];
+            },
+          })
+      );
+    }
+  }
+
+  // Navigation methods
+  navigateToCreateJob() {
+    this.router.navigate(['/post-job']);
+  }
+
+  editJob(jobId: string) {
+    this.router.navigate(['/jobs/edit', jobId]);
+  }
+
+  viewJobApplications(jobId: string) {
+    this.selectedJobFilter = jobId;
+    this.filterApplications();
+    this.setActiveSection('applications');
+  }
+
+  // Job management methods
+  deleteJob(jobId: string) {
+    if (confirm('Are you sure you want to delete this job posting?')) {
+      this.authSubscription.add(
+        this.jobManagementService.deleteJob(jobId).subscribe({
+          next: () => {
+            this.companyJobs = this.companyJobs.filter(
+              (job) => job.id !== jobId
+            );
+            // Also remove related applications
+            this.jobApplications = this.jobApplications.filter(
+              (app) => app.jobId !== jobId
+            );
+            this.filteredApplications = this.filteredApplications.filter(
+              (app) => app.jobId !== jobId
+            );
+          },
+          error: (error) => {
+            console.error('Error deleting job:', error);
+            this.errorMessage = 'Failed to delete job. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+      );
+    }
+  }
+
+  getJobApplicationCount(jobId: string): number {
+    return this.jobManagementService.getJobApplicationCount(
+      jobId,
+      this.jobApplications
+    );
+  }
+
+  getDaysUntilDeadline(deadline: string): number {
+    return this.jobManagementService.getDaysUntilDeadline(deadline);
+  }
+
+  getTimeAgo(date: string): string {
+    return this.jobManagementService.getTimeAgo(date);
+  }
+
+  // Application management methods
+  filterApplications() {
+    this.filteredApplications = this.jobManagementService.filterApplications(
+      this.jobApplications,
+      this.selectedJobFilter,
+      this.selectedStatusFilter
+    );
+  }
+
+  updateApplicationStatus(application: JobApplication) {
+    this.authSubscription.add(
+      this.jobManagementService
+        .updateApplicationStatus(application.id, application.status)
+        .subscribe({
+          next: (updatedApplication) => {
+            // Update the local application data
+            const index = this.jobApplications.findIndex(
+              (app) => app.id === application.id
+            );
+            if (index !== -1) {
+              this.jobApplications[index] = updatedApplication;
+            }
+            // Update filtered applications
+            this.filterApplications();
+          },
+          error: (error) => {
+            console.error('Error updating application status:', error);
+            this.errorMessage =
+              'Failed to update application status. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+    );
+  }
+
+  getJobTitle(jobId: string): string {
+    const job = this.companyJobs.find((j) => j.id === jobId);
+    return job ? job.title : 'Unknown Job';
+  }
+
+  getInitials(name: string): string {
+    return this.jobManagementService.getInitials(name);
+  }
+
+  viewApplication(application: JobApplication) {
+    // In real app, navigate to detailed application view
+    const applicantName = `${application.applicationData.personalInfo.firstName} ${application.applicationData.personalInfo.lastName}`;
+    const applicantEmail = application.applicationData.personalInfo.email;
+
+    console.log('Viewing application:', application);
+    alert(
+      `Viewing application from ${applicantName}\n\nEmail: ${applicantEmail}\nStatus: ${application.status}\n\nCover Letter:\n${application.applicationData.coverLetter}`
+    );
+  }
+
+  contactApplicant(application: JobApplication) {
+    const applicantEmail = application.applicationData.personalInfo.email;
+    const jobTitle = this.getJobTitle(application.jobId);
+
+    console.log('Contacting applicant:', applicantEmail);
+    window.location.href = `mailto:${applicantEmail}?subject=Regarding your application for ${jobTitle}`;
+  }
+
+  // Admin Management Methods
+  loadAdminData() {
+    if (this.currentUser?.role === 'admin') {
+      this.loadAdminSettings();
+      this.loadAllUsers();
+      this.loadAllJobsForAdmin();
+      this.loadJobManagementStats();
+    }
+  }
+
+  loadAdminSettings() {
+    this.authSubscription.add(
+      this.adminManagementService.getAdminSettings().subscribe({
+        next: (settings) => {
+          this.adminSettings = settings;
+          this.adminSettingsForm.patchValue(settings);
+        },
+        error: (error) => {
+          console.error('Error loading admin settings:', error);
+        },
+      })
+    );
+  }
+
+  loadAllUsers() {
+    this.authSubscription.add(
+      this.adminManagementService.getAllUsers().subscribe({
+        next: (users) => {
+          this.allUsers = users;
+          this.filteredUsers = [...users];
+        },
+        error: (error) => {
+          console.error('Error loading users:', error);
+          this.allUsers = [];
+          this.filteredUsers = [];
+        },
+      })
+    );
+  }
+
+  loadAllJobsForAdmin() {
+    this.authSubscription.add(
+      this.adminManagementService.getAllJobsForAdmin().subscribe({
+        next: (jobs) => {
+          this.allJobsForAdmin = jobs;
+          this.filteredJobsForAdmin = [...jobs];
+        },
+        error: (error) => {
+          console.error('Error loading jobs for admin:', error);
+          this.allJobsForAdmin = [];
+          this.filteredJobsForAdmin = [];
+        },
+      })
+    );
+  }
+
+  loadJobManagementStats() {
+    this.authSubscription.add(
+      this.adminManagementService.getJobManagementStats().subscribe({
+        next: (stats) => {
+          this.jobManagementStats = stats;
+        },
+        error: (error) => {
+          console.error('Error loading job management stats:', error);
+        },
+      })
+    );
+  }
+
+  // Admin Settings Methods
+  toggleEditAdminSettings() {
+    this.isEditingAdminSettings = !this.isEditingAdminSettings;
+    if (!this.isEditingAdminSettings && this.adminSettings) {
+      this.adminSettingsForm.patchValue(this.adminSettings);
+    }
+    this.clearMessages();
+  }
+
+  onAdminSettingsSubmit() {
+    if (this.adminSettingsForm.valid) {
+      this.isLoading = true;
+      const formData = this.adminSettingsForm.value;
+
+      this.authSubscription.add(
+        this.adminManagementService.updateAdminSettings(formData).subscribe({
+          next: (updatedSettings) => {
+            this.adminSettings = updatedSettings;
+            this.isEditingAdminSettings = false;
+            this.isLoading = false;
+            this.profileUpdateSuccess = true;
+            setTimeout(() => {
+              this.profileUpdateSuccess = false;
+            }, 3000);
+          },
+          error: (error) => {
+            console.error('Error updating admin settings:', error);
+            this.isLoading = false;
+            this.errorMessage =
+              'Failed to update admin settings. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+      );
+    }
+  }
+
+  // User Management Methods
+  filterUsers() {
+    this.filteredUsers = this.allUsers.filter((user) => {
+      const roleMatch =
+        !this.selectedUserRoleFilter ||
+        user.role === this.selectedUserRoleFilter;
+      const statusMatch =
+        !this.selectedUserStatusFilter ||
+        (this.selectedUserStatusFilter === 'active' && user.isActive) ||
+        (this.selectedUserStatusFilter === 'inactive' && !user.isActive);
+      return roleMatch && statusMatch;
+    });
+  }
+
+  updateUserStatus(user: UserManagement) {
+    this.authSubscription.add(
+      this.adminManagementService
+        .updateUserStatus(user.id, user.isActive)
+        .subscribe({
+          next: (updatedUser) => {
+            const index = this.allUsers.findIndex((u) => u.id === user.id);
+            if (index !== -1) {
+              this.allUsers[index] = updatedUser;
+            }
+            this.filterUsers();
+          },
+          error: (error) => {
+            console.error('Error updating user status:', error);
+            this.errorMessage =
+              'Failed to update user status. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+    );
+  }
+
+  onUserRoleChange(user: UserManagement, event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const newRole = target.value;
+    this.updateUserRole(user, newRole);
+  }
+
+  updateUserRole(user: UserManagement, newRole: string) {
+    if (
+      confirm(
+        `Are you sure you want to change ${user.firstName} ${
+          user.lastName
+        }'s role to ${this.adminManagementService.getUserRoleDisplayName(
+          newRole
+        )}?`
+      )
+    ) {
+      this.authSubscription.add(
+        this.adminManagementService.updateUserRole(user.id, newRole).subscribe({
+          next: (updatedUser) => {
+            const index = this.allUsers.findIndex((u) => u.id === user.id);
+            if (index !== -1) {
+              this.allUsers[index] = updatedUser;
+            }
+            this.filterUsers();
+          },
+          error: (error) => {
+            console.error('Error updating user role:', error);
+            this.errorMessage = 'Failed to update user role. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+      );
+    }
+  }
+
+  deleteUser(user: UserManagement) {
+    if (
+      confirm(
+        `Are you sure you want to delete ${user.firstName} ${user.lastName}? This action cannot be undone.`
+      )
+    ) {
+      this.authSubscription.add(
+        this.adminManagementService.deleteUser(user.id).subscribe({
+          next: () => {
+            this.allUsers = this.allUsers.filter((u) => u.id !== user.id);
+            this.filterUsers();
+          },
+          error: (error) => {
+            console.error('Error deleting user:', error);
+            this.errorMessage = 'Failed to delete user. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+      );
+    }
+  }
+
+  // Job Management Methods for Admin
+  filterJobsForAdmin() {
+    this.filteredJobsForAdmin = this.allJobsForAdmin.filter((job) => {
+      const statusMatch =
+        !this.selectedJobStatusFilter ||
+        this.adminManagementService
+          .getJobStatusDisplayName(job)
+          .toLowerCase() === this.selectedJobStatusFilter;
+      return statusMatch;
+    });
+  }
+
+  updateJobStatusAsAdmin(job: any) {
+    this.authSubscription.add(
+      this.adminManagementService
+        .updateJobStatus(job.id, job.isActive)
+        .subscribe({
+          next: (updatedJob) => {
+            const index = this.allJobsForAdmin.findIndex(
+              (j) => j.id === job.id
+            );
+            if (index !== -1) {
+              this.allJobsForAdmin[index] = {
+                ...this.allJobsForAdmin[index],
+                ...updatedJob,
+              };
+            }
+            this.filterJobsForAdmin();
+          },
+          error: (error) => {
+            console.error('Error updating job status:', error);
+            this.errorMessage =
+              'Failed to update job status. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+    );
+  }
+
+  deleteJobAsAdmin(job: any) {
+    if (
+      confirm(
+        `Are you sure you want to delete the job "${job.title}"? This action cannot be undone.`
+      )
+    ) {
+      this.authSubscription.add(
+        this.adminManagementService.deleteJobAsAdmin(job.id).subscribe({
+          next: () => {
+            this.allJobsForAdmin = this.allJobsForAdmin.filter(
+              (j) => j.id !== job.id
+            );
+            this.filterJobsForAdmin();
+            // Reload stats
+            this.loadJobManagementStats();
+          },
+          error: (error) => {
+            console.error('Error deleting job:', error);
+            this.errorMessage = 'Failed to delete job. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+      );
+    }
+  }
+
+  // Helper methods for admin
+  getUserRoleDisplayName(role: string): string {
+    return this.adminManagementService.getUserRoleDisplayName(role);
+  }
+
+  getJobStatusDisplayName(job: any): string {
+    return this.adminManagementService.getJobStatusDisplayName(job);
+  }
+
+  getJobStatusClass(job: any): string {
+    return this.adminManagementService.getJobStatusClass(job);
+  }
+
+  formatDate(dateString: string | undefined): string {
+    if (!dateString) return 'Unknown';
+    return this.adminManagementService.formatDate(dateString);
+  }
+
+  getTimeAgoAdmin(dateString: string): string {
+    return this.adminManagementService.getTimeAgo(dateString);
   }
 }

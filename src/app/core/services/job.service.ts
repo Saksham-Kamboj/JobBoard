@@ -23,6 +23,7 @@ export interface Job {
   isActive: boolean;
   applicationCount: number;
   featured?: boolean;
+  companyId?: string;
 }
 
 @Injectable({

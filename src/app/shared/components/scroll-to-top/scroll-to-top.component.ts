@@ -6,7 +6,7 @@ import { ScrollService } from '../../../core/services/scroll.service';
   selector: 'app-scroll-to-top',
   imports: [CommonModule],
   templateUrl: './scroll-to-top.component.html',
-  styleUrl: './scroll-to-top.component.css'
+  styleUrl: './scroll-to-top.component.css',
 })
 export class ScrollToTopComponent implements OnInit, OnDestroy {
   isVisible = false;

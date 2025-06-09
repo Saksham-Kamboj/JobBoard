@@ -10,6 +10,7 @@ import {
   SearchResults,
 } from '../../../core/services/search.service';
 import { NavigationService } from '../../../core/services/navigation.service';
+import { AuthService, User } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-job-list',
@@ -21,6 +22,7 @@ export class JobListComponent implements OnInit, OnDestroy {
   jobs: Job[] = [];
   isLoading = true;
   errorMessage = '';
+  currentUser: User | null = null;
   searchResults: SearchResults = {
     jobs: [],
     totalCount: 0,
@@ -76,13 +78,15 @@ export class JobListComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private route: ActivatedRoute,
     private router: Router,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.initializeSearch();
     this.subscribeToSearchResults();
     this.loadQueryParams();
+    this.loadCurrentUser();
   }
 
   ngOnDestroy(): void {
@@ -333,5 +337,36 @@ export class JobListComponent implements OnInit, OnDestroy {
   getSalaryRangeDisplay(range: string): string {
     const rangeMap = this.salaryRanges.find((r) => r.value === range);
     return rangeMap ? rangeMap.label : range;
+  }
+
+  private loadCurrentUser(): void {
+    const userSub = this.authService.currentUser$.subscribe((user) => {
+      this.currentUser = user;
+    });
+    this.subscriptions.add(userSub);
+  }
+
+  applyForJob(jobId: string): void {
+    // Check if user is authenticated
+    if (!this.currentUser) {
+      this.router.navigate(['/auth/signin'], {
+        queryParams: { returnUrl: this.router.url },
+      });
+      return;
+    }
+
+    // Check if user is a job seeker
+    if (this.currentUser.role !== 'job-seeker') {
+      // Could show an error message here
+      console.error('Only job seekers can apply for jobs');
+      return;
+    }
+
+    // Store current jobs page state before navigation
+    const currentParams = this.route.snapshot.queryParams;
+    this.navigationService.storeJobsPageState('/jobs', currentParams);
+
+    // Navigate to job application page
+    this.router.navigate(['/jobs', jobId, 'apply']);
   }
 }

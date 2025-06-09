@@ -22,13 +22,7 @@
     Profile updated successfully!
   </div>
 
-  <div *ngIf="passwordUpdateSuccess" class="alert alert-success">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-    </svg>
-    Password changed successfully!
-  </div>
+
 
   <div *ngIf="errorMessage" class="alert alert-error">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,6 +78,40 @@
               <path
                 d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
                 stroke="currentColor" stroke-width="2" />
+            </svg>
+            <!-- Book Icon -->
+            <svg *ngIf="section.icon === 'book'" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="2" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="currentColor"
+                stroke-width="2" />
+            </svg>
+            <!-- Work Icon -->
+            <svg *ngIf="section.icon === 'work'" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <!-- Building Icon -->
+            <svg *ngIf="section.icon === 'building'" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 21h18" stroke="currentColor" stroke-width="2" />
+              <path d="M5 21V7l8-4v18" stroke="currentColor" stroke-width="2" />
+              <path d="M19 21V11l-6-4" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <!-- Users Icon -->
+            <svg *ngIf="section.icon === 'users'" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" />
+              <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <!-- Shield Check Icon -->
+            <svg *ngIf="section.icon === 'shield-check'" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2" />
+              <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" />
             </svg>
           </div>
           <div class="nav-content">
@@ -271,132 +299,470 @@
 
         <div *ngIf="!isEditingProfile" class="personal-info-list">
           <div class="personal-info-item">
-            <div class="personal-info-details">
-              <h3 class="personal-info-title">Basic Information</h3>
-              <p class="personal-info-description">
-                {{ (userProfile?.personalInfo?.firstName || currentUser?.firstName) }}
-                {{ (userProfile?.personalInfo?.lastName || currentUser?.lastName) }}
-              </p>
-              <p class="personal-info-meta">{{ (userProfile?.personalInfo?.email || currentUser?.email) }}</p>
-            </div>
-          </div>
+            <div class="personal-info-header">
+              <div class="personal-info-details">
+                <h3 class="personal-info-title">Basic Information</h3>
+                <p class="personal-info-description">Personal details and contact information</p>
+                <p class="personal-info-meta">Member since {{ formatDate(currentUser?.createdAt) }}</p>
+              </div>
 
-          <div class="personal-info-item" *ngIf="userProfile?.personalInfo?.phone">
-            <div class="personal-info-details">
-              <h3 class="personal-info-title">Phone Number</h3>
-              <p class="personal-info-description">{{ userProfile?.personalInfo?.phone }}</p>
             </div>
-          </div>
-
-          <div class="personal-info-item"
-            *ngIf="userProfile?.personalInfo?.address && (userProfile?.personalInfo?.address?.city || userProfile?.personalInfo?.address?.state)">
-            <div class="personal-info-details">
-              <h3 class="personal-info-title">Location</h3>
-              <p class="personal-info-description">
-                <span *ngIf="userProfile?.personalInfo?.address?.city">{{ userProfile?.personalInfo?.address?.city
-                  }}</span><span
-                  *ngIf="userProfile?.personalInfo?.address?.city && userProfile?.personalInfo?.address?.state">,
-                </span><span *ngIf="userProfile?.personalInfo?.address?.state">{{
-                  userProfile?.personalInfo?.address?.state }}</span>
-              </p>
+            <div class="personal-info-content">
+              <div class="personal-info-grid">
+                <div class="personal-info-value">
+                  <span class="personal-info-label">Full Name</span>
+                  <span class="personal-info-text">
+                    {{ (userProfile?.personalInfo?.firstName || currentUser?.firstName) }}
+                    {{ (userProfile?.personalInfo?.lastName || currentUser?.lastName) }}
+                  </span>
+                </div>
+                <div class="personal-info-value">
+                  <span class="personal-info-label">Email Address</span>
+                  <span class="personal-info-text">{{ (userProfile?.personalInfo?.email || currentUser?.email) }}</span>
+                </div>
+                <div class="personal-info-value" *ngIf="userProfile?.personalInfo?.phone">
+                  <span class="personal-info-label">Phone Number</span>
+                  <span class="personal-info-text">{{ userProfile?.personalInfo?.phone }}</span>
+                </div>
+                <div class="personal-info-value"
+                  *ngIf="userProfile?.personalInfo?.address && (userProfile?.personalInfo?.address?.city || userProfile?.personalInfo?.address?.state)">
+                  <span class="personal-info-label">Location</span>
+                  <span class="personal-info-text">
+                    <span *ngIf="userProfile?.personalInfo?.address?.city">{{ userProfile?.personalInfo?.address?.city
+                      }}</span><span
+                      *ngIf="userProfile?.personalInfo?.address?.city && userProfile?.personalInfo?.address?.state">,
+                    </span><span *ngIf="userProfile?.personalInfo?.address?.state">{{
+                      userProfile?.personalInfo?.address?.state }}</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
           <div class="personal-info-item"
             *ngIf="userProfile?.personalInfo?.linkedinUrl || userProfile?.personalInfo?.portfolioUrl || userProfile?.personalInfo?.githubUrl">
-            <div class="personal-info-details">
-              <h3 class="personal-info-title">Professional Links</h3>
-              <div class="links-container">
-                <a *ngIf="userProfile?.personalInfo?.linkedinUrl" [href]="userProfile?.personalInfo?.linkedinUrl"
-                  target="_blank" class="profile-link">
-                  LinkedIn
-                </a>
-                <a *ngIf="userProfile?.personalInfo?.portfolioUrl" [href]="userProfile?.personalInfo?.portfolioUrl"
-                  target="_blank" class="profile-link">
-                  Portfolio
-                </a>
-                <a *ngIf="userProfile?.personalInfo?.githubUrl" [href]="userProfile?.personalInfo?.githubUrl"
-                  target="_blank" class="profile-link">
-                  GitHub
-                </a>
+            <div class="personal-info-header">
+              <div class="personal-info-details">
+                <h3 class="personal-info-title">Professional Links</h3>
+                <p class="personal-info-description">Online presence and portfolio</p>
+                <p class="personal-info-meta">External profile links and websites</p>
+              </div>
+            </div>
+            <div class="personal-info-content">
+              <div class="personal-info-grid">
+                <div class="personal-info-value" *ngIf="userProfile?.personalInfo?.linkedinUrl">
+                  <span class="personal-info-label">LinkedIn</span>
+                  <a [href]="userProfile?.personalInfo?.linkedinUrl" target="_blank" class="personal-info-link">
+                    View Profile
+                  </a>
+                </div>
+                <div class="personal-info-value" *ngIf="userProfile?.personalInfo?.portfolioUrl">
+                  <span class="personal-info-label">Portfolio</span>
+                  <a [href]="userProfile?.personalInfo?.portfolioUrl" target="_blank" class="personal-info-link">
+                    View Website
+                  </a>
+                </div>
+                <div class="personal-info-value" *ngIf="userProfile?.personalInfo?.githubUrl">
+                  <span class="personal-info-label">GitHub</span>
+                  <a [href]="userProfile?.personalInfo?.githubUrl" target="_blank" class="personal-info-link">
+                    View Repository
+                  </a>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="personal-info-item"
             *ngIf="userProfile?.personalInfo?.address && userProfile?.personalInfo?.address?.street">
-            <div class="personal-info-details">
-              <h3 class="personal-info-title">Complete Address</h3>
-              <p class="personal-info-description">
-                {{ userProfile?.personalInfo?.address?.street }}<br>
-                {{ userProfile?.personalInfo?.address?.city }}, {{ userProfile?.personalInfo?.address?.state }} {{
-                userProfile?.personalInfo?.address?.zipCode }}<br>
-                {{ userProfile?.personalInfo?.address?.country }}
-              </p>
+            <div class="personal-info-header">
+              <div class="personal-info-details">
+                <h3 class="personal-info-title">Address Information</h3>
+                <p class="personal-info-description">Complete mailing address</p>
+                <p class="personal-info-meta">Physical location and postal details</p>
+              </div>
+            </div>
+            <div class="personal-info-content">
+              <div class="personal-info-grid">
+                <div class="personal-info-value">
+                  <span class="personal-info-label">Street Address</span>
+                  <span class="personal-info-text">{{ userProfile?.personalInfo?.address?.street }}</span>
+                </div>
+                <div class="personal-info-value">
+                  <span class="personal-info-label">City & State</span>
+                  <span class="personal-info-text">{{ userProfile?.personalInfo?.address?.city }}, {{
+                    userProfile?.personalInfo?.address?.state }}</span>
+                </div>
+                <div class="personal-info-value">
+                  <span class="personal-info-label">ZIP Code</span>
+                  <span class="personal-info-text">{{ userProfile?.personalInfo?.address?.zipCode }}</span>
+                </div>
+                <div class="personal-info-value">
+                  <span class="personal-info-label">Country</span>
+                  <span class="personal-info-text">{{ userProfile?.personalInfo?.address?.country }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-
-
-      <!-- Security Section -->
-      <div *ngIf="activeSection === 'security'" class="profile-section">
+      <!-- Company Profile Section -->
+      <div *ngIf="activeSection === 'company'" class="profile-section">
         <div class="section-header">
-          <h2 class="section-title">Security</h2>
-          <p class="section-description">Manage your password and security settings</p>
-        </div>
-
-        <div class="security-item">
-          <div class="security-info">
-            <h3 class="security-title">Password</h3>
-            <p class="security-description">Change your account password</p>
-          </div>
-          <button *ngIf="!isChangingPassword" (click)="toggleChangePassword()" class="btn-secondary">
-            Change Password
+          <h2 class="section-title">Company Profile</h2>
+          <button *ngIf="!isEditingCompany" (click)="toggleEditCompany()" class="btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
+                stroke-width="2" />
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                stroke-width="2" />
+            </svg>
+            Edit Company Profile
           </button>
         </div>
 
-        <form *ngIf="isChangingPassword" [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()"
-          class="password-form">
-          <div class="form-group">
-            <label for="currentPassword" class="form-label">Current Password *</label>
-            <input type="password" id="currentPassword" formControlName="currentPassword" class="form-input"
-              [class.error]="getFieldError('currentPassword', passwordForm)">
-            <div *ngIf="getFieldError('currentPassword', passwordForm)" class="field-error">
-              {{ getFieldError('currentPassword', passwordForm) }}
+        <div *ngIf="!isEditingCompany" class="company-info-list">
+          <div class="company-info-item">
+            <div class="company-info-header">
+              <div class="company-info-details">
+                <h3 class="company-info-title">Company Information</h3>
+                <p class="company-info-description">Business details and company profile</p>
+                <p class="company-info-meta">Member since {{ formatDate(currentUser?.createdAt) }}</p>
+              </div>
+
+            </div>
+            <div class="company-info-content">
+              <div class="company-info-grid">
+                <div class="company-info-value">
+                  <span class="company-info-label">Company Name</span>
+                  <span class="company-info-text">{{ currentUser?.companyName || 'Not specified' }}</span>
+                </div>
+                <div class="company-info-value" *ngIf="currentUser?.industry">
+                  <span class="company-info-label">Industry</span>
+                  <span class="company-info-text">{{ currentUser?.industry | titlecase }}</span>
+                </div>
+                <div class="company-info-value" *ngIf="currentUser?.companySize">
+                  <span class="company-info-label">Company Size</span>
+                  <span class="company-info-text">{{ currentUser?.companySize }}</span>
+                </div>
+                <div class="company-info-value" *ngIf="currentUser?.companyWebsite">
+                  <span class="company-info-label">Website</span>
+                  <a [href]="currentUser?.companyWebsite" target="_blank" class="company-info-link">
+                    Visit Website
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="newPassword" class="form-label">New Password *</label>
-            <input type="password" id="newPassword" formControlName="newPassword" class="form-input"
-              [class.error]="getFieldError('newPassword', passwordForm)">
-            <div *ngIf="getFieldError('newPassword', passwordForm)" class="field-error">
-              {{ getFieldError('newPassword', passwordForm) }}
+          <div class="company-info-item" *ngIf="currentUser?.companyDescription">
+            <div class="company-info-header">
+              <div class="company-info-details">
+                <h3 class="company-info-title">Company Description</h3>
+                <p class="company-info-description">About your organization</p>
+                <p class="company-info-meta">Company overview and mission statement</p>
+              </div>
+            </div>
+            <div class="company-info-content">
+              <div class="company-info-grid">
+                <div class="company-info-value full-width">
+                  <span class="company-info-label">Description</span>
+                  <span class="company-info-text">{{ currentUser?.companyDescription }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form *ngIf="isEditingCompany" [formGroup]="companyForm" (ngSubmit)="onCompanySubmit()"
+          class="company-edit-form">
+          <div class="form-card">
+            <div class="form-card-header">
+              <div class="form-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 21h18" stroke="currentColor" stroke-width="2" />
+                  <path d="M5 21V7l8-4v18" stroke="currentColor" stroke-width="2" />
+                  <path d="M19 21V11l-6-4" stroke="currentColor" stroke-width="2" />
+                </svg>
+              </div>
+              <div class="form-card-title">
+                <h3>Company Information</h3>
+                <p>Update your company details and branding</p>
+              </div>
+            </div>
+            <div class="form-card-content">
+              <div class="form-group">
+                <label for="companyName" class="form-label">Company Name *</label>
+                <input type="text" id="companyName" formControlName="companyName" class="form-input"
+                  [class.error]="getFieldError('companyName', companyForm)">
+                <div *ngIf="getFieldError('companyName', companyForm)" class="field-error">
+                  {{ getFieldError('companyName', companyForm) }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="companyDescription" class="form-label">Company Description</label>
+                <textarea id="companyDescription" formControlName="companyDescription" class="form-textarea" rows="4"
+                  placeholder="Brief description of your company..."></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="companyWebsite" class="form-label">Company Website</label>
+                  <input type="url" id="companyWebsite" formControlName="companyWebsite" class="form-input"
+                    placeholder="https://company.com">
+                </div>
+                <div class="form-group">
+                  <label for="companySize" class="form-label">Company Size</label>
+                  <select id="companySize" formControlName="companySize" class="form-select">
+                    <option value="">Select size</option>
+                    <option value="1-10">1-10 employees</option>
+                    <option value="11-50">11-50 employees</option>
+                    <option value="51-200">51-200 employees</option>
+                    <option value="201-500">201-500 employees</option>
+                    <option value="501-1000">501-1000 employees</option>
+                    <option value="1000+">1000+ employees</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="industry" class="form-label">Industry</label>
+                <select id="industry" formControlName="industry" class="form-select">
+                  <option value="">Select industry</option>
+                  <option value="technology">Technology</option>
+                  <option value="healthcare">Healthcare</option>
+                  <option value="finance">Finance</option>
+                  <option value="education">Education</option>
+                  <option value="retail">Retail</option>
+                  <option value="manufacturing">Manufacturing</option>
+                  <option value="consulting">Consulting</option>
+                  <option value="media">Media & Entertainment</option>
+                  <option value="nonprofit">Non-profit</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="confirmPassword" class="form-label">Confirm New Password *</label>
-            <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-input"
-              [class.error]="getFieldError('confirmPassword', passwordForm)">
-            <div *ngIf="getFieldError('confirmPassword', passwordForm)" class="field-error">
-              {{ getFieldError('confirmPassword', passwordForm) }}
-            </div>
-          </div>
-
-          <div class="form-actions">
-            <button type="button" (click)="toggleChangePassword()" class="btn-secondary">
+          <div class="form-actions-card">
+            <button type="button" (click)="toggleEditCompany()" class="btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" />
+                <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" />
+              </svg>
               Cancel
             </button>
             <button type="submit" class="btn-primary" [disabled]="isLoading">
               <span *ngIf="isLoading" class="loading-spinner"></span>
-              {{ isLoading ? 'Changing...' : 'Change Password' }}
+              <svg *ngIf="!isLoading" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" />
+                <polyline points="22,4 12,14.01 9,11.01" stroke="currentColor" stroke-width="2" />
+              </svg>
+              {{ isLoading ? 'Saving...' : 'Save Changes' }}
             </button>
           </div>
         </form>
       </div>
+
+      <!-- Job Postings Section (Company) -->
+      <div *ngIf="activeSection === 'jobs' && currentUser?.role === 'company'" class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">Job Postings</h2>
+          <button class="btn-primary" (click)="navigateToCreateJob()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2" />
+              <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2" />
+            </svg>
+            Post New Job
+          </button>
+        </div>
+
+        <div *ngIf="companyJobs.length === 0" class="empty-state">
+          <div class="empty-state-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" stroke="currentColor" stroke-width="2" />
+            </svg>
+          </div>
+          <h3 class="empty-state-title">No Job Postings Yet</h3>
+          <p class="empty-state-description">Start attracting top talent by posting your first job opening.</p>
+          <button class="btn-primary" (click)="navigateToCreateJob()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2" />
+              <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2" />
+            </svg>
+            Post Your First Job
+          </button>
+        </div>
+
+        <div *ngIf="companyJobs.length > 0" class="jobs-list">
+          <div *ngFor="let job of companyJobs" class="job-card">
+            <div class="job-card-header">
+              <div class="job-info">
+                <h3 class="job-title">{{ job.title }}</h3>
+                <p class="job-meta">
+                  <span class="job-location">{{ job.location }}</span>
+                  <span class="job-type">{{ job.type }}</span>
+                  <span class="job-posted">Posted {{ getTimeAgo(job.postedDate) }}</span>
+                </p>
+              </div>
+              <div class="job-status">
+                <span class="status-badge" [class]="'status-' + (job.status || 'active').toLowerCase()">
+                  {{ job.status || 'Active' }}
+                </span>
+              </div>
+            </div>
+            <div class="job-card-content">
+              <p class="job-description">{{ job.description | slice:0:150 }}{{ job.description.length > 150 ? '...' : ''
+                }}</p>
+              <div class="job-stats">
+                <div class="stat-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" />
+                    <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  <span>{{ getJobApplicationCount(job.id) }} applications</span>
+                </div>
+                <div class="stat-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                    <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  <span>{{ getDaysUntilDeadline(job.applicationDeadline) }} days left</span>
+                </div>
+              </div>
+            </div>
+            <div class="job-card-actions">
+              <button class="btn-secondary" (click)="viewJobApplications(job.id)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" />
+                  <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" />
+                </svg>
+                View Applications
+              </button>
+              <button class="btn-secondary" (click)="editJob(job.id)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
+                    stroke-width="2" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                    stroke-width="2" />
+                </svg>
+                Edit
+              </button>
+              <button class="btn-destructive" (click)="deleteJob(job.id)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                    stroke="currentColor" stroke-width="2" />
+                </svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Applications Section (Company) -->
+      <div *ngIf="activeSection === 'applications' && currentUser?.role === 'company'" class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">Job Applications</h2>
+          <div class="filter-controls">
+            <select [(ngModel)]="selectedJobFilter" (change)="filterApplications()" class="form-select">
+              <option value="">All Jobs</option>
+              <option *ngFor="let job of companyJobs" [value]="job.id">{{ job.title }}</option>
+            </select>
+            <select [(ngModel)]="selectedStatusFilter" (change)="filterApplications()" class="form-select">
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="reviewed">Reviewed</option>
+              <option value="shortlisted">Shortlisted</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+
+        <div *ngIf="filteredApplications.length === 0" class="empty-state">
+          <div class="empty-state-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" />
+              <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" />
+            </svg>
+          </div>
+          <h3 class="empty-state-title">No Applications Yet</h3>
+          <p class="empty-state-description">Applications will appear here once candidates start applying to your job
+            postings.</p>
+        </div>
+
+        <div *ngIf="filteredApplications.length > 0" class="applications-list">
+          <div *ngFor="let application of filteredApplications" class="application-card">
+            <div class="application-header">
+              <div class="applicant-info">
+                <div class="applicant-avatar">
+                  {{ getInitials(application.applicationData.personalInfo.firstName + ' ' +
+                  application.applicationData.personalInfo.lastName) }}
+                </div>
+                <div class="applicant-details">
+                  <h3 class="applicant-name">{{ application.applicationData.personalInfo.firstName }} {{
+                    application.applicationData.personalInfo.lastName }}</h3>
+                  <p class="application-job">Applied for: {{ getJobTitle(application.jobId) }}</p>
+                  <p class="application-date">{{ getTimeAgo(application.submittedAt) }}</p>
+                </div>
+              </div>
+              <div class="application-status">
+                <select [(ngModel)]="application.status" (change)="updateApplicationStatus(application)"
+                  class="status-select">
+                  <option value="pending">Pending</option>
+                  <option value="reviewed">Reviewed</option>
+                  <option value="shortlisted">Shortlisted</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+            <div class="application-content">
+              <p class="cover-letter" *ngIf="application.applicationData.coverLetter">
+                <strong>Cover Letter:</strong> {{ application.applicationData.coverLetter | slice:0:200 }}{{
+                application.applicationData.coverLetter.length > 200 ? '...' : '' }}
+              </p>
+              <div class="application-actions">
+                <button class="btn-secondary" (click)="viewApplication(application)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" />
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  View Details
+                </button>
+                <button class="btn-secondary" *ngIf="application.applicationData.resume"
+                  (click)="downloadResume(application.applicationData.resume.fileUrl)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" />
+                    <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2" />
+                    <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  Download Resume
+                </button>
+                <button class="btn-primary" (click)="contactApplicant(application)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                      stroke="currentColor" stroke-width="2" />
+                    <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  Contact
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
 
       <!-- Professional Information Section -->
       <div *ngIf="activeSection === 'professional'" class="profile-section">
@@ -713,6 +1079,351 @@
               <h3 class="preference-title">Member Since</h3>
               <p class="preference-description">{{ currentUser?.createdAt | date:'mediumDate' }}</p>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Settings Section -->
+      <div *ngIf="activeSection === 'admin'" class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">Admin Settings</h2>
+          <p class="section-description">Platform administration settings</p>
+        </div>
+
+        <div class="preferences-list">
+          <div class="preference-item">
+            <div class="preference-info">
+              <h3 class="preference-title">Platform Settings</h3>
+              <p class="preference-description">Configure platform-wide settings and preferences</p>
+            </div>
+            <a routerLink="/settings" class="btn-secondary">
+              Go to Settings
+            </a>
+          </div>
+
+          <div class="preference-item">
+            <div class="preference-info">
+              <h3 class="preference-title">System Administration</h3>
+              <p class="preference-description">Access advanced admin tools and configuration</p>
+            </div>
+            <a routerLink="/settings" class="btn-secondary">
+              Manage System
+            </a>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+      <!-- User Management Section -->
+      <div *ngIf="activeSection === 'users'" class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">User Management</h2>
+          <p class="section-description">Manage platform users and their roles</p>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="error-message">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+            <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" />
+            <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" />
+          </svg>
+          {{ errorMessage }}
+        </div>
+
+        <!-- User Filters -->
+        <div class="filters-section">
+          <div class="filters-row">
+            <div class="filter-group">
+              <label for="userRoleFilter" class="filter-label">Filter by Role:</label>
+              <select id="userRoleFilter" [(ngModel)]="selectedUserRoleFilter" (change)="filterUsers()"
+                class="filter-select">
+                <option value="">All Roles</option>
+                <option value="job-seeker">Job Seekers</option>
+                <option value="company">Companies</option>
+                <option value="admin">Administrators</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="userStatusFilter" class="filter-label">Filter by Status:</label>
+              <select id="userStatusFilter" [(ngModel)]="selectedUserStatusFilter" (change)="filterUsers()"
+                class="filter-select">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Users List -->
+        <div *ngIf="filteredUsers.length > 0" class="users-list">
+          <div *ngFor="let user of filteredUsers" class="user-card">
+            <div class="user-header">
+              <div class="user-info">
+                <div class="user-avatar">
+                  {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
+                </div>
+                <div class="user-details">
+                  <h3 class="user-name">{{ user.firstName }} {{ user.lastName }}</h3>
+                  <p class="user-email">{{ user.email }}</p>
+                  <p class="user-meta">
+                    <span class="user-role">{{ getUserRoleDisplayName(user.role) }}</span>
+                    <span class="user-joined">Joined {{ formatDate(user.createdAt) }}</span>
+                  </p>
+                </div>
+              </div>
+              <div class="user-status">
+                <label class="toggle-switch">
+                  <input type="checkbox" [(ngModel)]="user.isActive" (change)="updateUserStatus(user)">
+                  <span class="toggle-slider"></span>
+                </label>
+                <span class="status-text">{{ user.isActive ? 'Active' : 'Inactive' }}</span>
+              </div>
+            </div>
+
+            <div class="user-content">
+              <div class="user-stats" *ngIf="user.role !== 'admin'">
+                <div class="stat-item" *ngIf="user.role === 'job-seeker'">
+                  <span class="stat-label">Applications:</span>
+                  <span class="stat-value">{{ user.jobApplicationsCount || 0 }}</span>
+                </div>
+                <div class="stat-item" *ngIf="user.role === 'company'">
+                  <span class="stat-label">Job Postings:</span>
+                  <span class="stat-value">{{ user.jobPostingsCount || 0 }}</span>
+                </div>
+                <div class="stat-item" *ngIf="user.companyName">
+                  <span class="stat-label">Company:</span>
+                  <span class="stat-value">{{ user.companyName }}</span>
+                </div>
+                <div class="stat-item" *ngIf="user.location">
+                  <span class="stat-label">Location:</span>
+                  <span class="stat-value">{{ user.location }}</span>
+                </div>
+                <div class="stat-item" *ngIf="user.lastLoginAt">
+                  <span class="stat-label">Last Login:</span>
+                  <span class="stat-value">{{ getTimeAgoAdmin(user.lastLoginAt) }}</span>
+                </div>
+              </div>
+
+              <div class="user-actions">
+                <div class="role-selector">
+                  <label for="role-{{ user.id }}" class="role-label">Role:</label>
+                  <select id="role-{{ user.id }}" [value]="user.role" (change)="onUserRoleChange(user, $event)"
+                    class="role-select">
+                    <option value="job-seeker">Job Seeker</option>
+                    <option value="company">Company</option>
+                    <option value="admin">Administrator</option>
+                  </select>
+                </div>
+                <button class="btn-danger" (click)="deleteUser(user)"
+                  [disabled]="user.role === 'admin' && user.id === currentUser?.id">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                      stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="filteredUsers.length === 0 && allUsers.length > 0" class="no-filtered-users">
+          <p>No users match the selected filters.</p>
+        </div>
+
+        <div *ngIf="allUsers.length === 0" class="no-users">
+          <div class="no-users-content">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" />
+              <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <h3>No Users Found</h3>
+            <p>No users are currently registered on the platform.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Job Management Section for Admin -->
+      <div *ngIf="activeSection === 'jobs' && currentUser?.role === 'admin'" class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">Job Management</h2>
+          <p class="section-description">Oversee all job postings on the platform</p>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="error-message">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+            <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" />
+            <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" />
+          </svg>
+          {{ errorMessage }}
+        </div>
+
+        <!-- Job Management Stats -->
+        <div *ngIf="jobManagementStats" class="job-stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" stroke="currentColor" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">{{ jobManagementStats.totalJobs }}</h3>
+              <p class="stat-label">Total Jobs</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon active">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">{{ jobManagementStats.activeJobs }}</h3>
+              <p class="stat-label">Active Jobs</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon paused">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="4" width="4" height="16" stroke="currentColor" stroke-width="2" />
+                <rect x="14" y="4" width="4" height="16" stroke="currentColor" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">{{ jobManagementStats.pausedJobs }}</h3>
+              <p class="stat-label">Paused Jobs</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon expired">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" />
+                <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">{{ jobManagementStats.expiredJobs }}</h3>
+              <p class="stat-label">Expired Jobs</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Job Filters -->
+        <div class="filters-section">
+          <div class="filters-row">
+            <div class="filter-group">
+              <label for="jobStatusFilter" class="filter-label">Filter by Status:</label>
+              <select id="jobStatusFilter" [(ngModel)]="selectedJobStatusFilter" (change)="filterJobsForAdmin()"
+                class="filter-select">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="paused">Paused</option>
+                <option value="expired">Expired</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jobs List -->
+        <div *ngIf="filteredJobsForAdmin.length > 0" class="admin-jobs-list">
+          <div *ngFor="let job of filteredJobsForAdmin" class="admin-job-card">
+            <div class="admin-job-header">
+              <div class="admin-job-info">
+                <h3 class="admin-job-title">{{ job.title }}</h3>
+                <p class="admin-job-company">{{ job.company }}</p>
+                <p class="admin-job-meta">
+                  <span class="admin-job-location">{{ job.location }}</span>
+                  <span class="admin-job-type">{{ job.type }}</span>
+                  <span class="admin-job-salary">{{ job.salary }}</span>
+                </p>
+              </div>
+              <div class="admin-job-status">
+                <span class="status-badge" [class]="getJobStatusClass(job)">
+                  {{ getJobStatusDisplayName(job) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="admin-job-content">
+              <div class="admin-job-stats">
+                <div class="admin-stat-item">
+                  <span class="admin-stat-label">Applications:</span>
+                  <span class="admin-stat-value">{{ job.applicationCount }}</span>
+                </div>
+                <div class="admin-stat-item">
+                  <span class="admin-stat-label">Posted:</span>
+                  <span class="admin-stat-value">{{ getTimeAgoAdmin(job.postedDate) }}</span>
+                </div>
+                <div class="admin-stat-item">
+                  <span class="admin-stat-label">Deadline:</span>
+                  <span class="admin-stat-value">{{ formatDate(job.applicationDeadline) }}</span>
+                </div>
+                <div class="admin-stat-item" *ngIf="job.companyContact">
+                  <span class="admin-stat-label">Contact:</span>
+                  <span class="admin-stat-value">{{ job.companyContact }}</span>
+                </div>
+                <div class="admin-stat-item" *ngIf="job.companyEmail">
+                  <span class="admin-stat-label">Email:</span>
+                  <span class="admin-stat-value">{{ job.companyEmail }}</span>
+                </div>
+              </div>
+
+              <div class="admin-job-actions">
+                <label class="toggle-switch">
+                  <input type="checkbox" [(ngModel)]="job.isActive" (change)="updateJobStatusAsAdmin(job)">
+                  <span class="toggle-slider"></span>
+                </label>
+                <span class="toggle-text">{{ job.isActive ? 'Active' : 'Paused' }}</span>
+
+                <button class="btn-secondary" [routerLink]="['/jobs', job.id]">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" />
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  View
+                </button>
+
+                <button class="btn-danger" (click)="deleteJobAsAdmin(job)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                      stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="filteredJobsForAdmin.length === 0 && allJobsForAdmin.length > 0" class="no-filtered-jobs">
+          <p>No jobs match the selected filters.</p>
+        </div>
+
+        <div *ngIf="allJobsForAdmin.length === 0" class="no-jobs">
+          <div class="no-jobs-content">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <h3>No Jobs Found</h3>
+            <p>No job postings are currently available on the platform.</p>
           </div>
         </div>
       </div>
