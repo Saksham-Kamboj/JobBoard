@@ -7,12 +7,17 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService, User } from '../../core/services/auth.service';
 import {
   UserProfileService,
   UserProfile,
 } from '../../core/services/user-profile.service';
+import {
+  JobManagementService,
+  Job,
+  JobApplication,
+} from '../../core/services/job-management.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -26,10 +31,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
   userProfile: UserProfile | null = null;
   profileForm: FormGroup;
   professionalForm: FormGroup;
+  companyForm: FormGroup;
   passwordForm: FormGroup;
   isEditingProfile = false;
   isEditingProfessional = false;
+  isEditingCompany = false;
   isChangingPassword = false;
+
+  // Job and application data
+  companyJobs: Job[] = [];
+  jobApplications: JobApplication[] = [];
+  filteredApplications: JobApplication[] = [];
+  selectedJobFilter = '';
+  selectedStatusFilter = '';
   isLoading = false;
   profileUpdateSuccess = false;
   passwordUpdateSuccess = false;
@@ -40,46 +54,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private authSubscription: Subscription = new Subscription();
 
-  // Profile sections
-  profileSections = [
-    {
-      id: 'personal',
-      title: 'Personal Information',
-      icon: 'user',
-      description: 'Update your basic information',
-    },
-    {
-      id: 'professional',
-      title: 'Professional Info',
-      icon: 'briefcase',
-      description: 'Manage your professional details',
-    },
-    {
-      id: 'resume',
-      title: 'Resume',
-      icon: 'file',
-      description: 'Upload and manage your resume',
-    },
-    {
-      id: 'security',
-      title: 'Security',
-      icon: 'shield',
-      description: 'Change password and security settings',
-    },
-    {
-      id: 'preferences',
-      title: 'Preferences',
-      icon: 'settings',
-      description: 'Customize your experience',
-    },
-  ];
+  // Profile sections - will be dynamically set based on user role
+  profileSections: any[] = [];
 
   activeSection = 'personal';
 
   constructor(
     private authService: AuthService,
     private formBuilder: FormBuilder,
-    private userProfileService: UserProfileService
+    private userProfileService: UserProfileService,
+    private jobManagementService: JobManagementService,
+    private router: Router
   ) {
     this.profileForm = this.formBuilder.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
@@ -104,6 +89,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
 
     this.professionalForm = this.createProfessionalForm();
+
+    this.companyForm = this.formBuilder.group({
+      companyName: ['', [Validators.required, Validators.minLength(2)]],
+      companyDescription: [''],
+      companyWebsite: ['', [Validators.pattern(/^https?:\/\/.+/)]],
+      companySize: [''],
+      industry: [''],
+    });
 
     this.passwordForm = this.formBuilder.group(
       {
@@ -135,7 +128,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.authService.currentUser$.subscribe((user) => {
         this.currentUser = user;
         if (user) {
+          this.setProfileSections(user.role);
           this.loadUserProfile();
+          this.loadCompanyData();
+          if (user.role === 'company') {
+            this.loadCompanyJobs();
+          }
         }
       })
     );
@@ -145,10 +143,157 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.authSubscription.unsubscribe();
   }
 
+  setProfileSections(role: string) {
+    switch (role) {
+      case 'job-seeker':
+        this.profileSections = [
+          {
+            id: 'personal',
+            title: 'Personal Information',
+            icon: 'user',
+            description: 'Update your basic information',
+          },
+          {
+            id: 'professional',
+            title: 'Professional Info',
+            icon: 'briefcase',
+            description: 'Manage your professional details',
+          },
+          {
+            id: 'education',
+            title: 'Education',
+            icon: 'book',
+            description: 'Add your educational background',
+          },
+          {
+            id: 'experience',
+            title: 'Work Experience',
+            icon: 'work',
+            description: 'Manage your work history',
+          },
+          {
+            id: 'resume',
+            title: 'Resume',
+            icon: 'file',
+            description: 'Upload and manage your resume',
+          },
+          {
+            id: 'security',
+            title: 'Security',
+            icon: 'shield',
+            description: 'Change password and security settings',
+          },
+          {
+            id: 'preferences',
+            title: 'Preferences',
+            icon: 'settings',
+            description: 'Customize your experience',
+          },
+        ];
+        break;
+      case 'company':
+        this.profileSections = [
+          {
+            id: 'personal',
+            title: 'Contact Information',
+            icon: 'user',
+            description: 'Update contact details',
+          },
+          {
+            id: 'company',
+            title: 'Company Profile',
+            icon: 'building',
+            description: 'Manage company information',
+          },
+          {
+            id: 'jobs',
+            title: 'Job Postings',
+            icon: 'briefcase',
+            description: 'Manage your job listings',
+          },
+          {
+            id: 'applications',
+            title: 'Applications',
+            icon: 'users',
+            description: 'Review job applications',
+          },
+          {
+            id: 'security',
+            title: 'Security',
+            icon: 'shield',
+            description: 'Change password and security settings',
+          },
+          {
+            id: 'preferences',
+            title: 'Preferences',
+            icon: 'settings',
+            description: 'Customize your experience',
+          },
+        ];
+        break;
+      case 'admin':
+        this.profileSections = [
+          {
+            id: 'personal',
+            title: 'Personal Information',
+            icon: 'user',
+            description: 'Update your basic information',
+          },
+          {
+            id: 'admin',
+            title: 'Admin Settings',
+            icon: 'shield-check',
+            description: 'Platform administration settings',
+          },
+          {
+            id: 'users',
+            title: 'User Management',
+            icon: 'users',
+            description: 'Manage platform users',
+          },
+          {
+            id: 'jobs',
+            title: 'Job Management',
+            icon: 'briefcase',
+            description: 'Oversee all job postings',
+          },
+          {
+            id: 'security',
+            title: 'Security',
+            icon: 'shield',
+            description: 'Change password and security settings',
+          },
+          {
+            id: 'preferences',
+            title: 'Preferences',
+            icon: 'settings',
+            description: 'Customize your experience',
+          },
+        ];
+        break;
+      default:
+        this.profileSections = [
+          {
+            id: 'personal',
+            title: 'Personal Information',
+            icon: 'user',
+            description: 'Update your basic information',
+          },
+          {
+            id: 'security',
+            title: 'Security',
+            icon: 'shield',
+            description: 'Change password and security settings',
+          },
+        ];
+    }
+  }
+
   setActiveSection(sectionId: string) {
     this.activeSection = sectionId;
     this.isEditingProfile = false;
     this.isEditingProfessional = false;
+    this.isEditingCompany = false;
     this.isChangingPassword = false;
     this.clearMessages();
   }
@@ -270,6 +415,69 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.loadUserProfile(); // Reset form if canceling
     }
     this.clearMessages();
+  }
+
+  toggleEditCompany() {
+    this.isEditingCompany = !this.isEditingCompany;
+    if (!this.isEditingCompany) {
+      this.loadCompanyData(); // Reset form if canceling
+    }
+    this.clearMessages();
+  }
+
+  loadCompanyData() {
+    if (this.currentUser) {
+      this.companyForm.patchValue({
+        companyName: this.currentUser.companyName || '',
+        companyDescription: this.currentUser.companyDescription || '',
+        companyWebsite: this.currentUser.companyWebsite || '',
+        companySize: this.currentUser.companySize || '',
+        industry: this.currentUser.industry || '',
+      });
+    }
+  }
+
+  onCompanySubmit() {
+    if (this.companyForm.valid && this.currentUser) {
+      this.isLoading = true;
+      this.clearMessages();
+
+      const formValue = this.companyForm.value;
+      const updatedUser = {
+        ...this.currentUser,
+        companyName: formValue.companyName,
+        companyDescription: formValue.companyDescription,
+        companyWebsite: formValue.companyWebsite,
+        companySize: formValue.companySize,
+        industry: formValue.industry,
+      };
+
+      // Update user in the backend
+      this.authService.updateProfile(formValue).subscribe({
+        next: (user) => {
+          this.currentUser = user;
+          this.isLoading = false;
+          this.isEditingCompany = false;
+          this.profileUpdateSuccess = true;
+
+          setTimeout(() => {
+            this.profileUpdateSuccess = false;
+          }, 3000);
+        },
+        error: (error) => {
+          console.error('Error updating company profile:', error);
+          this.isLoading = false;
+          this.errorMessage =
+            'Failed to update company profile. Please try again.';
+
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 5000);
+        },
+      });
+    } else {
+      this.markFormGroupTouched(this.companyForm);
+    }
   }
 
   onProfileSubmit() {
@@ -711,12 +919,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
     );
   }
 
-  downloadResume(): void {
-    if (this.userProfile?.resume) {
-      // In a real application, this would download from the server
-      // For demo purposes, we'll show a message
+  downloadResume(resumeUrl?: string): void {
+    if (resumeUrl) {
+      // Download specific resume from application
+      console.log('Downloading resume:', resumeUrl);
+      alert('Resume download would start here');
+    } else if (this.userProfile?.resume) {
+      // Download user's own resume
       alert(`Downloading ${this.userProfile.resume.fileName}...`);
-
       // Real implementation would be:
       // window.open(this.userProfile.resume.fileUrl, '_blank');
     }
@@ -838,5 +1048,184 @@ export class ProfileComponent implements OnInit, OnDestroy {
         },
       })
     );
+  }
+
+  // Job and Application Management Methods
+  loadCompanyJobs() {
+    if (this.currentUser?.role === 'company') {
+      this.isLoading = true;
+
+      // Get company name from user data
+      const companyName =
+        this.currentUser.companyName ||
+        this.currentUser.firstName + ' ' + this.currentUser.lastName;
+
+      this.authSubscription.add(
+        this.jobManagementService.getJobs().subscribe({
+          next: (jobs) => {
+            // Filter jobs by company name or company ID
+            this.companyJobs = jobs.filter(
+              (job) =>
+                job.company === companyName ||
+                job.companyId === this.currentUser?.id ||
+                job.company === this.currentUser?.companyName
+            );
+            this.isLoading = false;
+
+            // Load applications after jobs are loaded
+            this.loadJobApplications();
+          },
+          error: (error) => {
+            console.error('Error loading company jobs:', error);
+            this.isLoading = false;
+            this.companyJobs = [];
+          },
+        })
+      );
+    }
+  }
+
+  loadJobApplications() {
+    if (this.currentUser?.role === 'company' && this.companyJobs.length > 0) {
+      this.authSubscription.add(
+        this.jobManagementService
+          .getApplicationsByCompany(this.companyJobs)
+          .subscribe({
+            next: (applications) => {
+              this.jobApplications = applications;
+              this.filteredApplications = [...applications];
+            },
+            error: (error) => {
+              console.error('Error loading job applications:', error);
+              this.jobApplications = [];
+              this.filteredApplications = [];
+            },
+          })
+      );
+    }
+  }
+
+  // Navigation methods
+  navigateToCreateJob() {
+    this.router.navigate(['/jobs/create']);
+  }
+
+  editJob(jobId: string) {
+    this.router.navigate(['/jobs/edit', jobId]);
+  }
+
+  viewJobApplications(jobId: string) {
+    this.selectedJobFilter = jobId;
+    this.filterApplications();
+    this.setActiveSection('applications');
+  }
+
+  // Job management methods
+  deleteJob(jobId: string) {
+    if (confirm('Are you sure you want to delete this job posting?')) {
+      this.authSubscription.add(
+        this.jobManagementService.deleteJob(jobId).subscribe({
+          next: () => {
+            this.companyJobs = this.companyJobs.filter(
+              (job) => job.id !== jobId
+            );
+            // Also remove related applications
+            this.jobApplications = this.jobApplications.filter(
+              (app) => app.jobId !== jobId
+            );
+            this.filteredApplications = this.filteredApplications.filter(
+              (app) => app.jobId !== jobId
+            );
+          },
+          error: (error) => {
+            console.error('Error deleting job:', error);
+            this.errorMessage = 'Failed to delete job. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+      );
+    }
+  }
+
+  getJobApplicationCount(jobId: string): number {
+    return this.jobManagementService.getJobApplicationCount(
+      jobId,
+      this.jobApplications
+    );
+  }
+
+  getDaysUntilDeadline(deadline: string): number {
+    return this.jobManagementService.getDaysUntilDeadline(deadline);
+  }
+
+  getTimeAgo(date: string): string {
+    return this.jobManagementService.getTimeAgo(date);
+  }
+
+  // Application management methods
+  filterApplications() {
+    this.filteredApplications = this.jobManagementService.filterApplications(
+      this.jobApplications,
+      this.selectedJobFilter,
+      this.selectedStatusFilter
+    );
+  }
+
+  updateApplicationStatus(application: JobApplication) {
+    this.authSubscription.add(
+      this.jobManagementService
+        .updateApplicationStatus(application.id, application.status)
+        .subscribe({
+          next: (updatedApplication) => {
+            // Update the local application data
+            const index = this.jobApplications.findIndex(
+              (app) => app.id === application.id
+            );
+            if (index !== -1) {
+              this.jobApplications[index] = updatedApplication;
+            }
+            // Update filtered applications
+            this.filterApplications();
+          },
+          error: (error) => {
+            console.error('Error updating application status:', error);
+            this.errorMessage =
+              'Failed to update application status. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+    );
+  }
+
+  getJobTitle(jobId: string): string {
+    const job = this.companyJobs.find((j) => j.id === jobId);
+    return job ? job.title : 'Unknown Job';
+  }
+
+  getInitials(name: string): string {
+    return this.jobManagementService.getInitials(name);
+  }
+
+  viewApplication(application: JobApplication) {
+    // In real app, navigate to detailed application view
+    const applicantName = `${application.applicationData.personalInfo.firstName} ${application.applicationData.personalInfo.lastName}`;
+    const applicantEmail = application.applicationData.personalInfo.email;
+
+    console.log('Viewing application:', application);
+    alert(
+      `Viewing application from ${applicantName}\n\nEmail: ${applicantEmail}\nStatus: ${application.status}\n\nCover Letter:\n${application.applicationData.coverLetter}`
+    );
+  }
+
+  contactApplicant(application: JobApplication) {
+    const applicantEmail = application.applicationData.personalInfo.email;
+    const jobTitle = this.getJobTitle(application.jobId);
+
+    console.log('Contacting applicant:', applicantEmail);
+    window.location.href = `mailto:${applicantEmail}?subject=Regarding your application for ${jobTitle}`;
   }
 }
