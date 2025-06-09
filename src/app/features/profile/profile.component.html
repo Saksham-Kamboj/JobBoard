@@ -1090,6 +1090,588 @@
           </div>
         </div>
       </div>
+
+      <!-- Admin Settings Section -->
+      <div *ngIf="activeSection === 'admin'" class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">Admin Settings</h2>
+          <p class="section-description">Platform administration settings</p>
+        </div>
+
+        <!-- Success Message -->
+        <div *ngIf="profileUpdateSuccess" class="success-message">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <polyline points="22,4 12,14.01 9,11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          Admin settings updated successfully!
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="error-message">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+            <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" />
+            <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" />
+          </svg>
+          {{ errorMessage }}
+        </div>
+
+        <!-- Admin Settings Display Mode -->
+        <div *ngIf="adminSettings && !isEditingAdminSettings" class="admin-settings-list">
+          <div class="admin-setting-item">
+            <div class="admin-setting-header">
+              <div class="admin-setting-details">
+                <h3 class="admin-setting-title">Platform Information</h3>
+                <p class="admin-setting-description">{{ adminSettings.platformName }}</p>
+                <p class="admin-setting-meta">{{ adminSettings.platformDescription }}</p>
+              </div>
+              <button class="btn-primary" (click)="toggleEditAdminSettings()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
+                    stroke-width="2" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                    stroke-width="2" />
+                </svg>
+                Edit Settings
+              </button>
+            </div>
+            <div class="admin-setting-content">
+              <div class="admin-settings-grid">
+                <div class="admin-setting-value">
+                  <span class="admin-setting-label">Platform Name</span>
+                  <span class="admin-setting-text">{{ adminSettings.platformName }}</span>
+                </div>
+                <div class="admin-setting-value">
+                  <span class="admin-setting-label">Support Email</span>
+                  <span class="admin-setting-text">{{ adminSettings.supportEmail }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-setting-item">
+            <div class="admin-setting-header">
+              <div class="admin-setting-details">
+                <h3 class="admin-setting-title">Registration Settings</h3>
+                <p class="admin-setting-description">User Registration Controls</p>
+                <p class="admin-setting-meta">Manage how new users can join the platform</p>
+              </div>
+            </div>
+            <div class="admin-setting-content">
+              <div class="admin-settings-grid">
+                <div class="admin-setting-value">
+                  <span class="admin-setting-label">Registration</span>
+                  <span class="admin-setting-status" [class]="adminSettings.allowRegistration ? 'enabled' : 'disabled'">
+                    {{ adminSettings.allowRegistration ? 'Enabled' : 'Disabled' }}
+                  </span>
+                </div>
+                <div class="admin-setting-value">
+                  <span class="admin-setting-label">Email Verification</span>
+                  <span class="admin-setting-status"
+                    [class]="adminSettings.requireEmailVerification ? 'enabled' : 'disabled'">
+                    {{ adminSettings.requireEmailVerification ? 'Required' : 'Optional' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-setting-item">
+            <div class="admin-setting-header">
+              <div class="admin-setting-details">
+                <h3 class="admin-setting-title">Job Posting Limits</h3>
+                <p class="admin-setting-description">Company Posting Controls</p>
+                <p class="admin-setting-meta">Set limits and duration for job postings</p>
+              </div>
+            </div>
+            <div class="admin-setting-content">
+              <div class="admin-settings-grid">
+                <div class="admin-setting-value">
+                  <span class="admin-setting-label">Max per Company</span>
+                  <span class="admin-setting-text">{{ adminSettings.maxJobPostingsPerCompany }}</span>
+                </div>
+                <div class="admin-setting-value">
+                  <span class="admin-setting-label">Duration</span>
+                  <span class="admin-setting-text">{{ adminSettings.jobPostingDurationDays }} days</span>
+                </div>
+                <div class="admin-setting-value">
+                  <span class="admin-setting-label">Featured Job Price</span>
+                  <span class="admin-setting-text">${{ adminSettings.featuredJobPrice }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-setting-item">
+            <div class="admin-setting-header">
+              <div class="admin-setting-details">
+                <h3 class="admin-setting-title">System Status</h3>
+                <p class="admin-setting-description">Platform Operations</p>
+                <p class="admin-setting-meta">Monitor and control system status</p>
+              </div>
+            </div>
+            <div class="admin-setting-content">
+              <div class="admin-settings-grid">
+                <div class="admin-setting-value">
+                  <span class="admin-setting-label">Maintenance Mode</span>
+                  <span class="admin-setting-status" [class]="adminSettings.maintenanceMode ? 'active' : 'inactive'">
+                    {{ adminSettings.maintenanceMode ? 'Active' : 'Inactive' }}
+                  </span>
+                </div>
+                <div class="admin-setting-value">
+                  <span class="admin-setting-label">Last Updated</span>
+                  <span class="admin-setting-text">{{ formatDate(adminSettings.updatedAt) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin Settings Edit Mode -->
+        <div *ngIf="isEditingAdminSettings" class="admin-settings-edit-form">
+          <div class="form-header">
+            <h3>Platform Settings Configuration</h3>
+            <p>Configure platform-wide settings and preferences</p>
+          </div>
+          <form [formGroup]="adminSettingsForm" (ngSubmit)="onAdminSettingsSubmit()">
+            <div class="form-content">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Platform Name *</label>
+                  <input type="text" formControlName="platformName" class="form-input" placeholder="JobBoard Pro"
+                    [class.error]="getFieldError('platformName', adminSettingsForm)">
+                  <span *ngIf="getFieldError('platformName', adminSettingsForm)" class="error-text">
+                    {{ getFieldError('platformName', adminSettingsForm) }}
+                  </span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Support Email *</label>
+                  <input type="email" formControlName="supportEmail" class="form-input"
+                    placeholder="support@jobboard.com" [class.error]="getFieldError('supportEmail', adminSettingsForm)">
+                  <span *ngIf="getFieldError('supportEmail', adminSettingsForm)" class="error-text">
+                    {{ getFieldError('supportEmail', adminSettingsForm) }}
+                  </span>
+                </div>
+
+                <div class="form-group full-width">
+                  <label class="form-label">Platform Description *</label>
+                  <textarea formControlName="platformDescription" class="form-textarea" rows="3"
+                    placeholder="Professional job board platform..."
+                    [class.error]="getFieldError('platformDescription', adminSettingsForm)"></textarea>
+                  <span *ngIf="getFieldError('platformDescription', adminSettingsForm)" class="error-text">
+                    {{ getFieldError('platformDescription', adminSettingsForm) }}
+                  </span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Max Job Postings per Company *</label>
+                  <input type="number" formControlName="maxJobPostingsPerCompany" class="form-input" min="1"
+                    placeholder="50" [class.error]="getFieldError('maxJobPostingsPerCompany', adminSettingsForm)">
+                  <span *ngIf="getFieldError('maxJobPostingsPerCompany', adminSettingsForm)" class="error-text">
+                    {{ getFieldError('maxJobPostingsPerCompany', adminSettingsForm) }}
+                  </span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Job Posting Duration (Days) *</label>
+                  <input type="number" formControlName="jobPostingDurationDays" class="form-input" min="1"
+                    placeholder="30" [class.error]="getFieldError('jobPostingDurationDays', adminSettingsForm)">
+                  <span *ngIf="getFieldError('jobPostingDurationDays', adminSettingsForm)" class="error-text">
+                    {{ getFieldError('jobPostingDurationDays', adminSettingsForm) }}
+                  </span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Featured Job Price *</label>
+                  <input type="number" formControlName="featuredJobPrice" class="form-input" min="0" step="0.01"
+                    placeholder="99.99" [class.error]="getFieldError('featuredJobPrice', adminSettingsForm)">
+                  <span *ngIf="getFieldError('featuredJobPrice', adminSettingsForm)" class="error-text">
+                    {{ getFieldError('featuredJobPrice', adminSettingsForm) }}
+                  </span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Privacy Policy URL</label>
+                  <input type="url" formControlName="privacyPolicyUrl" class="form-input" placeholder="/privacy-policy">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Terms of Service URL</label>
+                  <input type="url" formControlName="termsOfServiceUrl" class="form-input"
+                    placeholder="/terms-of-service">
+                </div>
+
+                <div class="form-group full-width">
+                  <div class="checkbox-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" formControlName="allowRegistration" class="checkbox-input">
+                      <span class="checkbox-text">Allow new user registration</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <div class="checkbox-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" formControlName="requireEmailVerification" class="checkbox-input">
+                      <span class="checkbox-text">Require email verification for new accounts</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <div class="checkbox-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" formControlName="maintenanceMode" class="checkbox-input">
+                      <span class="checkbox-text">Enable maintenance mode</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" (click)="toggleEditAdminSettings()" class="btn-secondary" [disabled]="isLoading">
+                  Cancel
+                </button>
+                <button type="submit" class="btn-primary" [disabled]="isLoading || adminSettingsForm.invalid">
+                  <span *ngIf="isLoading" class="loading-spinner small"></span>
+                  {{ isLoading ? 'Saving...' : 'Save Settings' }}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div *ngIf="!adminSettings && !isEditingAdminSettings" class="no-admin-settings">
+          <div class="no-admin-settings-content">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" stroke="currentColor"
+                stroke-width="2" />
+              <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <h3>No Admin Settings Found</h3>
+            <p>Initialize platform settings to get started.</p>
+            <button class="btn-primary" (click)="toggleEditAdminSettings()">
+              Create Settings
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Management Section -->
+      <div *ngIf="activeSection === 'users'" class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">User Management</h2>
+          <p class="section-description">Manage platform users and their roles</p>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="error-message">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+            <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" />
+            <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" />
+          </svg>
+          {{ errorMessage }}
+        </div>
+
+        <!-- User Filters -->
+        <div class="filters-section">
+          <div class="filters-row">
+            <div class="filter-group">
+              <label for="userRoleFilter" class="filter-label">Filter by Role:</label>
+              <select id="userRoleFilter" [(ngModel)]="selectedUserRoleFilter" (change)="filterUsers()"
+                class="filter-select">
+                <option value="">All Roles</option>
+                <option value="job-seeker">Job Seekers</option>
+                <option value="company">Companies</option>
+                <option value="admin">Administrators</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="userStatusFilter" class="filter-label">Filter by Status:</label>
+              <select id="userStatusFilter" [(ngModel)]="selectedUserStatusFilter" (change)="filterUsers()"
+                class="filter-select">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Users List -->
+        <div *ngIf="filteredUsers.length > 0" class="users-list">
+          <div *ngFor="let user of filteredUsers" class="user-card">
+            <div class="user-header">
+              <div class="user-info">
+                <div class="user-avatar">
+                  {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
+                </div>
+                <div class="user-details">
+                  <h3 class="user-name">{{ user.firstName }} {{ user.lastName }}</h3>
+                  <p class="user-email">{{ user.email }}</p>
+                  <p class="user-meta">
+                    <span class="user-role">{{ getUserRoleDisplayName(user.role) }}</span>
+                    <span class="user-joined">Joined {{ formatDate(user.createdAt) }}</span>
+                  </p>
+                </div>
+              </div>
+              <div class="user-status">
+                <label class="toggle-switch">
+                  <input type="checkbox" [(ngModel)]="user.isActive" (change)="updateUserStatus(user)">
+                  <span class="toggle-slider"></span>
+                </label>
+                <span class="status-text">{{ user.isActive ? 'Active' : 'Inactive' }}</span>
+              </div>
+            </div>
+
+            <div class="user-content">
+              <div class="user-stats" *ngIf="user.role !== 'admin'">
+                <div class="stat-item" *ngIf="user.role === 'job-seeker'">
+                  <span class="stat-label">Applications:</span>
+                  <span class="stat-value">{{ user.jobApplicationsCount || 0 }}</span>
+                </div>
+                <div class="stat-item" *ngIf="user.role === 'company'">
+                  <span class="stat-label">Job Postings:</span>
+                  <span class="stat-value">{{ user.jobPostingsCount || 0 }}</span>
+                </div>
+                <div class="stat-item" *ngIf="user.companyName">
+                  <span class="stat-label">Company:</span>
+                  <span class="stat-value">{{ user.companyName }}</span>
+                </div>
+                <div class="stat-item" *ngIf="user.location">
+                  <span class="stat-label">Location:</span>
+                  <span class="stat-value">{{ user.location }}</span>
+                </div>
+                <div class="stat-item" *ngIf="user.lastLoginAt">
+                  <span class="stat-label">Last Login:</span>
+                  <span class="stat-value">{{ getTimeAgoAdmin(user.lastLoginAt) }}</span>
+                </div>
+              </div>
+
+              <div class="user-actions">
+                <div class="role-selector">
+                  <label for="role-{{ user.id }}" class="role-label">Role:</label>
+                  <select id="role-{{ user.id }}" [value]="user.role" (change)="onUserRoleChange(user, $event)"
+                    class="role-select">
+                    <option value="job-seeker">Job Seeker</option>
+                    <option value="company">Company</option>
+                    <option value="admin">Administrator</option>
+                  </select>
+                </div>
+                <button class="btn-danger" (click)="deleteUser(user)"
+                  [disabled]="user.role === 'admin' && user.id === currentUser?.id">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                      stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="filteredUsers.length === 0 && allUsers.length > 0" class="no-filtered-users">
+          <p>No users match the selected filters.</p>
+        </div>
+
+        <div *ngIf="allUsers.length === 0" class="no-users">
+          <div class="no-users-content">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" />
+              <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <h3>No Users Found</h3>
+            <p>No users are currently registered on the platform.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Job Management Section for Admin -->
+      <div *ngIf="activeSection === 'jobs' && currentUser?.role === 'admin'" class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">Job Management</h2>
+          <p class="section-description">Oversee all job postings on the platform</p>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="error-message">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+            <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" />
+            <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" />
+          </svg>
+          {{ errorMessage }}
+        </div>
+
+        <!-- Job Management Stats -->
+        <div *ngIf="jobManagementStats" class="job-stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" stroke="currentColor" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">{{ jobManagementStats.totalJobs }}</h3>
+              <p class="stat-label">Total Jobs</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon active">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">{{ jobManagementStats.activeJobs }}</h3>
+              <p class="stat-label">Active Jobs</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon paused">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="4" width="4" height="16" stroke="currentColor" stroke-width="2" />
+                <rect x="14" y="4" width="4" height="16" stroke="currentColor" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">{{ jobManagementStats.pausedJobs }}</h3>
+              <p class="stat-label">Paused Jobs</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon expired">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" />
+                <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">{{ jobManagementStats.expiredJobs }}</h3>
+              <p class="stat-label">Expired Jobs</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Job Filters -->
+        <div class="filters-section">
+          <div class="filters-row">
+            <div class="filter-group">
+              <label for="jobStatusFilter" class="filter-label">Filter by Status:</label>
+              <select id="jobStatusFilter" [(ngModel)]="selectedJobStatusFilter" (change)="filterJobsForAdmin()"
+                class="filter-select">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="paused">Paused</option>
+                <option value="expired">Expired</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jobs List -->
+        <div *ngIf="filteredJobsForAdmin.length > 0" class="admin-jobs-list">
+          <div *ngFor="let job of filteredJobsForAdmin" class="admin-job-card">
+            <div class="admin-job-header">
+              <div class="admin-job-info">
+                <h3 class="admin-job-title">{{ job.title }}</h3>
+                <p class="admin-job-company">{{ job.company }}</p>
+                <p class="admin-job-meta">
+                  <span class="admin-job-location">{{ job.location }}</span>
+                  <span class="admin-job-type">{{ job.type }}</span>
+                  <span class="admin-job-salary">{{ job.salary }}</span>
+                </p>
+              </div>
+              <div class="admin-job-status">
+                <span class="status-badge" [class]="getJobStatusClass(job)">
+                  {{ getJobStatusDisplayName(job) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="admin-job-content">
+              <div class="admin-job-stats">
+                <div class="admin-stat-item">
+                  <span class="admin-stat-label">Applications:</span>
+                  <span class="admin-stat-value">{{ job.applicationCount }}</span>
+                </div>
+                <div class="admin-stat-item">
+                  <span class="admin-stat-label">Posted:</span>
+                  <span class="admin-stat-value">{{ getTimeAgoAdmin(job.postedDate) }}</span>
+                </div>
+                <div class="admin-stat-item">
+                  <span class="admin-stat-label">Deadline:</span>
+                  <span class="admin-stat-value">{{ formatDate(job.applicationDeadline) }}</span>
+                </div>
+                <div class="admin-stat-item" *ngIf="job.companyContact">
+                  <span class="admin-stat-label">Contact:</span>
+                  <span class="admin-stat-value">{{ job.companyContact }}</span>
+                </div>
+                <div class="admin-stat-item" *ngIf="job.companyEmail">
+                  <span class="admin-stat-label">Email:</span>
+                  <span class="admin-stat-value">{{ job.companyEmail }}</span>
+                </div>
+              </div>
+
+              <div class="admin-job-actions">
+                <label class="toggle-switch">
+                  <input type="checkbox" [(ngModel)]="job.isActive" (change)="updateJobStatusAsAdmin(job)">
+                  <span class="toggle-slider"></span>
+                </label>
+                <span class="toggle-text">{{ job.isActive ? 'Active' : 'Paused' }}</span>
+
+                <button class="btn-secondary" [routerLink]="['/jobs', job.id]">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" />
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  View
+                </button>
+
+                <button class="btn-danger" (click)="deleteJobAsAdmin(job)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                      stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="filteredJobsForAdmin.length === 0 && allJobsForAdmin.length > 0" class="no-filtered-jobs">
+          <p>No jobs match the selected filters.</p>
+        </div>
+
+        <div *ngIf="allJobsForAdmin.length === 0" class="no-jobs">
+          <div class="no-jobs-content">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <h3>No Jobs Found</h3>
+            <p>No job postings are currently available on the platform.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

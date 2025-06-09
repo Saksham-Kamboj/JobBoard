@@ -18,6 +18,12 @@ import {
   Job,
   JobApplication,
 } from '../../core/services/job-management.service';
+import {
+  AdminManagementService,
+  AdminSettings,
+  UserManagement,
+  JobManagementStats,
+} from '../../core/services/admin-management.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -44,6 +50,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
   filteredApplications: JobApplication[] = [];
   selectedJobFilter = '';
   selectedStatusFilter = '';
+
+  // Admin data
+  adminSettings: AdminSettings | null = null;
+  allUsers: UserManagement[] = [];
+  filteredUsers: UserManagement[] = [];
+  allJobsForAdmin: any[] = [];
+  filteredJobsForAdmin: any[] = [];
+  jobManagementStats: JobManagementStats | null = null;
+  selectedUserRoleFilter = '';
+  selectedUserStatusFilter = '';
+  selectedJobStatusFilter = '';
+  isEditingAdminSettings = false;
+  adminSettingsForm: FormGroup;
   isLoading = false;
   profileUpdateSuccess = false;
   passwordUpdateSuccess = false;
@@ -64,6 +83,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private userProfileService: UserProfileService,
     private jobManagementService: JobManagementService,
+    private adminManagementService: AdminManagementService,
     private router: Router
   ) {
     this.profileForm = this.formBuilder.group({
@@ -106,6 +126,21 @@ export class ProfileComponent implements OnInit, OnDestroy {
       },
       { validators: this.passwordMatchValidator }
     );
+
+    // Initialize admin settings form
+    this.adminSettingsForm = this.formBuilder.group({
+      platformName: ['', [Validators.required]],
+      platformDescription: ['', [Validators.required]],
+      allowRegistration: [true],
+      requireEmailVerification: [false],
+      maxJobPostingsPerCompany: [50, [Validators.required, Validators.min(1)]],
+      jobPostingDurationDays: [30, [Validators.required, Validators.min(1)]],
+      featuredJobPrice: [99.99, [Validators.required, Validators.min(0)]],
+      maintenanceMode: [false],
+      supportEmail: ['', [Validators.required, Validators.email]],
+      privacyPolicyUrl: [''],
+      termsOfServiceUrl: [''],
+    });
   }
 
   private createProfessionalForm(): FormGroup {
@@ -133,6 +168,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.loadCompanyData();
           if (user.role === 'company') {
             this.loadCompanyJobs();
+          } else if (user.role === 'admin') {
+            this.loadAdminData();
           }
         }
       })
@@ -1227,5 +1264,302 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     console.log('Contacting applicant:', applicantEmail);
     window.location.href = `mailto:${applicantEmail}?subject=Regarding your application for ${jobTitle}`;
+  }
+
+  // Admin Management Methods
+  loadAdminData() {
+    if (this.currentUser?.role === 'admin') {
+      this.loadAdminSettings();
+      this.loadAllUsers();
+      this.loadAllJobsForAdmin();
+      this.loadJobManagementStats();
+    }
+  }
+
+  loadAdminSettings() {
+    this.authSubscription.add(
+      this.adminManagementService.getAdminSettings().subscribe({
+        next: (settings) => {
+          this.adminSettings = settings;
+          this.adminSettingsForm.patchValue(settings);
+        },
+        error: (error) => {
+          console.error('Error loading admin settings:', error);
+        },
+      })
+    );
+  }
+
+  loadAllUsers() {
+    this.authSubscription.add(
+      this.adminManagementService.getAllUsers().subscribe({
+        next: (users) => {
+          this.allUsers = users;
+          this.filteredUsers = [...users];
+        },
+        error: (error) => {
+          console.error('Error loading users:', error);
+          this.allUsers = [];
+          this.filteredUsers = [];
+        },
+      })
+    );
+  }
+
+  loadAllJobsForAdmin() {
+    this.authSubscription.add(
+      this.adminManagementService.getAllJobsForAdmin().subscribe({
+        next: (jobs) => {
+          this.allJobsForAdmin = jobs;
+          this.filteredJobsForAdmin = [...jobs];
+        },
+        error: (error) => {
+          console.error('Error loading jobs for admin:', error);
+          this.allJobsForAdmin = [];
+          this.filteredJobsForAdmin = [];
+        },
+      })
+    );
+  }
+
+  loadJobManagementStats() {
+    this.authSubscription.add(
+      this.adminManagementService.getJobManagementStats().subscribe({
+        next: (stats) => {
+          this.jobManagementStats = stats;
+        },
+        error: (error) => {
+          console.error('Error loading job management stats:', error);
+        },
+      })
+    );
+  }
+
+  // Admin Settings Methods
+  toggleEditAdminSettings() {
+    this.isEditingAdminSettings = !this.isEditingAdminSettings;
+    if (!this.isEditingAdminSettings && this.adminSettings) {
+      this.adminSettingsForm.patchValue(this.adminSettings);
+    }
+    this.clearMessages();
+  }
+
+  onAdminSettingsSubmit() {
+    if (this.adminSettingsForm.valid) {
+      this.isLoading = true;
+      const formData = this.adminSettingsForm.value;
+
+      this.authSubscription.add(
+        this.adminManagementService.updateAdminSettings(formData).subscribe({
+          next: (updatedSettings) => {
+            this.adminSettings = updatedSettings;
+            this.isEditingAdminSettings = false;
+            this.isLoading = false;
+            this.profileUpdateSuccess = true;
+            setTimeout(() => {
+              this.profileUpdateSuccess = false;
+            }, 3000);
+          },
+          error: (error) => {
+            console.error('Error updating admin settings:', error);
+            this.isLoading = false;
+            this.errorMessage =
+              'Failed to update admin settings. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+      );
+    }
+  }
+
+  // User Management Methods
+  filterUsers() {
+    this.filteredUsers = this.allUsers.filter((user) => {
+      const roleMatch =
+        !this.selectedUserRoleFilter ||
+        user.role === this.selectedUserRoleFilter;
+      const statusMatch =
+        !this.selectedUserStatusFilter ||
+        (this.selectedUserStatusFilter === 'active' && user.isActive) ||
+        (this.selectedUserStatusFilter === 'inactive' && !user.isActive);
+      return roleMatch && statusMatch;
+    });
+  }
+
+  updateUserStatus(user: UserManagement) {
+    this.authSubscription.add(
+      this.adminManagementService
+        .updateUserStatus(user.id, user.isActive)
+        .subscribe({
+          next: (updatedUser) => {
+            const index = this.allUsers.findIndex((u) => u.id === user.id);
+            if (index !== -1) {
+              this.allUsers[index] = updatedUser;
+            }
+            this.filterUsers();
+          },
+          error: (error) => {
+            console.error('Error updating user status:', error);
+            this.errorMessage =
+              'Failed to update user status. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+    );
+  }
+
+  onUserRoleChange(user: UserManagement, event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const newRole = target.value;
+    this.updateUserRole(user, newRole);
+  }
+
+  updateUserRole(user: UserManagement, newRole: string) {
+    if (
+      confirm(
+        `Are you sure you want to change ${user.firstName} ${
+          user.lastName
+        }'s role to ${this.adminManagementService.getUserRoleDisplayName(
+          newRole
+        )}?`
+      )
+    ) {
+      this.authSubscription.add(
+        this.adminManagementService.updateUserRole(user.id, newRole).subscribe({
+          next: (updatedUser) => {
+            const index = this.allUsers.findIndex((u) => u.id === user.id);
+            if (index !== -1) {
+              this.allUsers[index] = updatedUser;
+            }
+            this.filterUsers();
+          },
+          error: (error) => {
+            console.error('Error updating user role:', error);
+            this.errorMessage = 'Failed to update user role. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+      );
+    }
+  }
+
+  deleteUser(user: UserManagement) {
+    if (
+      confirm(
+        `Are you sure you want to delete ${user.firstName} ${user.lastName}? This action cannot be undone.`
+      )
+    ) {
+      this.authSubscription.add(
+        this.adminManagementService.deleteUser(user.id).subscribe({
+          next: () => {
+            this.allUsers = this.allUsers.filter((u) => u.id !== user.id);
+            this.filterUsers();
+          },
+          error: (error) => {
+            console.error('Error deleting user:', error);
+            this.errorMessage = 'Failed to delete user. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+      );
+    }
+  }
+
+  // Job Management Methods for Admin
+  filterJobsForAdmin() {
+    this.filteredJobsForAdmin = this.allJobsForAdmin.filter((job) => {
+      const statusMatch =
+        !this.selectedJobStatusFilter ||
+        this.adminManagementService
+          .getJobStatusDisplayName(job)
+          .toLowerCase() === this.selectedJobStatusFilter;
+      return statusMatch;
+    });
+  }
+
+  updateJobStatusAsAdmin(job: any) {
+    this.authSubscription.add(
+      this.adminManagementService
+        .updateJobStatus(job.id, job.isActive)
+        .subscribe({
+          next: (updatedJob) => {
+            const index = this.allJobsForAdmin.findIndex(
+              (j) => j.id === job.id
+            );
+            if (index !== -1) {
+              this.allJobsForAdmin[index] = {
+                ...this.allJobsForAdmin[index],
+                ...updatedJob,
+              };
+            }
+            this.filterJobsForAdmin();
+          },
+          error: (error) => {
+            console.error('Error updating job status:', error);
+            this.errorMessage =
+              'Failed to update job status. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+    );
+  }
+
+  deleteJobAsAdmin(job: any) {
+    if (
+      confirm(
+        `Are you sure you want to delete the job "${job.title}"? This action cannot be undone.`
+      )
+    ) {
+      this.authSubscription.add(
+        this.adminManagementService.deleteJobAsAdmin(job.id).subscribe({
+          next: () => {
+            this.allJobsForAdmin = this.allJobsForAdmin.filter(
+              (j) => j.id !== job.id
+            );
+            this.filterJobsForAdmin();
+            // Reload stats
+            this.loadJobManagementStats();
+          },
+          error: (error) => {
+            console.error('Error deleting job:', error);
+            this.errorMessage = 'Failed to delete job. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+      );
+    }
+  }
+
+  // Helper methods for admin
+  getUserRoleDisplayName(role: string): string {
+    return this.adminManagementService.getUserRoleDisplayName(role);
+  }
+
+  getJobStatusDisplayName(job: any): string {
+    return this.adminManagementService.getJobStatusDisplayName(job);
+  }
+
+  getJobStatusClass(job: any): string {
+    return this.adminManagementService.getJobStatusClass(job);
+  }
+
+  formatDate(dateString: string): string {
+    return this.adminManagementService.formatDate(dateString);
+  }
+
+  getTimeAgoAdmin(dateString: string): string {
+    return this.adminManagementService.getTimeAgo(dateString);
   }
 }

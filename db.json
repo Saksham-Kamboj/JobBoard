@@ -47,7 +47,8 @@
       "role": "job-seeker",
       "createdAt": "2025-06-02T06:17:57.623Z",
       "isActive": true,
-      "password": "Saksham1@"
+      "password": "Saksham1@",
+      "updatedAt": "2025-06-09T07:54:57.155Z"
     }
   ],
   "userProfiles": [
@@ -1479,6 +1480,24 @@
       "count": 0,
       "color": "bg-red-100 text-red-600",
       "description": "Medical professionals, healthcare administration, and nursing"
+    }
+  ],
+  "adminSettings": [
+    {
+      "id": "main-settings",
+      "platformName": "JobBoard Pro",
+      "platformDescription": "Professional job board platform connecting talent with opportunities worldwide",
+      "allowRegistration": true,
+      "requireEmailVerification": false,
+      "maxJobPostingsPerCompany": 50,
+      "jobPostingDurationDays": 30,
+      "featuredJobPrice": 99.99,
+      "maintenanceMode": false,
+      "supportEmail": "support@jobboard.com",
+      "privacyPolicyUrl": "/privacy-policy",
+      "termsOfServiceUrl": "/terms-of-service",
+      "updatedAt": "2025-06-09T07:38:50.828Z",
+      "updatedBy": "admin"
     }
   ],
   "testimonials": [
