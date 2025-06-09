@@ -1288,6 +1288,39 @@
       "applicationCount": 26,
       "featured": false,
       "updatedAt": "2025-06-09T10:27:39.749Z"
+    },
+    {
+      "id": "dc05",
+      "title": "Frontend Developer",
+      "company": "Demo Tech Solutions",
+      "location": "Sector-62, Noida, UP-201301",
+      "type": "full-time",
+      "salary": "₹30000-₹50000",
+      "description": "Job Description\nWe're looking for a versatile Full Stack Developer to join our growing startup. You'll work on both frontend and backend technologies, helping us build scalable web applications that serve thousands of users.\n\nKey Responsibilities:\n• Develop and maintain full-stack web applications\n• Work with modern JavaScript frameworks and backend technologies\n• Design and implement RESTful APIs\n• Collaborate with cross-functional teams\n• Participate in code reviews and technical discussions\n• Help scale our infrastructure as we grow\n\nStartup Environment:\n• Fast-paced, dynamic work environment\n• Direct impact on product development\n• Opportunity to wear multiple hats\n• Work directly with founders and leadership team",
+      "requirements": [
+        "1 year of experience"
+      ],
+      "benefits": [
+        "Work From Home"
+      ],
+      "skills": [
+        "HTML",
+        "CSS",
+        "React.js",
+        "Tailwindcss",
+        "JavaScript",
+        "TypeScript",
+        "Redux Toolkit"
+      ],
+      "experienceLevel": "mid",
+      "contactEmail": "company@demo.com",
+      "companyDescription": "A leading technology company specializing in innovative software solutions for businesses worldwide.",
+      "applicationDeadline": "2025-06-30",
+      "isActive": true,
+      "featured": false,
+      "postedDate": "2025-06-09",
+      "applicationCount": 0,
+      "companyId": "demo-company"
     }
   ],
   "companies": [

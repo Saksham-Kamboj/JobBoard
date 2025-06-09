@@ -473,6 +473,20 @@
   margin-top: 0.5rem;
 }
 
+/* Edit Job Section */
+.edit-job-section {
+  text-align: center;
+}
+
+.edit-job-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
 /* Job Details Card */
 .job-details-card,
 .contact-card {

@@ -1047,7 +1047,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   // Navigation methods
   navigateToCreateJob() {
-    this.router.navigate(['/jobs/create']);
+    this.router.navigate(['/post-job']);
   }
 
   editJob(jobId: string) {

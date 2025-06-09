@@ -258,13 +258,26 @@
             <p class="restriction-note">
               <span *ngIf="currentUser.role === 'company'">
                 As a company representative, you can post jobs but cannot apply for positions.
-                <a routerLink="/company/dashboard" class="link">Go to Company Dashboard</a>
+                <a routerLink="/dashboard" class="link">Go to Dashboard</a>
               </span>
               <span *ngIf="currentUser.role === 'admin'">
                 As an administrator, you have platform management access but cannot apply for jobs.
                 <a routerLink="/admin/dashboard" class="link">Go to Admin Dashboard</a>
               </span>
             </p>
+          </div>
+
+          <!-- Edit Job Section (for admins and job owners) -->
+          <div *ngIf="canEditJob()" class="edit-job-section">
+            <button (click)="editJob()" class="btn-secondary edit-job-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
+                  stroke-width="2" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                  stroke-width="2" />
+              </svg>
+              Edit Job
+            </button>
           </div>
 
           <!-- Message for unauthenticated users -->

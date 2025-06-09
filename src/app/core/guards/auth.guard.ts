@@ -61,6 +61,7 @@ export class RoleGuard implements CanActivate {
       | 'job-seeker'
       | 'company'
       | 'admin';
+    const requiredRoles = route.data['roles'] as string[];
 
     return this.authService.currentUser$.pipe(
       take(1),
@@ -70,21 +71,31 @@ export class RoleGuard implements CanActivate {
           return false;
         }
 
+        // Check single role
         if (requiredRole && user.role !== requiredRole) {
-          // Redirect based on user role
-          if (user.role === 'admin') {
-            this.router.navigate(['/admin/dashboard']);
-          } else if (user.role === 'company') {
-            this.router.navigate(['/company/dashboard']);
-          } else {
-            this.router.navigate(['/dashboard']);
-          }
+          this.redirectBasedOnRole(user.role);
+          return false;
+        }
+
+        // Check multiple roles
+        if (requiredRoles && !requiredRoles.includes(user.role)) {
+          this.redirectBasedOnRole(user.role);
           return false;
         }
 
         return true;
       })
     );
+  }
+
+  private redirectBasedOnRole(userRole: string): void {
+    if (userRole === 'admin') {
+      this.router.navigate(['/admin/dashboard']);
+    } else if (userRole === 'company') {
+      this.router.navigate(['/profile']); // Company users go to profile page
+    } else {
+      this.router.navigate(['/dashboard']);
+    }
   }
 }
 
@@ -103,7 +114,7 @@ export class GuestGuard implements CanActivate {
           if (user?.role === 'admin') {
             this.router.navigate(['/admin/dashboard']);
           } else if (user?.role === 'company') {
-            this.router.navigate(['/company/dashboard']);
+            this.router.navigate(['/profile']); // Company users go to profile page
           } else {
             this.router.navigate(['/dashboard']);
           }

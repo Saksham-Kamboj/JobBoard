@@ -221,4 +221,33 @@ export class JobDetailComponent implements OnInit, OnDestroy {
       queryParams: { returnUrl: this.router.url },
     });
   }
+
+  canEditJob(): boolean {
+    if (!this.currentUser || !this.job) {
+      return false;
+    }
+
+    // Admin can edit any job
+    if (this.currentUser.role === 'admin') {
+      return true;
+    }
+
+    // Company users can edit their own jobs
+    if (this.currentUser.role === 'company') {
+      return (
+        (this.job as any).companyId === this.currentUser.id ||
+        this.job.company === (this.currentUser as any).companyName
+      );
+    }
+
+    return false;
+  }
+
+  editJob(): void {
+    if (!this.job || !this.canEditJob()) {
+      return;
+    }
+
+    this.router.navigate(['/jobs', this.job.id, 'edit']);
+  }
 }

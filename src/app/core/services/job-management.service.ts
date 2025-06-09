@@ -100,7 +100,7 @@ export class JobManagementService {
     return this.http.post<Job>(`${this.apiUrl}/jobs`, job);
   }
 
-  // Update job
+  // Update existing job
   updateJob(id: string, job: Partial<Job>): Observable<Job> {
     return this.http.put<Job>(`${this.apiUrl}/jobs/${id}`, job);
   }
