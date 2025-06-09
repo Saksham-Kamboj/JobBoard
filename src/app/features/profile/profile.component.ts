@@ -10,9 +10,10 @@ import {
 import { RouterModule, Router } from '@angular/router';
 import { AuthService, User } from '../../core/services/auth.service';
 import {
-  UserProfileService,
+  ProfileService,
   UserProfile,
-} from '../../core/services/user-profile.service';
+  DashboardStats,
+} from '../../core/services/profile.service';
 import {
   JobManagementService,
   Job,
@@ -78,7 +79,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private formBuilder: FormBuilder,
-    private userProfileService: UserProfileService,
+    private profileService: ProfileService,
     private jobManagementService: JobManagementService,
     private adminManagementService: AdminManagementService,
     private router: Router
@@ -307,7 +308,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
       // Load comprehensive profile from userProfiles table
       this.authSubscription.add(
-        this.userProfileService.getUserProfile(this.currentUser.id).subscribe({
+        this.profileService.getUserProfile(this.currentUser.id).subscribe({
           next: (profile) => {
             this.userProfile = profile;
             this.isLoading = false;
@@ -524,37 +525,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
       if (this.userProfile) {
         // Update existing profile
         this.authSubscription.add(
-          this.userProfileService
-            .updateUserProfile(this.userProfile.id, profileData)
-            .subscribe({
-              next: (updatedProfile) => {
-                this.userProfile = updatedProfile;
-                this.isLoading = false;
-                this.isEditingProfile = false;
-                this.profileUpdateSuccess = true;
-
-                setTimeout(() => {
-                  this.profileUpdateSuccess = false;
-                }, 3000);
-              },
-              error: (error) => {
-                console.error('Error updating profile:', error);
-                this.isLoading = false;
-                this.errorMessage =
-                  'Failed to update profile. Please try again.';
-
-                setTimeout(() => {
-                  this.errorMessage = '';
-                }, 5000);
-              },
-            })
-        );
-      } else {
-        // Create new profile
-        this.authSubscription.add(
-          this.userProfileService.createUserProfile(profileData).subscribe({
-            next: (newProfile) => {
-              this.userProfile = newProfile;
+          this.profileService.updateUserProfile(profileData).subscribe({
+            next: (updatedProfile) => {
+              this.userProfile = updatedProfile;
               this.isLoading = false;
               this.isEditingProfile = false;
               this.profileUpdateSuccess = true;
@@ -564,6 +537,31 @@ export class ProfileComponent implements OnInit, OnDestroy {
               }, 3000);
             },
             error: (error) => {
+              console.error('Error updating profile:', error);
+              this.isLoading = false;
+              this.errorMessage = 'Failed to update profile. Please try again.';
+
+              setTimeout(() => {
+                this.errorMessage = '';
+              }, 5000);
+            },
+          })
+        );
+      } else {
+        // Create new profile
+        this.authSubscription.add(
+          this.profileService.createUserProfile(profileData).subscribe({
+            next: (newProfile: UserProfile) => {
+              this.userProfile = newProfile;
+              this.isLoading = false;
+              this.isEditingProfile = false;
+              this.profileUpdateSuccess = true;
+
+              setTimeout(() => {
+                this.profileUpdateSuccess = false;
+              }, 3000);
+            },
+            error: (error: any) => {
               console.error('Error creating profile:', error);
               this.isLoading = false;
               this.errorMessage = 'Failed to create profile. Please try again.';
@@ -608,30 +606,28 @@ export class ProfileComponent implements OnInit, OnDestroy {
         };
 
         this.authSubscription.add(
-          this.userProfileService
-            .updateUserProfile(this.userProfile.id, updatedProfile)
-            .subscribe({
-              next: (profile) => {
-                this.userProfile = profile;
-                this.isLoading = false;
-                this.isEditingProfessional = false;
-                this.profileUpdateSuccess = true;
+          this.profileService.updateUserProfile(updatedProfile).subscribe({
+            next: (profile) => {
+              this.userProfile = profile;
+              this.isLoading = false;
+              this.isEditingProfessional = false;
+              this.profileUpdateSuccess = true;
 
-                setTimeout(() => {
-                  this.profileUpdateSuccess = false;
-                }, 3000);
-              },
-              error: (error) => {
-                console.error('Error updating professional info:', error);
-                this.isLoading = false;
-                this.errorMessage =
-                  'Failed to update professional information. Please try again.';
+              setTimeout(() => {
+                this.profileUpdateSuccess = false;
+              }, 3000);
+            },
+            error: (error) => {
+              console.error('Error updating professional info:', error);
+              this.isLoading = false;
+              this.errorMessage =
+                'Failed to update professional information. Please try again.';
 
-                setTimeout(() => {
-                  this.errorMessage = '';
-                }, 5000);
-              },
-            })
+              setTimeout(() => {
+                this.errorMessage = '';
+              }, 5000);
+            },
+          })
         );
       } else {
         // Create new profile with professional info
@@ -753,8 +749,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.clearMessages();
 
     this.authSubscription.add(
-      this.userProfileService.uploadResume(file).subscribe({
-        next: (resume) => {
+      this.profileService.uploadResume(file).subscribe({
+        next: (resume: any) => {
           // Update the user profile with new resume
           if (this.userProfile) {
             const updatedProfile = {
@@ -763,36 +759,34 @@ export class ProfileComponent implements OnInit, OnDestroy {
             };
 
             this.authSubscription.add(
-              this.userProfileService
-                .updateUserProfile(this.userProfile.id, updatedProfile)
-                .subscribe({
-                  next: (profile) => {
-                    this.userProfile = profile;
-                    this.isLoading = false;
-                    this.profileUpdateSuccess = true;
+              this.profileService.updateUserProfile(updatedProfile).subscribe({
+                next: (profile) => {
+                  this.userProfile = profile;
+                  this.isLoading = false;
+                  this.profileUpdateSuccess = true;
 
-                    setTimeout(() => {
-                      this.profileUpdateSuccess = false;
-                    }, 3000);
-                  },
-                  error: (error) => {
-                    console.error('Error updating profile with resume:', error);
-                    this.isLoading = false;
-                    this.errorMessage =
-                      'Failed to save resume. Please try again.';
+                  setTimeout(() => {
+                    this.profileUpdateSuccess = false;
+                  }, 3000);
+                },
+                error: (error) => {
+                  console.error('Error updating profile with resume:', error);
+                  this.isLoading = false;
+                  this.errorMessage =
+                    'Failed to save resume. Please try again.';
 
-                    setTimeout(() => {
-                      this.errorMessage = '';
-                    }, 5000);
-                  },
-                })
+                  setTimeout(() => {
+                    this.errorMessage = '';
+                  }, 5000);
+                },
+              })
             );
           } else {
             // Create new profile with resume
             this.createProfileWithResume(resume);
           }
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error uploading resume:', error);
           this.isLoading = false;
           this.errorMessage = 'Failed to upload resume. Please try again.';
@@ -842,8 +836,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     };
 
     this.authSubscription.add(
-      this.userProfileService.createUserProfile(profileData).subscribe({
-        next: (profile) => {
+      this.profileService.createUserProfile(profileData).subscribe({
+        next: (profile: UserProfile) => {
           this.userProfile = profile;
           this.isLoading = false;
           this.profileUpdateSuccess = true;
@@ -852,7 +846,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.profileUpdateSuccess = false;
           }, 3000);
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error creating profile:', error);
           this.isLoading = false;
           this.errorMessage = 'Failed to create profile. Please try again.';
@@ -972,8 +966,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     };
 
     this.authSubscription.add(
-      this.userProfileService.createUserProfile(profileData).subscribe({
-        next: (profile) => {
+      this.profileService.createUserProfile(profileData).subscribe({
+        next: (profile: UserProfile) => {
           this.userProfile = profile;
           this.isLoading = false;
           this.isEditingProfessional = false;
@@ -983,7 +977,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.profileUpdateSuccess = false;
           }, 3000);
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error creating profile:', error);
           this.isLoading = false;
           this.errorMessage = 'Failed to create profile. Please try again.';

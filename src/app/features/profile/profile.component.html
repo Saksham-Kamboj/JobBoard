@@ -1090,269 +1090,32 @@
           <p class="section-description">Platform administration settings</p>
         </div>
 
-        <!-- Success Message -->
-        <div *ngIf="profileUpdateSuccess" class="success-message">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-            <polyline points="22,4 12,14.01 9,11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-          Admin settings updated successfully!
-        </div>
-
-        <!-- Error Message -->
-        <div *ngIf="errorMessage" class="error-message">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-            <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" />
-            <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" />
-          </svg>
-          {{ errorMessage }}
-        </div>
-
-        <!-- Admin Settings Display Mode -->
-        <div *ngIf="adminSettings && !isEditingAdminSettings" class="admin-settings-list">
-          <div class="admin-setting-item">
-            <div class="admin-setting-header">
-              <div class="admin-setting-details">
-                <h3 class="admin-setting-title">Platform Information</h3>
-                <p class="admin-setting-description">{{ adminSettings.platformName }}</p>
-                <p class="admin-setting-meta">{{ adminSettings.platformDescription }}</p>
-              </div>
-              <button class="btn-primary" (click)="toggleEditAdminSettings()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
-                    stroke-width="2" />
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
-                    stroke-width="2" />
-                </svg>
-                Edit Settings
-              </button>
+        <div class="preferences-list">
+          <div class="preference-item">
+            <div class="preference-info">
+              <h3 class="preference-title">Platform Settings</h3>
+              <p class="preference-description">Configure platform-wide settings and preferences</p>
             </div>
-            <div class="admin-setting-content">
-              <div class="admin-settings-grid">
-                <div class="admin-setting-value">
-                  <span class="admin-setting-label">Platform Name</span>
-                  <span class="admin-setting-text">{{ adminSettings.platformName }}</span>
-                </div>
-                <div class="admin-setting-value">
-                  <span class="admin-setting-label">Support Email</span>
-                  <span class="admin-setting-text">{{ adminSettings.supportEmail }}</span>
-                </div>
-              </div>
-            </div>
+            <a routerLink="/settings" class="btn-secondary">
+              Go to Settings
+            </a>
           </div>
 
-          <div class="admin-setting-item">
-            <div class="admin-setting-header">
-              <div class="admin-setting-details">
-                <h3 class="admin-setting-title">Registration Settings</h3>
-                <p class="admin-setting-description">User Registration Controls</p>
-                <p class="admin-setting-meta">Manage how new users can join the platform</p>
-              </div>
+          <div class="preference-item">
+            <div class="preference-info">
+              <h3 class="preference-title">System Administration</h3>
+              <p class="preference-description">Access advanced admin tools and configuration</p>
             </div>
-            <div class="admin-setting-content">
-              <div class="admin-settings-grid">
-                <div class="admin-setting-value">
-                  <span class="admin-setting-label">Registration</span>
-                  <span class="admin-setting-status" [class]="adminSettings.allowRegistration ? 'enabled' : 'disabled'">
-                    {{ adminSettings.allowRegistration ? 'Enabled' : 'Disabled' }}
-                  </span>
-                </div>
-                <div class="admin-setting-value">
-                  <span class="admin-setting-label">Email Verification</span>
-                  <span class="admin-setting-status"
-                    [class]="adminSettings.requireEmailVerification ? 'enabled' : 'disabled'">
-                    {{ adminSettings.requireEmailVerification ? 'Required' : 'Optional' }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="admin-setting-item">
-            <div class="admin-setting-header">
-              <div class="admin-setting-details">
-                <h3 class="admin-setting-title">Job Posting Limits</h3>
-                <p class="admin-setting-description">Company Posting Controls</p>
-                <p class="admin-setting-meta">Set limits and duration for job postings</p>
-              </div>
-            </div>
-            <div class="admin-setting-content">
-              <div class="admin-settings-grid">
-                <div class="admin-setting-value">
-                  <span class="admin-setting-label">Max per Company</span>
-                  <span class="admin-setting-text">{{ adminSettings.maxJobPostingsPerCompany }}</span>
-                </div>
-                <div class="admin-setting-value">
-                  <span class="admin-setting-label">Duration</span>
-                  <span class="admin-setting-text">{{ adminSettings.jobPostingDurationDays }} days</span>
-                </div>
-                <div class="admin-setting-value">
-                  <span class="admin-setting-label">Featured Job Price</span>
-                  <span class="admin-setting-text">${{ adminSettings.featuredJobPrice }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="admin-setting-item">
-            <div class="admin-setting-header">
-              <div class="admin-setting-details">
-                <h3 class="admin-setting-title">System Status</h3>
-                <p class="admin-setting-description">Platform Operations</p>
-                <p class="admin-setting-meta">Monitor and control system status</p>
-              </div>
-            </div>
-            <div class="admin-setting-content">
-              <div class="admin-settings-grid">
-                <div class="admin-setting-value">
-                  <span class="admin-setting-label">Maintenance Mode</span>
-                  <span class="admin-setting-status" [class]="adminSettings.maintenanceMode ? 'active' : 'inactive'">
-                    {{ adminSettings.maintenanceMode ? 'Active' : 'Inactive' }}
-                  </span>
-                </div>
-                <div class="admin-setting-value">
-                  <span class="admin-setting-label">Last Updated</span>
-                  <span class="admin-setting-text">{{ formatDate(adminSettings.updatedAt) }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Admin Settings Edit Mode -->
-        <div *ngIf="isEditingAdminSettings" class="admin-settings-edit-form">
-          <div class="form-header">
-            <h3>Platform Settings Configuration</h3>
-            <p>Configure platform-wide settings and preferences</p>
-          </div>
-          <form [formGroup]="adminSettingsForm" (ngSubmit)="onAdminSettingsSubmit()">
-            <div class="form-content">
-              <div class="form-grid">
-                <div class="form-group">
-                  <label class="form-label">Platform Name *</label>
-                  <input type="text" formControlName="platformName" class="form-input" placeholder="JobBoard Pro"
-                    [class.error]="getFieldError('platformName', adminSettingsForm)">
-                  <span *ngIf="getFieldError('platformName', adminSettingsForm)" class="error-text">
-                    {{ getFieldError('platformName', adminSettingsForm) }}
-                  </span>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label">Support Email *</label>
-                  <input type="email" formControlName="supportEmail" class="form-input"
-                    placeholder="support@jobboard.com" [class.error]="getFieldError('supportEmail', adminSettingsForm)">
-                  <span *ngIf="getFieldError('supportEmail', adminSettingsForm)" class="error-text">
-                    {{ getFieldError('supportEmail', adminSettingsForm) }}
-                  </span>
-                </div>
-
-                <div class="form-group full-width">
-                  <label class="form-label">Platform Description *</label>
-                  <textarea formControlName="platformDescription" class="form-textarea" rows="3"
-                    placeholder="Professional job board platform..."
-                    [class.error]="getFieldError('platformDescription', adminSettingsForm)"></textarea>
-                  <span *ngIf="getFieldError('platformDescription', adminSettingsForm)" class="error-text">
-                    {{ getFieldError('platformDescription', adminSettingsForm) }}
-                  </span>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label">Max Job Postings per Company *</label>
-                  <input type="number" formControlName="maxJobPostingsPerCompany" class="form-input" min="1"
-                    placeholder="50" [class.error]="getFieldError('maxJobPostingsPerCompany', adminSettingsForm)">
-                  <span *ngIf="getFieldError('maxJobPostingsPerCompany', adminSettingsForm)" class="error-text">
-                    {{ getFieldError('maxJobPostingsPerCompany', adminSettingsForm) }}
-                  </span>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label">Job Posting Duration (Days) *</label>
-                  <input type="number" formControlName="jobPostingDurationDays" class="form-input" min="1"
-                    placeholder="30" [class.error]="getFieldError('jobPostingDurationDays', adminSettingsForm)">
-                  <span *ngIf="getFieldError('jobPostingDurationDays', adminSettingsForm)" class="error-text">
-                    {{ getFieldError('jobPostingDurationDays', adminSettingsForm) }}
-                  </span>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label">Featured Job Price *</label>
-                  <input type="number" formControlName="featuredJobPrice" class="form-input" min="0" step="0.01"
-                    placeholder="99.99" [class.error]="getFieldError('featuredJobPrice', adminSettingsForm)">
-                  <span *ngIf="getFieldError('featuredJobPrice', adminSettingsForm)" class="error-text">
-                    {{ getFieldError('featuredJobPrice', adminSettingsForm) }}
-                  </span>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label">Privacy Policy URL</label>
-                  <input type="url" formControlName="privacyPolicyUrl" class="form-input" placeholder="/privacy-policy">
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label">Terms of Service URL</label>
-                  <input type="url" formControlName="termsOfServiceUrl" class="form-input"
-                    placeholder="/terms-of-service">
-                </div>
-
-                <div class="form-group full-width">
-                  <div class="checkbox-group">
-                    <label class="checkbox-label">
-                      <input type="checkbox" formControlName="allowRegistration" class="checkbox-input">
-                      <span class="checkbox-text">Allow new user registration</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div class="form-group full-width">
-                  <div class="checkbox-group">
-                    <label class="checkbox-label">
-                      <input type="checkbox" formControlName="requireEmailVerification" class="checkbox-input">
-                      <span class="checkbox-text">Require email verification for new accounts</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div class="form-group full-width">
-                  <div class="checkbox-group">
-                    <label class="checkbox-label">
-                      <input type="checkbox" formControlName="maintenanceMode" class="checkbox-input">
-                      <span class="checkbox-text">Enable maintenance mode</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-actions">
-                <button type="button" (click)="toggleEditAdminSettings()" class="btn-secondary" [disabled]="isLoading">
-                  Cancel
-                </button>
-                <button type="submit" class="btn-primary" [disabled]="isLoading || adminSettingsForm.invalid">
-                  <span *ngIf="isLoading" class="loading-spinner small"></span>
-                  {{ isLoading ? 'Saving...' : 'Save Settings' }}
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-
-        <div *ngIf="!adminSettings && !isEditingAdminSettings" class="no-admin-settings">
-          <div class="no-admin-settings-content">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" stroke="currentColor"
-                stroke-width="2" />
-              <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" />
-            </svg>
-            <h3>No Admin Settings Found</h3>
-            <p>Initialize platform settings to get started.</p>
-            <button class="btn-primary" (click)="toggleEditAdminSettings()">
-              Create Settings
-            </button>
+            <a routerLink="/settings" class="btn-secondary">
+              Manage System
+            </a>
           </div>
         </div>
       </div>
+
+
+
+
 
       <!-- User Management Section -->
       <div *ngIf="activeSection === 'users'" class="profile-section">

@@ -221,8 +221,7 @@
 }
 
 /* Forms */
-.profile-form,
-.password-form {
+.profile-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -387,34 +386,7 @@
   word-break: break-word;
 }
 
-/* Security Section */
-.security-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 2rem;
-  padding: 1.5rem;
-  background: var(--muted);
-  border-radius: var(--radius);
-  margin-bottom: 1.5rem;
-}
 
-.security-info {
-  flex: 1;
-}
-
-.security-title {
-  color: var(--foreground);
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 0.25rem 0;
-}
-
-.security-description {
-  color: var(--muted-foreground);
-  font-size: 0.875rem;
-  margin: 0;
-}
 
 /* Preferences Section */
 .preferences-list {
@@ -622,7 +594,6 @@
     flex-direction: column;
   }
 
-  .security-item,
   .preference-item {
     flex-direction: column;
     align-items: stretch;
@@ -647,8 +618,7 @@
   .personal-info-item,
   .professional-info-item,
   .resume-item,
-  .preference-item,
-  .security-item {
+  .preference-item {
     padding: 1rem;
   }
 
@@ -743,7 +713,6 @@
   .personal-info-title,
   .professional-info-title,
   .company-info-title,
-  .security-title,
   .preference-title {
     font-size: 1rem;
   }
@@ -814,8 +783,7 @@
   .personal-info-item,
   .professional-info-item,
   .resume-item,
-  .preference-item,
-  .security-item {
+  .preference-item {
     flex-direction: column;
     align-items: stretch;
     padding: 0.75rem;
@@ -1145,8 +1113,7 @@
 .personal-info-item,
 .professional-info-item,
 .resume-item,
-.preference-item,
-.security-item {
+.preference-item {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -1158,8 +1125,7 @@
 .personal-info-item:hover,
 .professional-info-item:hover,
 .resume-item:hover,
-.preference-item:hover,
-.security-item:hover {
+.preference-item:hover {
   border-color: var(--primary);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
@@ -1170,8 +1136,7 @@
 .professional-info-header,
 .company-info-header,
 .resume-header,
-.preference-header,
-.security-header {
+.preference-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -1184,8 +1149,7 @@
 .professional-info-details,
 .company-info-details,
 .resume-info,
-.preference-info,
-.security-info {
+.preference-info {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -1197,8 +1161,7 @@
 .professional-info-content,
 .company-info-content,
 .resume-content,
-.preference-content,
-.security-content {
+.preference-content {
   padding: 1.5rem;
   background: var(--background);
 }
@@ -1208,8 +1171,7 @@
 .professional-info-grid,
 .company-info-grid,
 .resume-grid,
-.preference-grid,
-.security-grid {
+.preference-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
@@ -1221,8 +1183,7 @@
 .professional-info-value,
 .company-info-value,
 .resume-value,
-.preference-value,
-.security-value {
+.preference-value {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -1237,8 +1198,7 @@
 .professional-info-value.full-width,
 .company-info-value.full-width,
 .resume-value.full-width,
-.preference-value.full-width,
-.security-value.full-width {
+.preference-value.full-width {
   grid-column: 1 / -1;
 }
 
@@ -1247,8 +1207,7 @@
 .professional-info-label,
 .company-info-label,
 .resume-label,
-.preference-label,
-.security-label {
+.preference-label {
   font-size: 0.75rem;
   color: var(--muted-foreground);
   font-weight: 500;
@@ -1260,8 +1219,7 @@
 .professional-info-text,
 .company-info-text,
 .resume-text,
-.preference-text,
-.security-text {
+.preference-text {
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--foreground);
@@ -1272,8 +1230,7 @@
 .professional-info-link,
 .company-info-link,
 .resume-link,
-.preference-link,
-.security-link {
+.preference-link {
   color: var(--primary);
   text-decoration: none;
   font-weight: 600;
@@ -1285,8 +1242,7 @@
 .professional-info-link:hover,
 .company-info-link:hover,
 .resume-link:hover,
-.preference-link:hover,
-.security-link:hover {
+.preference-link:hover {
   color: var(--primary);
   opacity: 0.8;
 }
@@ -1295,8 +1251,7 @@
 .professional-info-title,
 .company-info-title,
 .resume-title,
-.preference-title,
-.security-title {
+.preference-title {
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--foreground);
@@ -1310,8 +1265,7 @@
 .professional-info-title::before,
 .company-info-title::before,
 .resume-title::before,
-.preference-title::before,
-.security-title::before {
+.preference-title::before {
   content: '';
   width: 8px;
   height: 8px;
@@ -1324,8 +1278,7 @@
 .professional-info-description,
 .company-info-description,
 .resume-description,
-.preference-description,
-.security-description {
+.preference-description {
   color: var(--muted-foreground);
   font-size: 1rem;
   margin: 0 0 0.25rem 0;
@@ -1336,8 +1289,7 @@
 .professional-info-meta,
 .company-info-meta,
 .resume-meta,
-.preference-meta,
-.security-meta {
+.preference-meta {
   color: var(--muted-foreground);
   font-size: 0.875rem;
   margin: 0;
@@ -3459,7 +3411,6 @@ input:checked+.toggle-slider:before {
   .personal-info-item,
   .professional-info-item,
   .company-info-item,
-  .security-item,
   .preference-item {
     padding: 0.5rem;
   }
@@ -3506,7 +3457,6 @@ input:checked+.toggle-slider:before {
   .personal-info-title,
   .professional-info-title,
   .company-info-title,
-  .security-title,
   .preference-title {
     font-size: 0.875rem;
   }
@@ -3514,7 +3464,6 @@ input:checked+.toggle-slider:before {
   .personal-info-description,
   .professional-info-description,
   .company-info-description,
-  .security-description,
   .preference-description {
     font-size: 0.875rem;
   }
@@ -3616,7 +3565,6 @@ input:checked+.toggle-slider:before {
   .personal-info-title,
   .professional-info-title,
   .company-info-title,
-  .security-title,
   .preference-title {
     font-size: 0.8rem;
   }

@@ -1,0 +1,417 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
+
+export interface UserProfile {
+  id: string;
+  userId: string;
+  personalInfo: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    address: {
+      street: string;
+      city: string;
+      state: string;
+      zipCode: string;
+      country: string;
+    };
+    linkedinUrl?: string;
+    portfolioUrl?: string;
+    githubUrl?: string;
+  };
+  professionalInfo: {
+    currentTitle: string;
+    yearsOfExperience: number;
+    summary: string;
+    skills: string[];
+    preferredJobTypes: string[];
+    preferredLocations: string[];
+    expectedSalary: {
+      min: number;
+      max: number;
+      currency: string;
+    };
+  };
+  education: Array<{
+    id: string;
+    institution: string;
+    degree: string;
+    field: string;
+    startDate: string;
+    endDate: string;
+    gpa?: string;
+    description?: string;
+  }>;
+  experience: Array<{
+    id: string;
+    company: string;
+    position: string;
+    startDate: string;
+    endDate: string | null;
+    current: boolean;
+    location: string;
+    description: string;
+    achievements?: string[];
+  }>;
+  resume?: {
+    fileName: string;
+    fileUrl: string;
+    uploadedAt: string;
+    fileSize: number;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DashboardStats {
+  id: string;
+  userId: string;
+  appliedJobs?: number;
+  savedJobs?: number;
+  profileViews?: number;
+  interviewsScheduled?: number;
+  totalJobs?: number;
+  activeJobs?: number;
+  totalApplications?: number;
+  newApplications?: number;
+  lastUpdated: string;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ProfileService {
+  private apiUrl = 'http://localhost:3000';
+  private userProfileSubject = new BehaviorSubject<UserProfile | null>(null);
+  private dashboardStatsSubject = new BehaviorSubject<DashboardStats | null>(
+    null
+  );
+
+  public userProfile$ = this.userProfileSubject.asObservable();
+  public dashboardStats$ = this.dashboardStatsSubject.asObservable();
+
+  constructor(private http: HttpClient) {}
+
+  // Profile Methods
+  getUserProfile(userId: string): Observable<UserProfile> {
+    return this.http
+      .get<UserProfile[]>(`${this.apiUrl}/userProfiles?userId=${userId}`)
+      .pipe(
+        map((profiles) => {
+          if (profiles.length > 0) {
+            this.userProfileSubject.next(profiles[0]);
+            return profiles[0];
+          } else {
+            // Create default profile if none exists
+            return this.createDefaultUserProfile(userId);
+          }
+        }),
+        catchError((error) => {
+          console.error('Error fetching user profile:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  updateUserProfile(profile: Partial<UserProfile>): Observable<UserProfile> {
+    const currentProfile = this.userProfileSubject.value;
+    if (!currentProfile) {
+      return throwError(() => new Error('No current profile found'));
+    }
+
+    const updatedProfile = {
+      ...currentProfile,
+      ...profile,
+      updatedAt: new Date().toISOString(),
+    };
+
+    return this.http
+      .put<UserProfile>(
+        `${this.apiUrl}/userProfiles/${currentProfile.id}`,
+        updatedProfile
+      )
+      .pipe(
+        tap((updated) => this.userProfileSubject.next(updated)),
+        catchError((error) => {
+          console.error('Error updating user profile:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  private createDefaultUserProfile(userId: string): UserProfile {
+    const defaultProfile: UserProfile = {
+      id: `profile-${userId}`,
+      userId: userId,
+      personalInfo: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          country: '',
+        },
+      },
+      professionalInfo: {
+        currentTitle: '',
+        yearsOfExperience: 0,
+        summary: '',
+        skills: [],
+        preferredJobTypes: [],
+        preferredLocations: [],
+        expectedSalary: {
+          min: 0,
+          max: 0,
+          currency: 'USD',
+        },
+      },
+      education: [],
+      experience: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Create profile in database
+    this.http
+      .post<UserProfile>(`${this.apiUrl}/userProfiles`, defaultProfile)
+      .subscribe((created) => this.userProfileSubject.next(created));
+
+    return defaultProfile;
+  }
+
+  // Dashboard Stats Methods
+  getDashboardStats(userId: string): Observable<DashboardStats> {
+    return this.http
+      .get<DashboardStats[]>(`${this.apiUrl}/dashboardStats?userId=${userId}`)
+      .pipe(
+        map((stats) => {
+          if (stats.length > 0) {
+            this.dashboardStatsSubject.next(stats[0]);
+            return stats[0];
+          } else {
+            // Create default stats if none exist
+            return this.createDefaultDashboardStats(userId);
+          }
+        }),
+        catchError((error) => {
+          console.error('Error fetching dashboard stats:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  private createDefaultDashboardStats(userId: string): DashboardStats {
+    const defaultStats: DashboardStats = {
+      id: `stats-${userId}`,
+      userId: userId,
+      appliedJobs: 0,
+      savedJobs: 0,
+      profileViews: 0,
+      interviewsScheduled: 0,
+      lastUpdated: new Date().toISOString(),
+    };
+
+    // Create stats in database
+    this.http
+      .post<DashboardStats>(`${this.apiUrl}/dashboardStats`, defaultStats)
+      .subscribe((created) => this.dashboardStatsSubject.next(created));
+
+    return defaultStats;
+  }
+
+  // Convenience methods for updating specific sections
+  updatePersonalInfo(
+    personalInfo: Partial<UserProfile['personalInfo']>
+  ): Observable<UserProfile> {
+    const currentProfile = this.userProfileSubject.value;
+    if (!currentProfile) {
+      return throwError(() => new Error('No current profile found'));
+    }
+
+    return this.updateUserProfile({
+      personalInfo: { ...currentProfile.personalInfo, ...personalInfo },
+    });
+  }
+
+  updateProfessionalInfo(
+    professionalInfo: Partial<UserProfile['professionalInfo']>
+  ): Observable<UserProfile> {
+    const currentProfile = this.userProfileSubject.value;
+    if (!currentProfile) {
+      return throwError(() => new Error('No current profile found'));
+    }
+
+    return this.updateUserProfile({
+      professionalInfo: {
+        ...currentProfile.professionalInfo,
+        ...professionalInfo,
+      },
+    });
+  }
+
+  addEducation(
+    education: Omit<UserProfile['education'][0], 'id'>
+  ): Observable<UserProfile> {
+    const currentProfile = this.userProfileSubject.value;
+    if (!currentProfile) {
+      return throwError(() => new Error('No current profile found'));
+    }
+
+    const newEducation = {
+      ...education,
+      id: this.generateId(),
+    };
+
+    return this.updateUserProfile({
+      education: [...currentProfile.education, newEducation],
+    });
+  }
+
+  updateEducation(
+    educationId: string,
+    education: Partial<UserProfile['education'][0]>
+  ): Observable<UserProfile> {
+    const currentProfile = this.userProfileSubject.value;
+    if (!currentProfile) {
+      return throwError(() => new Error('No current profile found'));
+    }
+
+    const updatedEducation = currentProfile.education.map((edu) =>
+      edu.id === educationId ? { ...edu, ...education } : edu
+    );
+
+    return this.updateUserProfile({
+      education: updatedEducation,
+    });
+  }
+
+  removeEducation(educationId: string): Observable<UserProfile> {
+    const currentProfile = this.userProfileSubject.value;
+    if (!currentProfile) {
+      return throwError(() => new Error('No current profile found'));
+    }
+
+    const filteredEducation = currentProfile.education.filter(
+      (edu) => edu.id !== educationId
+    );
+
+    return this.updateUserProfile({
+      education: filteredEducation,
+    });
+  }
+
+  addExperience(
+    experience: Omit<UserProfile['experience'][0], 'id'>
+  ): Observable<UserProfile> {
+    const currentProfile = this.userProfileSubject.value;
+    if (!currentProfile) {
+      return throwError(() => new Error('No current profile found'));
+    }
+
+    const newExperience = {
+      ...experience,
+      id: this.generateId(),
+    };
+
+    return this.updateUserProfile({
+      experience: [...currentProfile.experience, newExperience],
+    });
+  }
+
+  updateExperience(
+    experienceId: string,
+    experience: Partial<UserProfile['experience'][0]>
+  ): Observable<UserProfile> {
+    const currentProfile = this.userProfileSubject.value;
+    if (!currentProfile) {
+      return throwError(() => new Error('No current profile found'));
+    }
+
+    const updatedExperience = currentProfile.experience.map((exp) =>
+      exp.id === experienceId ? { ...exp, ...experience } : exp
+    );
+
+    return this.updateUserProfile({
+      experience: updatedExperience,
+    });
+  }
+
+  removeExperience(experienceId: string): Observable<UserProfile> {
+    const currentProfile = this.userProfileSubject.value;
+    if (!currentProfile) {
+      return throwError(() => new Error('No current profile found'));
+    }
+
+    const filteredExperience = currentProfile.experience.filter(
+      (exp) => exp.id !== experienceId
+    );
+
+    return this.updateUserProfile({
+      experience: filteredExperience,
+    });
+  }
+
+  updateResume(resume: UserProfile['resume']): Observable<UserProfile> {
+    return this.updateUserProfile({ resume });
+  }
+
+  // Utility methods
+  private generateId(): string {
+    return Math.random().toString(36).substr(2, 9);
+  }
+
+  // Create new user profile
+  createUserProfile(profile: Partial<UserProfile>): Observable<UserProfile> {
+    const newProfile = {
+      ...profile,
+      id: this.generateId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    } as UserProfile;
+
+    return this.http
+      .post<UserProfile>(`${this.apiUrl}/userProfiles`, newProfile)
+      .pipe(
+        tap((created) => this.userProfileSubject.next(created)),
+        catchError((error) => {
+          console.error('Error creating user profile:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  // Upload resume (mock implementation)
+  uploadResume(file: File): Observable<any> {
+    // In a real application, this would upload to a file storage service
+    const mockResume = {
+      fileName: file.name,
+      fileUrl: `/uploads/resumes/${file.name}`,
+      uploadedAt: new Date().toISOString(),
+      fileSize: file.size,
+    };
+
+    // Return the mock resume data
+    return new Observable((observer) => {
+      setTimeout(() => {
+        observer.next(mockResume);
+        observer.complete();
+      }, 1000); // Simulate upload delay
+    });
+  }
+
+  // Get current data synchronously
+  getCurrentUserProfile(): UserProfile | null {
+    return this.userProfileSubject.value;
+  }
+
+  getCurrentDashboardStats(): DashboardStats | null {
+    return this.dashboardStatsSubject.value;
+  }
+}

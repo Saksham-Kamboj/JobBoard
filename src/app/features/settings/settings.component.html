@@ -40,6 +40,37 @@
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" />
               <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" />
             </svg>
+            <!-- Briefcase Icon -->
+            <svg *ngIf="category.icon === 'briefcase'" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <!-- Building Icon -->
+            <svg *ngIf="category.icon === 'building'" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" stroke="currentColor" stroke-width="2" />
+              <path d="M6 12h4m0 0h4m-4 0v6m-4-3h8" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <!-- Credit Card Icon -->
+            <svg *ngIf="category.icon === 'credit-card'" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+              <line x1="1" y1="10" x2="23" y2="10" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <!-- Settings Icon -->
+            <svg *ngIf="category.icon === 'settings'" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+              <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <!-- Bar Chart Icon -->
+            <svg *ngIf="category.icon === 'bar-chart'" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <line x1="12" y1="20" x2="12" y2="10" stroke="currentColor" stroke-width="2" />
+              <line x1="18" y1="20" x2="18" y2="4" stroke="currentColor" stroke-width="2" />
+              <line x1="6" y1="20" x2="6" y2="16" stroke="currentColor" stroke-width="2" />
+            </svg>
           </div>
           <div class="nav-content">
             <span class="nav-title">{{ category.title }}</span>
@@ -96,11 +127,11 @@
         </div>
       </div>
 
-      <!-- Notifications Settings -->
-      <div *ngIf="activeCategory === 'notifications'" class="settings-section">
+      <!-- Notifications Settings (Job Seeker) -->
+      <div *ngIf="activeCategory === 'notifications' && currentUser?.role === 'job-seeker'" class="settings-section">
         <div class="section-header">
           <h2 class="section-title">Notifications</h2>
-          <p class="section-description">Control how and when you receive notifications</p>
+          <p class="section-description">Manage job alerts and application notifications</p>
         </div>
 
         <div class="settings-group">
@@ -121,7 +152,7 @@
           <div class="setting-item">
             <div class="setting-info">
               <h3 class="setting-title">Job Alerts</h3>
-              <p class="setting-description">Get notified about new job opportunities</p>
+              <p class="setting-description">Get notified about new job opportunities matching your preferences</p>
             </div>
             <div class="setting-control">
               <label class="toggle-switch">
@@ -135,7 +166,7 @@
           <div class="setting-item">
             <div class="setting-info">
               <h3 class="setting-title">Application Updates</h3>
-              <p class="setting-description">Receive updates about your job applications</p>
+              <p class="setting-description">Updates on your job applications and interview invitations</p>
             </div>
             <div class="setting-control">
               <label class="toggle-switch">
@@ -148,13 +179,138 @@
 
           <div class="setting-item">
             <div class="setting-info">
-              <h3 class="setting-title">Marketing Emails</h3>
-              <p class="setting-description">Receive promotional content and updates</p>
+              <h3 class="setting-title">Profile Views</h3>
+              <p class="setting-description">Get notified when employers view your profile</p>
             </div>
             <div class="setting-control">
               <label class="toggle-switch">
-                <input type="checkbox" [checked]="notificationSettings.marketingEmails"
-                  (change)="onNotificationChange($event, 'marketingEmails')">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications Settings (Company) -->
+      <div *ngIf="activeCategory === 'notifications' && currentUser?.role === 'company'" class="settings-section">
+        <div class="section-header">
+          <h2 class="section-title">Notifications</h2>
+          <p class="section-description">Manage application and hiring notifications</p>
+        </div>
+
+        <div class="settings-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Email Notifications</h3>
+              <p class="setting-description">Receive notifications via email</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="notificationSettings.emailNotifications"
+                  (change)="onNotificationChange($event, 'emailNotifications')">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">New Applications</h3>
+              <p class="setting-description">Get notified when candidates apply to your jobs</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Job Posting Expiry</h3>
+              <p class="setting-description">Reminders before your job postings expire</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Weekly Reports</h3>
+              <p class="setting-description">Weekly summary of applications and job performance</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications Settings (Admin) -->
+      <div *ngIf="activeCategory === 'notifications' && currentUser?.role === 'admin'" class="settings-section">
+        <div class="section-header">
+          <h2 class="section-title">Notifications</h2>
+          <p class="section-description">Manage system and admin notifications</p>
+        </div>
+
+        <div class="settings-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Email Notifications</h3>
+              <p class="setting-description">Receive notifications via email</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="notificationSettings.emailNotifications"
+                  (change)="onNotificationChange($event, 'emailNotifications')">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">System Alerts</h3>
+              <p class="setting-description">Critical system alerts and errors</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">User Reports</h3>
+              <p class="setting-description">Notifications about user reports and issues</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Platform Analytics</h3>
+              <p class="setting-description">Daily and weekly platform performance reports</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
                 <span class="toggle-slider"></span>
               </label>
             </div>
@@ -316,6 +472,331 @@
               <button (click)="deleteAccount()" class="btn-danger">
                 Delete Account
               </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Job Preferences Settings (Job Seeker) -->
+      <div *ngIf="activeCategory === 'preferences' && currentUser?.role === 'job-seeker'" class="settings-section">
+        <div class="section-header">
+          <h2 class="section-title">Job Preferences</h2>
+          <p class="section-description">Set your job search preferences and filters</p>
+        </div>
+
+        <div class="settings-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Preferred Job Types</h3>
+              <p class="setting-description">Select the types of jobs you're interested in</p>
+            </div>
+            <div class="setting-control">
+              <div class="checkbox-group">
+                <label class="checkbox-item">
+                  <input type="checkbox" checked>
+                  <span class="checkbox-label">Full-time</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox">
+                  <span class="checkbox-label">Part-time</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" checked>
+                  <span class="checkbox-label">Remote</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox">
+                  <span class="checkbox-label">Contract</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Salary Range</h3>
+              <p class="setting-description">Set your expected salary range</p>
+            </div>
+            <div class="setting-control">
+              <div class="range-inputs">
+                <input type="number" placeholder="Min salary" class="form-input" style="width: 120px;">
+                <span>to</span>
+                <input type="number" placeholder="Max salary" class="form-input" style="width: 120px;">
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Preferred Locations</h3>
+              <p class="setting-description">Cities or regions where you'd like to work</p>
+            </div>
+            <div class="setting-control">
+              <input type="text" placeholder="Add locations..." class="form-input">
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Job Alert Frequency</h3>
+              <p class="setting-description">How often you want to receive job alerts</p>
+            </div>
+            <div class="setting-control">
+              <select class="form-select">
+                <option value="daily">Daily</option>
+                <option value="weekly" selected>Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="never">Never</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Company Settings (Company) -->
+      <div *ngIf="activeCategory === 'company' && currentUser?.role === 'company'" class="settings-section">
+        <div class="section-header">
+          <h2 class="section-title">Company Settings</h2>
+          <p class="section-description">Manage company profile and hiring preferences</p>
+        </div>
+
+        <div class="settings-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Company Size</h3>
+              <p class="setting-description">Number of employees in your company</p>
+            </div>
+            <div class="setting-control">
+              <select class="form-select">
+                <option value="1-10">1-10 employees</option>
+                <option value="11-50">11-50 employees</option>
+                <option value="51-200">51-200 employees</option>
+                <option value="201-500">201-500 employees</option>
+                <option value="500+">500+ employees</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Auto-Reply to Applications</h3>
+              <p class="setting-description">Automatically send confirmation emails to applicants</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Application Deadline Reminders</h3>
+              <p class="setting-description">Get notified before job posting deadlines</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Billing & Plans (Company) -->
+      <div *ngIf="activeCategory === 'billing' && currentUser?.role === 'company'" class="settings-section">
+        <div class="section-header">
+          <h2 class="section-title">Billing & Plans</h2>
+          <p class="section-description">Manage subscription and billing information</p>
+        </div>
+
+        <div class="settings-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Current Plan</h3>
+              <p class="setting-description">Your active subscription plan</p>
+            </div>
+            <div class="setting-control">
+              <div class="plan-info">
+                <span class="plan-name">{{ userSettings?.billing?.currentPlan || 'Basic Plan' }}</span>
+                <span class="plan-price">${{ userSettings?.billing?.planPrice || 0 }}/{{
+                  userSettings?.billing?.billingCycle || 'month' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Job Postings Remaining</h3>
+              <p class="setting-description">Number of job postings left this month</p>
+            </div>
+            <div class="setting-control">
+              <span class="usage-count">{{ userSettings?.billing?.jobPostingsUsed || 0 }} of {{
+                userSettings?.billing?.jobPostingsLimit || 0 }} used</span>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Billing Information</h3>
+              <p class="setting-description">Update your payment method and billing details</p>
+            </div>
+            <div class="setting-control">
+              <button class="btn-secondary">Update Billing</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Settings (Admin) -->
+      <div *ngIf="activeCategory === 'system' && currentUser?.role === 'admin'" class="settings-section">
+        <div class="section-header">
+          <h2 class="section-title">System Settings</h2>
+          <p class="section-description">Configure platform-wide settings</p>
+        </div>
+
+        <div class="settings-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Platform Name</h3>
+              <p class="setting-description">The name displayed across the platform</p>
+            </div>
+            <div class="setting-control">
+              <input type="text" [value]="systemSettings?.platformName || 'JobBoard Pro'" class="form-input">
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Allow User Registration</h3>
+              <p class="setting-description">Enable new users to register accounts</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="systemSettings?.allowRegistration || false">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Maintenance Mode</h3>
+              <p class="setting-description">Put the platform in maintenance mode</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="systemSettings?.maintenanceMode || false">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Max Job Postings per Company</h3>
+              <p class="setting-description">Default limit for job postings per company</p>
+            </div>
+            <div class="setting-control">
+              <input type="number" [value]="systemSettings?.maxJobPostingsPerCompany || 25" class="form-input"
+                style="width: 100px;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security & Compliance (Admin) -->
+      <div *ngIf="activeCategory === 'security' && currentUser?.role === 'admin'" class="settings-section">
+        <div class="section-header">
+          <h2 class="section-title">Security & Compliance</h2>
+          <p class="section-description">Manage security policies and compliance settings</p>
+        </div>
+
+        <div class="settings-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Two-Factor Authentication</h3>
+              <p class="setting-description">Require 2FA for all admin accounts</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="systemSettings?.security?.requireTwoFactorAuth || false">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Session Timeout</h3>
+              <p class="setting-description">Automatic logout after inactivity (minutes)</p>
+            </div>
+            <div class="setting-control">
+              <input type="number" [value]="systemSettings?.security?.sessionTimeoutMinutes || 30" class="form-input"
+                style="width: 100px;">
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Data Retention Period</h3>
+              <p class="setting-description">How long to keep user data after account deletion</p>
+            </div>
+            <div class="setting-control">
+              <select class="form-select" [value]="systemSettings?.security?.dataRetentionDays || 90">
+                <option value="30">30 days</option>
+                <option value="90">90 days</option>
+                <option value="365">1 year</option>
+                <option value="forever">Forever</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics & Reports (Admin) -->
+      <div *ngIf="activeCategory === 'analytics' && currentUser?.role === 'admin'" class="settings-section">
+        <div class="section-header">
+          <h2 class="section-title">Analytics & Reports</h2>
+          <p class="section-description">View platform analytics and generate reports</p>
+        </div>
+
+        <div class="settings-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Analytics Tracking</h3>
+              <p class="setting-description">Enable detailed user behavior tracking</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="systemSettings?.analytics?.trackingEnabled || false">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Weekly Reports</h3>
+              <p class="setting-description">Automatically generate weekly platform reports</p>
+            </div>
+            <div class="setting-control">
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="systemSettings?.analytics?.weeklyReportsEnabled || false">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 class="setting-title">Export Data</h3>
+              <p class="setting-description">Generate and download platform analytics</p>
+            </div>
+            <div class="setting-control">
+              <button class="btn-secondary">Generate Report</button>
             </div>
           </div>
         </div>
