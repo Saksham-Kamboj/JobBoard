@@ -104,6 +104,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
       linkedin: [''],
       github: [''],
       twitter: [''],
+      // Company-specific fields
+      companyName: [''],
+      companyDescription: [''],
+      companyWebsite: ['', [Validators.pattern(/^https?:\/\/.+/)]],
+      companySize: [''],
+      industry: [''],
     });
 
     this.professionalForm = this.createProfessionalForm();
@@ -153,6 +159,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.currentUser = user;
         if (user) {
           this.setProfileSections(user.role);
+          this.updateFormValidation(user.role);
           this.loadUserProfile();
           this.loadCompanyData();
           if (user.role === 'company') {
@@ -216,15 +223,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.profileSections = [
           {
             id: 'personal',
-            title: 'Contact Information',
-            icon: 'user',
-            description: 'Update contact details',
-          },
-          {
-            id: 'company',
-            title: 'Company Profile',
+            title: 'Company Information',
             icon: 'building',
-            description: 'Manage company information',
+            description: 'Manage company details and contact information',
           },
           {
             id: 'jobs',
@@ -294,6 +295,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
+  updateFormValidation(role: string) {
+    if (role === 'company') {
+      // Add required validation for company fields
+      this.profileForm
+        .get('companyName')
+        ?.setValidators([Validators.required, Validators.minLength(2)]);
+      this.profileForm.get('companyName')?.updateValueAndValidity();
+    } else {
+      // Remove validation for company fields for non-company users
+      this.profileForm.get('companyName')?.clearValidators();
+      this.profileForm.get('companyName')?.updateValueAndValidity();
+    }
+  }
+
   setActiveSection(sectionId: string) {
     this.activeSection = sectionId;
     this.isEditingProfile = false;
@@ -338,6 +353,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
                 linkedin: profile.personalInfo.linkedinUrl || '',
                 github: profile.personalInfo.githubUrl || '',
                 twitter: '',
+                // Company fields for company users
+                companyName: this.currentUser?.companyName || '',
+                companyDescription: this.currentUser?.companyDescription || '',
+                companyWebsite: this.currentUser?.companyWebsite || '',
+                companySize: this.currentUser?.companySize || '',
+                industry: this.currentUser?.industry || '',
               });
 
               // Populate professional form with profile data
@@ -371,6 +392,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
                 linkedin: this.currentUser?.linkedin || '',
                 github: this.currentUser?.github || '',
                 twitter: this.currentUser?.twitter || '',
+                // Company fields for company users
+                companyName: this.currentUser?.companyName || '',
+                companyDescription: this.currentUser?.companyDescription || '',
+                companyWebsite: this.currentUser?.companyWebsite || '',
+                companySize: this.currentUser?.companySize || '',
+                industry: this.currentUser?.industry || '',
               });
             }
           },
@@ -390,6 +417,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
               linkedin: this.currentUser?.linkedin || '',
               github: this.currentUser?.github || '',
               twitter: this.currentUser?.twitter || '',
+              // Company fields for company users
+              companyName: this.currentUser?.companyName || '',
+              companyDescription: this.currentUser?.companyDescription || '',
+              companyWebsite: this.currentUser?.companyWebsite || '',
+              companySize: this.currentUser?.companySize || '',
+              industry: this.currentUser?.industry || '',
             });
           },
         })
@@ -439,14 +472,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.clearMessages();
 
       const formValue = this.companyForm.value;
-      const updatedUser = {
-        ...this.currentUser,
-        companyName: formValue.companyName,
-        companyDescription: formValue.companyDescription,
-        companyWebsite: formValue.companyWebsite,
-        companySize: formValue.companySize,
-        industry: formValue.industry,
-      };
 
       // Update user in the backend
       this.authService.updateProfile(formValue).subscribe({
@@ -521,6 +546,28 @@ export class ProfileComponent implements OnInit, OnDestroy {
         experience: this.userProfile?.experience || [],
         resume: this.userProfile?.resume,
       };
+
+      // For company users, also update the user record with company information
+      if (this.currentUser.role === 'company') {
+        const userUpdateData = {
+          companyName: formValue.companyName,
+          companyDescription: formValue.companyDescription,
+          companyWebsite: formValue.companyWebsite,
+          companySize: formValue.companySize,
+          industry: formValue.industry,
+        };
+
+        this.authSubscription.add(
+          this.authService.updateProfile(userUpdateData).subscribe({
+            next: (updatedUser) => {
+              this.currentUser = updatedUser;
+            },
+            error: (error) => {
+              console.error('Error updating company user data:', error);
+            },
+          })
+        );
+      }
 
       if (this.userProfile) {
         // Update existing profile

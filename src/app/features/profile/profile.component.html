@@ -127,7 +127,8 @@
       <!-- Personal Information Section -->
       <div *ngIf="activeSection === 'personal'" class="profile-section">
         <div class="section-header">
-          <h2 class="section-title">Personal Information</h2>
+          <h2 class="section-title">{{ currentUser?.role === 'company' ? 'Company Information' : 'Personal Information'
+            }}</h2>
           <button *ngIf="!isEditingProfile" (click)="toggleEditProfile()" class="btn-secondary">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
@@ -135,7 +136,7 @@
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
                 stroke-width="2" />
             </svg>
-            Edit Profile
+            {{ currentUser?.role === 'company' ? 'Edit Company Information' : 'Edit Profile' }}
           </button>
         </div>
 
@@ -151,8 +152,9 @@
                 </svg>
               </div>
               <div class="form-card-title">
-                <h3>Basic Information</h3>
-                <p>Your personal details and contact information</p>
+                <h3>{{ currentUser?.role === 'company' ? 'Contact Information' : 'Basic Information' }}</h3>
+                <p>{{ currentUser?.role === 'company' ? 'Company contact details and representative information' : 'Your
+                  personal details and contact information' }}</p>
               </div>
             </div>
             <div class="form-card-content">
@@ -276,6 +278,76 @@
             </div>
           </div>
 
+          <!-- Company Information Card (Company Users Only) -->
+          <div *ngIf="currentUser?.role === 'company'" class="form-card">
+            <div class="form-card-header">
+              <div class="form-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 21h18" stroke="currentColor" stroke-width="2" />
+                  <path d="M5 21V7l8-4v18" stroke="currentColor" stroke-width="2" />
+                  <path d="M19 21V11l-6-4" stroke="currentColor" stroke-width="2" />
+                </svg>
+              </div>
+              <div class="form-card-title">
+                <h3>Company Details</h3>
+                <p>Business information and company profile</p>
+              </div>
+            </div>
+            <div class="form-card-content">
+              <div class="form-group">
+                <label for="companyName" class="form-label">Company Name *</label>
+                <input type="text" id="companyName" formControlName="companyName" class="form-input"
+                  [class.error]="getFieldError('companyName')">
+                <div *ngIf="getFieldError('companyName')" class="field-error">
+                  {{ getFieldError('companyName') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="companyDescription" class="form-label">Company Description</label>
+                <textarea id="companyDescription" formControlName="companyDescription" class="form-textarea" rows="4"
+                  placeholder="Brief description of your company..."></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="companyWebsite" class="form-label">Company Website</label>
+                  <input type="url" id="companyWebsite" formControlName="companyWebsite" class="form-input"
+                    placeholder="https://company.com">
+                </div>
+                <div class="form-group">
+                  <label for="companySize" class="form-label">Company Size</label>
+                  <select id="companySize" formControlName="companySize" class="form-select">
+                    <option value="">Select size</option>
+                    <option value="1-10">1-10 employees</option>
+                    <option value="11-50">11-50 employees</option>
+                    <option value="51-200">51-200 employees</option>
+                    <option value="201-500">201-500 employees</option>
+                    <option value="501-1000">501-1000 employees</option>
+                    <option value="1000+">1000+ employees</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="industry" class="form-label">Industry</label>
+                <select id="industry" formControlName="industry" class="form-select">
+                  <option value="">Select industry</option>
+                  <option value="technology">Technology</option>
+                  <option value="healthcare">Healthcare</option>
+                  <option value="finance">Finance</option>
+                  <option value="education">Education</option>
+                  <option value="retail">Retail</option>
+                  <option value="manufacturing">Manufacturing</option>
+                  <option value="consulting">Consulting</option>
+                  <option value="media">Media & Entertainment</option>
+                  <option value="nonprofit">Non-profit</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <!-- Form Actions -->
           <div class="form-actions-card">
             <button type="button" (click)="toggleEditProfile()" class="btn-secondary">
@@ -301,8 +373,10 @@
           <div class="personal-info-item">
             <div class="personal-info-header">
               <div class="personal-info-details">
-                <h3 class="personal-info-title">Basic Information</h3>
-                <p class="personal-info-description">Personal details and contact information</p>
+                <h3 class="personal-info-title">{{ currentUser?.role === 'company' ? 'Contact Information' : 'Basic
+                  Information' }}</h3>
+                <p class="personal-info-description">{{ currentUser?.role === 'company' ? 'Company contact details and
+                  representative information' : 'Personal details and contact information' }}</p>
                 <p class="personal-info-meta">Member since {{ formatDate(currentUser?.createdAt) }}</p>
               </div>
 
@@ -403,168 +477,47 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Company Profile Section -->
-      <div *ngIf="activeSection === 'company'" class="profile-section">
-        <div class="section-header">
-          <h2 class="section-title">Company Profile</h2>
-          <button *ngIf="!isEditingCompany" (click)="toggleEditCompany()" class="btn-secondary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
-                stroke-width="2" />
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
-                stroke-width="2" />
-            </svg>
-            Edit Company Profile
-          </button>
-        </div>
-
-        <div *ngIf="!isEditingCompany" class="company-info-list">
-          <div class="company-info-item">
-            <div class="company-info-header">
-              <div class="company-info-details">
-                <h3 class="company-info-title">Company Information</h3>
-                <p class="company-info-description">Business details and company profile</p>
-                <p class="company-info-meta">Member since {{ formatDate(currentUser?.createdAt) }}</p>
+          <!-- Company Information Display (Company Users Only) -->
+          <div *ngIf="currentUser?.role === 'company'" class="personal-info-item">
+            <div class="personal-info-header">
+              <div class="personal-info-details">
+                <h3 class="personal-info-title">Company Details</h3>
+                <p class="personal-info-description">Business information and company profile</p>
+                <p class="personal-info-meta">Company overview and business details</p>
               </div>
-
             </div>
-            <div class="company-info-content">
-              <div class="company-info-grid">
-                <div class="company-info-value">
-                  <span class="company-info-label">Company Name</span>
-                  <span class="company-info-text">{{ currentUser?.companyName || 'Not specified' }}</span>
+            <div class="personal-info-content">
+              <div class="personal-info-grid">
+                <div class="personal-info-value">
+                  <span class="personal-info-label">Company Name</span>
+                  <span class="personal-info-text">{{ currentUser?.companyName || 'Not specified' }}</span>
                 </div>
-                <div class="company-info-value" *ngIf="currentUser?.industry">
-                  <span class="company-info-label">Industry</span>
-                  <span class="company-info-text">{{ currentUser?.industry | titlecase }}</span>
+                <div class="personal-info-value" *ngIf="currentUser?.industry">
+                  <span class="personal-info-label">Industry</span>
+                  <span class="personal-info-text">{{ currentUser?.industry | titlecase }}</span>
                 </div>
-                <div class="company-info-value" *ngIf="currentUser?.companySize">
-                  <span class="company-info-label">Company Size</span>
-                  <span class="company-info-text">{{ currentUser?.companySize }}</span>
+                <div class="personal-info-value" *ngIf="currentUser?.companySize">
+                  <span class="personal-info-label">Company Size</span>
+                  <span class="personal-info-text">{{ currentUser?.companySize }}</span>
                 </div>
-                <div class="company-info-value" *ngIf="currentUser?.companyWebsite">
-                  <span class="company-info-label">Website</span>
-                  <a [href]="currentUser?.companyWebsite" target="_blank" class="company-info-link">
+                <div class="personal-info-value" *ngIf="currentUser?.companyWebsite">
+                  <span class="personal-info-label">Website</span>
+                  <a [href]="currentUser?.companyWebsite" target="_blank" class="personal-info-link">
                     Visit Website
                   </a>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="company-info-item" *ngIf="currentUser?.companyDescription">
-            <div class="company-info-header">
-              <div class="company-info-details">
-                <h3 class="company-info-title">Company Description</h3>
-                <p class="company-info-description">About your organization</p>
-                <p class="company-info-meta">Company overview and mission statement</p>
-              </div>
-            </div>
-            <div class="company-info-content">
-              <div class="company-info-grid">
-                <div class="company-info-value full-width">
-                  <span class="company-info-label">Description</span>
-                  <span class="company-info-text">{{ currentUser?.companyDescription }}</span>
+                <div class="personal-info-value full-width" *ngIf="currentUser?.companyDescription">
+                  <span class="personal-info-label">Description</span>
+                  <span class="personal-info-text">{{ currentUser?.companyDescription }}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <form *ngIf="isEditingCompany" [formGroup]="companyForm" (ngSubmit)="onCompanySubmit()"
-          class="company-edit-form">
-          <div class="form-card">
-            <div class="form-card-header">
-              <div class="form-card-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 21h18" stroke="currentColor" stroke-width="2" />
-                  <path d="M5 21V7l8-4v18" stroke="currentColor" stroke-width="2" />
-                  <path d="M19 21V11l-6-4" stroke="currentColor" stroke-width="2" />
-                </svg>
-              </div>
-              <div class="form-card-title">
-                <h3>Company Information</h3>
-                <p>Update your company details and branding</p>
-              </div>
-            </div>
-            <div class="form-card-content">
-              <div class="form-group">
-                <label for="companyName" class="form-label">Company Name *</label>
-                <input type="text" id="companyName" formControlName="companyName" class="form-input"
-                  [class.error]="getFieldError('companyName', companyForm)">
-                <div *ngIf="getFieldError('companyName', companyForm)" class="field-error">
-                  {{ getFieldError('companyName', companyForm) }}
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="companyDescription" class="form-label">Company Description</label>
-                <textarea id="companyDescription" formControlName="companyDescription" class="form-textarea" rows="4"
-                  placeholder="Brief description of your company..."></textarea>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="companyWebsite" class="form-label">Company Website</label>
-                  <input type="url" id="companyWebsite" formControlName="companyWebsite" class="form-input"
-                    placeholder="https://company.com">
-                </div>
-                <div class="form-group">
-                  <label for="companySize" class="form-label">Company Size</label>
-                  <select id="companySize" formControlName="companySize" class="form-select">
-                    <option value="">Select size</option>
-                    <option value="1-10">1-10 employees</option>
-                    <option value="11-50">11-50 employees</option>
-                    <option value="51-200">51-200 employees</option>
-                    <option value="201-500">201-500 employees</option>
-                    <option value="501-1000">501-1000 employees</option>
-                    <option value="1000+">1000+ employees</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="industry" class="form-label">Industry</label>
-                <select id="industry" formControlName="industry" class="form-select">
-                  <option value="">Select industry</option>
-                  <option value="technology">Technology</option>
-                  <option value="healthcare">Healthcare</option>
-                  <option value="finance">Finance</option>
-                  <option value="education">Education</option>
-                  <option value="retail">Retail</option>
-                  <option value="manufacturing">Manufacturing</option>
-                  <option value="consulting">Consulting</option>
-                  <option value="media">Media & Entertainment</option>
-                  <option value="nonprofit">Non-profit</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-actions-card">
-            <button type="button" (click)="toggleEditCompany()" class="btn-secondary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" />
-                <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" />
-              </svg>
-              Cancel
-            </button>
-            <button type="submit" class="btn-primary" [disabled]="isLoading">
-              <span *ngIf="isLoading" class="loading-spinner"></span>
-              <svg *ngIf="!isLoading" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" />
-                <polyline points="22,4 12,14.01 9,11.01" stroke="currentColor" stroke-width="2" />
-              </svg>
-              {{ isLoading ? 'Saving...' : 'Save Changes' }}
-            </button>
-          </div>
-        </form>
       </div>
+
+
 
       <!-- Job Postings Section (Company) -->
       <div *ngIf="activeSection === 'jobs' && currentUser?.role === 'company'" class="profile-section">

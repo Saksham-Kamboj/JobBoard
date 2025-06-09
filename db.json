@@ -29,6 +29,7 @@
       "firstName": "Company",
       "lastName": "Representative",
       "role": "company",
+      "password": "Company@123",
       "createdAt": "2024-01-01T00:00:00.000Z",
       "isActive": true,
       "phone": "+1 (555) 888-0001",
@@ -1323,41 +1324,6 @@
       "companyId": "demo-company"
     }
   ],
-  "companies": [
-    {
-      "id": "1",
-      "name": "TechCorp Inc.",
-      "description": "Leading technology company specializing in innovative solutions",
-      "website": "https://techcorp.com",
-      "location": "San Francisco, CA",
-      "size": "100-500 employees",
-      "industry": "Technology",
-      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=100&h=100&fit=crop",
-      "createdAt": "2024-01-01T00:00:00.000Z"
-    },
-    {
-      "id": "2",
-      "name": "DataSoft Solutions",
-      "description": "Data analytics and software development company",
-      "website": "https://datasoft.com",
-      "location": "New York, NY",
-      "size": "50-100 employees",
-      "industry": "Software",
-      "logo": "https://images.unsplash.com/photo-1551434678-e076c223a692?w=100&h=100&fit=crop",
-      "createdAt": "2024-01-01T00:00:00.000Z"
-    },
-    {
-      "id": "3",
-      "name": "Creative Agency",
-      "description": "Full-service creative and digital marketing agency",
-      "website": "https://creativeagency.com",
-      "location": "Los Angeles, CA",
-      "size": "10-50 employees",
-      "industry": "Marketing",
-      "logo": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=100&h=100&fit=crop",
-      "createdAt": "2024-01-01T00:00:00.000Z"
-    }
-  ],
   "userSettings": [
     {
       "id": "settings-demo-job-seeker",
@@ -1438,7 +1404,7 @@
         "nextBillingDate": "2025-07-09T00:00:00.000Z"
       },
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2025-06-09T12:00:00.000Z"
+      "updatedAt": "2025-06-09T12:56:16.626Z"
     },
     {
       "id": "settings-demo-admin",
@@ -1458,7 +1424,7 @@
         "marketingEmails": false
       },
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2025-06-09T12:00:00.000Z"
+      "updatedAt": "2025-06-09T12:46:28.312Z"
     }
   ],
   "systemSettings": [
