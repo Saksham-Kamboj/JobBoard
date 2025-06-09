@@ -1393,9 +1393,10 @@
         "CRM",
         "Account Management"
       ],
-      "isActive": true,
+      "isActive": false,
       "applicationCount": 26,
-      "featured": false
+      "featured": false,
+      "updatedAt": "2025-06-09T09:59:05.005Z"
     }
   ],
   "companies": [

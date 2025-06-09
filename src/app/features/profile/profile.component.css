@@ -695,6 +695,23 @@
   .stat-number {
     font-size: 1.75rem;
   }
+
+  /* Job management text sizing for 768px */
+  .admin-job-company {
+    font-size: 0.9rem;
+  }
+
+  .admin-job-meta {
+    font-size: 0.8rem;
+  }
+
+  .admin-stat-label {
+    font-size: 0.7rem;
+  }
+
+  .admin-stat-value {
+    font-size: 1rem;
+  }
 }
 
 /* Additional breakpoint for better progression */
@@ -898,12 +915,39 @@
     font-size: 1.125rem;
   }
 
+  .admin-job-company {
+    font-size: 0.875rem;
+  }
+
+  .admin-job-meta {
+    font-size: 0.75rem;
+  }
+
+  .admin-job-location,
+  .admin-job-type,
+  .admin-job-salary {
+    font-size: 0.75rem;
+  }
+
+  .admin-stat-label {
+    font-size: 0.7rem;
+  }
+
+  .admin-stat-value {
+    font-size: 1rem;
+  }
+
   .applicant-name {
     font-size: 1.125rem;
   }
 
   .user-name {
     font-size: 1.125rem;
+  }
+
+  .user-email,
+  .profile-email {
+    font-size: 0.75rem;
   }
 }
 
@@ -3346,12 +3390,39 @@ input:checked+.toggle-slider:before {
     font-size: 1rem;
   }
 
+  .admin-job-company {
+    font-size: 0.8rem;
+  }
+
+  .admin-job-meta {
+    font-size: 0.7rem;
+  }
+
+  .admin-job-location,
+  .admin-job-type,
+  .admin-job-salary {
+    font-size: 0.7rem;
+  }
+
+  .admin-stat-label {
+    font-size: 0.65rem;
+  }
+
+  .admin-stat-value {
+    font-size: 0.875rem;
+  }
+
   .applicant-name {
     font-size: 1rem;
   }
 
   .user-name {
-    font-size: 1.125rem;
+    font-size: 1rem;
+  }
+
+  .user-email,
+  .profile-email {
+    font-size: 0.7rem;
   }
 
   .stat-number {
@@ -3439,5 +3510,43 @@ input:checked+.toggle-slider:before {
 
   .stat-value {
     font-size: 1rem;
+  }
+
+  /* Job management specific text sizing for very small screens */
+  .admin-job-title {
+    font-size: 0.875rem;
+  }
+
+  .admin-job-company {
+    font-size: 0.75rem;
+  }
+
+  .admin-job-meta {
+    font-size: 0.65rem;
+  }
+
+  .admin-job-location,
+  .admin-job-type,
+  .admin-job-salary {
+    font-size: 0.65rem;
+    padding: 0.125rem 0.5rem;
+  }
+
+  .admin-stat-label {
+    font-size: 0.6rem;
+  }
+
+  .admin-stat-value {
+    font-size: 0.8rem;
+  }
+
+  .user-email,
+  .profile-email {
+    font-size: 0.65rem;
+  }
+
+  .applicant-name,
+  .user-name {
+    font-size: 0.875rem;
   }
 }
