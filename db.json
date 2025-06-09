@@ -1329,7 +1329,7 @@
       "id": "settings-demo-job-seeker",
       "userId": "demo-job-seeker",
       "appearance": {
-        "theme": "light",
+        "theme": "dark",
         "language": "en",
         "fontSize": "medium",
         "compactMode": false
@@ -1368,7 +1368,7 @@
         "autoApplyEnabled": false
       },
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2025-06-09T12:00:00.000Z"
+      "updatedAt": "2025-06-09T13:07:18.738Z"
     },
     {
       "id": "settings-demo-company",

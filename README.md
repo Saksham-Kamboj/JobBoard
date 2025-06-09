@@ -118,9 +118,16 @@ Admin accounts are managed by system administrators and cannot be created throug
 ### Company Demo Account
 
 - **Email**: `company@demo.com`
-- **Password**: `password123`
+- **Password**: `Company@123`
 - **Name**: Company Representative
 - **Company**: Demo Tech Solutions
+
+### Admin Demo Account
+
+- **Email**: `admin@demo.com`
+- **Password**: `Admin@123`
+- **Name**: Admin User
+- **Access**: Full administrative privileges
 
 ## Quick Demo Access
 
@@ -137,6 +144,12 @@ The sign-in page features convenient "Quick Demo Access" buttons for instant tes
 - **One-click access** to company features
 - **Pre-filled credentials**: Automatically logs in as `company@demo.com`
 - **Full functionality**: Post jobs, manage company profile, review applications
+
+### Demo Admin Button
+
+- **One-click access** to admin features
+- **Pre-filled credentials**: Automatically logs in as `admin@demo.com`
+- **Full functionality**: User management, job management, system settings
 
 ## Getting Started
 

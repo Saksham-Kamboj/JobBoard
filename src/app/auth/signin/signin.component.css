@@ -71,16 +71,43 @@
   color: var(--muted-foreground);
   font-size: 0.875rem;
   text-align: center;
+  margin: 0 0 0.25rem 0;
+  font-weight: 500;
+}
+
+.demo-subtitle {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  text-align: center;
   margin: 0 0 1rem 0;
+  opacity: 0.8;
 }
 
 .demo-buttons {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
 }
 
+/* Stack buttons vertically on smaller screens */
+@media (max-width: 640px) {
+  .demo-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* For three buttons, use a different layout */
+.demo-buttons:has(.admin) {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media (max-width: 768px) {
+  .demo-buttons:has(.admin) {
+    grid-template-columns: 1fr;
+  }
+}
+
 .demo-btn {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -93,6 +120,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
+  min-height: 44px;
 }
 
 .demo-btn.job-seeker {
@@ -111,6 +139,16 @@
 
 .demo-btn.company:hover:not(:disabled) {
   background: var(--primary);
+  opacity: 0.9;
+}
+
+.demo-btn.admin {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.demo-btn.admin:hover:not(:disabled) {
+  background: var(--destructive);
   opacity: 0.9;
 }
 

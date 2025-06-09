@@ -287,27 +287,33 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
 
     // Update theme from appearance settings
-    if (settings.appearance.theme === 'dark' && !this.isDarkMode) {
-      this.themeService.toggleTheme();
-    } else if (settings.appearance.theme === 'light' && this.isDarkMode) {
-      this.themeService.toggleTheme();
+    if (
+      settings.appearance.theme &&
+      (settings.appearance.theme === 'light' ||
+        settings.appearance.theme === 'dark')
+    ) {
+      this.themeService.syncThemeFromSettings(
+        settings.appearance.theme as 'light' | 'dark'
+      );
     }
   }
 
   toggleTheme() {
     this.themeService.toggleTheme();
 
-    // Update theme in user settings
+    // Update theme in user settings database
     if (this.userSettings) {
-      const newTheme = this.isDarkMode ? 'light' : 'dark';
+      const newTheme = this.themeService.getThemeString();
       this.settingsService
         .updateAppearanceSettings({ theme: newTheme })
         .subscribe({
           next: (settings) => {
-            console.log('Theme updated in database');
+            console.log('Theme updated in database:', newTheme);
           },
           error: (error) => {
             console.error('Error updating theme:', error);
+            // Revert theme change if database update fails
+            this.themeService.toggleTheme();
           },
         });
     }
