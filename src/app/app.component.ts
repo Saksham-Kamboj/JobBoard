@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     // Initialize theme service to ensure theme is applied on app startup
-    // The theme service will automatically load the saved theme from localStorage
+    // The theme service will automatically load the saved theme from sessionStorage
     // Initialize scroll service to handle intelligent scroll restoration
     // The scroll service will automatically:
     // - Scroll to top for new page navigation

@@ -21,7 +21,7 @@ export class ThemeService {
 
   private initializeTheme(): void {
     // Check for saved theme preference or default to light mode
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = sessionStorage.getItem('theme');
     const prefersDark = window.matchMedia(
       '(prefers-color-scheme: dark)'
     ).matches;
@@ -34,9 +34,9 @@ export class ThemeService {
     // Apply theme immediately to avoid flash
     this.applyThemeToDOM(isDark);
 
-    // Save to localStorage if not already saved
+    // Save to sessionStorage if not already saved
     if (!savedTheme) {
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      sessionStorage.setItem('theme', isDark ? 'dark' : 'light');
     }
   }
 
@@ -51,7 +51,7 @@ export class ThemeService {
   setTheme(isDark: boolean): void {
     this.isDarkModeSubject.next(isDark);
     this.applyThemeToDOM(isDark);
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    sessionStorage.setItem('theme', isDark ? 'dark' : 'light');
   }
 
   toggleTheme(): void {

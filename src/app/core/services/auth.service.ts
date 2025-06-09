@@ -69,8 +69,8 @@ export class AuthService {
   }
 
   private loadStoredAuth(): void {
-    const token = localStorage.getItem('auth_token');
-    const user = localStorage.getItem('current_user');
+    const token = sessionStorage.getItem('auth_token');
+    const user = sessionStorage.getItem('current_user');
 
     if (token && user) {
       try {
@@ -84,15 +84,15 @@ export class AuthService {
   }
 
   private storeAuth(user: User, token: string): void {
-    localStorage.setItem('auth_token', token);
-    localStorage.setItem('current_user', JSON.stringify(user));
+    sessionStorage.setItem('auth_token', token);
+    sessionStorage.setItem('current_user', JSON.stringify(user));
     this.tokenSubject.next(token);
     this.currentUserSubject.next(user);
   }
 
   private clearStoredAuth(): void {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('current_user');
+    sessionStorage.removeItem('auth_token');
+    sessionStorage.removeItem('current_user');
     this.tokenSubject.next(null);
     this.currentUserSubject.next(null);
   }
@@ -239,7 +239,7 @@ export class AuthService {
         tap((user) => {
           const { password, ...userWithoutPassword } = user;
           this.currentUserSubject.next(userWithoutPassword);
-          localStorage.setItem(
+          sessionStorage.setItem(
             'current_user',
             JSON.stringify(userWithoutPassword)
           );
