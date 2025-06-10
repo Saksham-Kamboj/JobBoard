@@ -86,18 +86,39 @@ export class RoleGuard implements CanActivate {
 
         // Check single role
         if (requiredRole && user.role !== requiredRole) {
-          this.redirectBasedOnRole(user.role);
+          // Only redirect for main dashboard/admin routes, not for specific resource routes
+          if (this.shouldRedirectForRole(state.url)) {
+            this.redirectBasedOnRole(user.role);
+          }
           return false;
         }
 
         // Check multiple roles
         if (requiredRoles && !requiredRoles.includes(user.role)) {
-          this.redirectBasedOnRole(user.role);
+          // Only redirect for main dashboard/admin routes, not for specific resource routes
+          if (this.shouldRedirectForRole(state.url)) {
+            this.redirectBasedOnRole(user.role);
+          }
           return false;
         }
 
         return true;
       })
+    );
+  }
+
+  private shouldRedirectForRole(url: string): boolean {
+    // Only redirect for main dashboard and admin routes
+    // Let other routes fall through to 404 if user doesn't have access
+    const redirectRoutes = [
+      '/dashboard',
+      '/admin/dashboard',
+      '/admin',
+      '/post-job',
+    ];
+
+    return redirectRoutes.some(
+      (route) => url === route || url.startsWith(route + '/')
     );
   }
 

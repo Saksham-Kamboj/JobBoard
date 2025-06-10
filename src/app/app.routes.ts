@@ -46,7 +46,7 @@ export const routes: Routes = [
   {
     path: 'jobs/:id/apply',
     canActivate: [AuthGuard, RoleGuard],
-    data: { role: 'job-seeker' },
+    data: { roles: ['job-seeker'] },
     loadComponent: () =>
       import('./features/jobs/job-apply/job-apply.component').then(
         (m) => m.JobApplyComponent
@@ -87,15 +87,21 @@ export const routes: Routes = [
     ],
   },
 
-  // Protected routes for job seekers
+  // Dashboard routes for different roles
   {
     path: 'dashboard',
-    canActivate: [AuthGuard, RoleGuard],
-    data: { role: 'job-seeker' },
-    loadComponent: () =>
-      import(
-        './features/dashboard/job-seeker-dashboard/job-seeker-dashboard.component'
-      ).then((m) => m.JobSeekerDashboardComponent),
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        canActivate: [RoleGuard],
+        data: { roles: ['job-seeker', 'company'] },
+        loadComponent: () =>
+          import(
+            './features/dashboard/job-seeker-dashboard/job-seeker-dashboard.component'
+          ).then((m) => m.JobSeekerDashboardComponent),
+      },
+    ],
   },
 
   // Settings page (accessible to all authenticated users)
@@ -149,6 +155,9 @@ export const routes: Routes = [
   // Wildcard route - must be last
   {
     path: '**',
-    redirectTo: '/jobs',
+    loadComponent: () =>
+      import('./shared/components/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent
+      ),
   },
 ];
