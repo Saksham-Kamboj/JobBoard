@@ -1660,6 +1660,15 @@
           <p class="section-description">Manage platform users and their roles</p>
         </div>
 
+        <!-- Success Message -->
+        <div *ngIf="successMessage" class="success-message">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" />
+            <polyline points="22,4 12,14.01 9,11.01" stroke="currentColor" stroke-width="2" />
+          </svg>
+          {{ successMessage }}
+        </div>
+
         <!-- Error Message -->
         <div *ngIf="errorMessage" class="error-message">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1670,8 +1679,21 @@
           {{ errorMessage }}
         </div>
 
-        <!-- User Filters -->
+        <!-- User Search and Filters -->
         <div class="filters-section">
+          <!-- Search Bar -->
+          <div class="search-group">
+            <div class="search-input-wrapper">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+                <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" />
+              </svg>
+              <input type="text" [(ngModel)]="userSearchQuery" (input)="onUserSearchChange()"
+                placeholder="Search users by full name, email, company, or location..." class="search-input" />
+            </div>
+          </div>
+
+          <!-- Filters -->
           <div class="filters-row">
             <div class="filter-group">
               <label for="userRoleFilter" class="filter-label">Filter by Role:</label>
@@ -1692,7 +1714,21 @@
                 <option value="inactive">Inactive</option>
               </select>
             </div>
+            <div class="filter-group" *ngIf="userSearchQuery || selectedUserRoleFilter || selectedUserStatusFilter">
+              <button type="button" (click)="clearUserFilters()" class="btn-secondary clear-filters-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" />
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" />
+                </svg>
+                Clear Filters
+              </button>
+            </div>
           </div>
+        </div>
+
+        <!-- Results Counter -->
+        <div class="results-counter" *ngIf="allUsers.length > 0">
+          <p class="results-text">{{ getUserResultsText() }}</p>
         </div>
 
         <!-- Users List -->
@@ -1756,13 +1792,24 @@
                   </select>
                 </div>
                 <button class="btn-danger" (click)="deleteUser(user)"
-                  [disabled]="user.role === 'admin' && user.id === currentUser?.id">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  [disabled]="(user.role === 'admin' && user.id === currentUser?.id) || isLoading">
+                  <svg *ngIf="!isLoading" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
                     <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" />
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
                       stroke="currentColor" stroke-width="2" />
                   </svg>
-                  Delete
+                  <svg *ngIf="isLoading" class="loading-spinner" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-dasharray="31.416" stroke-dashoffset="31.416">
+                      <animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416"
+                        repeatCount="indefinite" />
+                      <animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416"
+                        repeatCount="indefinite" />
+                    </circle>
+                  </svg>
+                  {{ isLoading ? 'Deleting...' : 'Delete' }}
                 </button>
               </div>
             </div>
@@ -1770,7 +1817,15 @@
         </div>
 
         <div *ngIf="filteredUsers.length === 0 && allUsers.length > 0" class="no-filtered-users">
-          <p>No users match the selected filters.</p>
+          <div class="no-results-content">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+              <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <h3>No Users Found</h3>
+            <p>No users match your search criteria or selected filters.</p>
+            <p class="search-suggestion">Try adjusting your search terms or clearing the filters.</p>
+          </div>
         </div>
 
         <div *ngIf="allUsers.length === 0" class="no-users">
@@ -1792,6 +1847,15 @@
         <div class="section-header">
           <h2 class="section-title">Job Management</h2>
           <p class="section-description">Oversee all job postings on the platform</p>
+        </div>
+
+        <!-- Success Message -->
+        <div *ngIf="successMessage" class="success-message">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" />
+            <polyline points="22,4 12,14.01 9,11.01" stroke="currentColor" stroke-width="2" />
+          </svg>
+          {{ successMessage }}
         </div>
 
         <!-- Error Message -->
@@ -1860,8 +1924,21 @@
           </div>
         </div>
 
-        <!-- Job Filters -->
+        <!-- Job Search and Filters -->
         <div class="filters-section">
+          <!-- Search Bar -->
+          <div class="search-group">
+            <div class="search-input-wrapper">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+                <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" />
+              </svg>
+              <input type="text" [(ngModel)]="jobSearchQuery" (input)="onJobSearchChange()"
+                placeholder="Search jobs by title, company, location, skills, or contact..." class="search-input" />
+            </div>
+          </div>
+
+          <!-- Filters -->
           <div class="filters-row">
             <div class="filter-group">
               <label for="jobStatusFilter" class="filter-label">Filter by Status:</label>
@@ -1873,7 +1950,21 @@
                 <option value="expired">Expired</option>
               </select>
             </div>
+            <div class="filter-group" *ngIf="jobSearchQuery || selectedJobStatusFilter">
+              <button type="button" (click)="clearJobFilters()" class="btn-secondary clear-filters-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" />
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" />
+                </svg>
+                Clear Filters
+              </button>
+            </div>
           </div>
+        </div>
+
+        <!-- Results Counter -->
+        <div class="results-counter" *ngIf="allJobsForAdmin.length > 0">
+          <p class="results-text">{{ getJobResultsText() }}</p>
         </div>
 
         <!-- Jobs List -->
@@ -1949,7 +2040,15 @@
         </div>
 
         <div *ngIf="filteredJobsForAdmin.length === 0 && allJobsForAdmin.length > 0" class="no-filtered-jobs">
-          <p>No jobs match the selected filters.</p>
+          <div class="no-results-content">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+              <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <h3>No Jobs Found</h3>
+            <p>No jobs match your search criteria or selected filters.</p>
+            <p class="search-suggestion">Try adjusting your search terms or clearing the filters.</p>
+          </div>
         </div>
 
         <div *ngIf="allJobsForAdmin.length === 0" class="no-jobs">

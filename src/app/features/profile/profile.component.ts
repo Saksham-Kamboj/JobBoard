@@ -66,11 +66,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   selectedUserRoleFilter = '';
   selectedUserStatusFilter = '';
   selectedJobStatusFilter = '';
+  userSearchQuery = '';
+  jobSearchQuery = '';
   isEditingAdminSettings = false;
   adminSettingsForm: FormGroup;
   isLoading = false;
   profileUpdateSuccess = false;
   errorMessage = '';
+  successMessage = '';
   newSkill = '';
   newJobType = '';
   newLocation = '';
@@ -762,6 +765,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private clearMessages() {
     this.profileUpdateSuccess = false;
     this.errorMessage = '';
+    this.successMessage = '';
   }
 
   getFieldError(
@@ -1775,6 +1779,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         next: (users) => {
           this.allUsers = users;
           this.filteredUsers = [...users];
+          // Apply current filters after loading
+          this.filterUsers();
         },
         error: (error) => {
           console.error('Error loading users:', error);
@@ -1783,6 +1789,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
         },
       })
     );
+  }
+
+  // Force refresh user data from server
+  refreshUserData() {
+    console.log('Refreshing user data from server...');
+    this.loadAllUsers();
   }
 
   loadAllJobsForAdmin() {
@@ -1856,31 +1868,92 @@ export class ProfileComponent implements OnInit, OnDestroy {
   // User Management Methods
   filterUsers() {
     this.filteredUsers = this.allUsers.filter((user) => {
+      // Role filter
       const roleMatch =
         !this.selectedUserRoleFilter ||
         user.role === this.selectedUserRoleFilter;
+
+      // Status filter
       const statusMatch =
         !this.selectedUserStatusFilter ||
         (this.selectedUserStatusFilter === 'active' && user.isActive) ||
         (this.selectedUserStatusFilter === 'inactive' && !user.isActive);
-      return roleMatch && statusMatch;
+
+      // Search filter
+      let searchMatch = true;
+      if (this.userSearchQuery.trim()) {
+        const query = this.userSearchQuery.toLowerCase().trim();
+        const fullName = `${user.firstName || ''} ${
+          user.lastName || ''
+        }`.toLowerCase();
+        const reversedFullName = `${user.lastName || ''} ${
+          user.firstName || ''
+        }`.toLowerCase();
+
+        // Split query into words for better multi-word search
+        const queryWords = query.split(/\s+/);
+
+        // For names, check if the query matches the full name or individual parts
+        const nameMatch =
+          fullName.includes(query) ||
+          reversedFullName.includes(query) ||
+          queryWords.every(
+            (word) =>
+              fullName.includes(word) ||
+              user.firstName?.toLowerCase().includes(word) ||
+              user.lastName?.toLowerCase().includes(word)
+          );
+
+        // Check other fields
+        const otherFieldsMatch = queryWords.some(
+          (word) =>
+            user.email?.toLowerCase().includes(word) ||
+            user.companyName?.toLowerCase().includes(word) ||
+            user.location?.toLowerCase().includes(word) ||
+            user.phone?.includes(word)
+        );
+
+        searchMatch = nameMatch || otherFieldsMatch;
+      }
+
+      return roleMatch && statusMatch && searchMatch;
     });
   }
 
+  onUserSearchChange() {
+    this.filterUsers();
+  }
+
   updateUserStatus(user: UserManagement) {
+    console.log(
+      'Updating user status for user:',
+      user.id,
+      'to active:',
+      user.isActive
+    );
     this.authSubscription.add(
       this.adminManagementService
         .updateUserStatus(user.id, user.isActive)
         .subscribe({
           next: (updatedUser) => {
+            console.log('User status updated successfully:', updatedUser);
             const index = this.allUsers.findIndex((u) => u.id === user.id);
             if (index !== -1) {
               this.allUsers[index] = updatedUser;
             }
             this.filterUsers();
+            // Show success message
+            this.successMessage = `User ${
+              user.isActive ? 'activated' : 'deactivated'
+            } successfully`;
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 3000);
           },
           error: (error) => {
             console.error('Error updating user status:', error);
+            // Revert the toggle state
+            user.isActive = !user.isActive;
             this.errorMessage =
               'Failed to update user status. Please try again.';
             setTimeout(() => {
@@ -1907,14 +1980,23 @@ export class ProfileComponent implements OnInit, OnDestroy {
         )}?`
       )
     ) {
+      console.log('Updating user role for user:', user.id, 'to role:', newRole);
       this.authSubscription.add(
         this.adminManagementService.updateUserRole(user.id, newRole).subscribe({
           next: (updatedUser) => {
+            console.log('User role updated successfully:', updatedUser);
             const index = this.allUsers.findIndex((u) => u.id === user.id);
             if (index !== -1) {
               this.allUsers[index] = updatedUser;
             }
             this.filterUsers();
+            // Show success message
+            this.successMessage = `User role updated to ${this.adminManagementService.getUserRoleDisplayName(
+              newRole
+            )} successfully`;
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 3000);
           },
           error: (error) => {
             console.error('Error updating user role:', error);
@@ -1934,15 +2016,48 @@ export class ProfileComponent implements OnInit, OnDestroy {
         `Are you sure you want to delete ${user.firstName} ${user.lastName}? This action cannot be undone.`
       )
     ) {
+      console.log('Deleting user:', user.id);
+      this.isLoading = true;
+      this.clearMessages(); // Clear any existing messages
+
       this.authSubscription.add(
         this.adminManagementService.deleteUser(user.id).subscribe({
           next: () => {
+            console.log('User deleted successfully:', user.id);
+
+            // Immediately remove user from local arrays for instant UI feedback
             this.allUsers = this.allUsers.filter((u) => u.id !== user.id);
-            this.filterUsers();
+            this.filteredUsers = this.filteredUsers.filter(
+              (u) => u.id !== user.id
+            );
+
+            // Force refresh from server to ensure data consistency
+            this.refreshUserData();
+
+            this.isLoading = false;
+
+            // Show success message
+            this.successMessage = `User ${user.firstName} ${user.lastName} deleted successfully`;
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 3000);
           },
           error: (error) => {
             console.error('Error deleting user:', error);
-            this.errorMessage = 'Failed to delete user. Please try again.';
+            this.isLoading = false;
+
+            // Show detailed error message
+            let errorMsg = 'Failed to delete user. Please try again.';
+            if (error.status === 404) {
+              errorMsg = 'User not found. It may have already been deleted.';
+            } else if (error.status === 403) {
+              errorMsg = 'You do not have permission to delete this user.';
+            } else if (error.status === 0) {
+              errorMsg =
+                'Network error. Please check your connection and try again.';
+            }
+
+            this.errorMessage = errorMsg;
             setTimeout(() => {
               this.errorMessage = '';
             }, 5000);
@@ -1955,21 +2070,97 @@ export class ProfileComponent implements OnInit, OnDestroy {
   // Job Management Methods for Admin
   filterJobsForAdmin() {
     this.filteredJobsForAdmin = this.allJobsForAdmin.filter((job) => {
+      // Status filter
       const statusMatch =
         !this.selectedJobStatusFilter ||
         this.adminManagementService
           .getJobStatusDisplayName(job)
           .toLowerCase() === this.selectedJobStatusFilter;
-      return statusMatch;
+
+      // Search filter
+      let searchMatch = true;
+      if (this.jobSearchQuery.trim()) {
+        const query = this.jobSearchQuery.toLowerCase().trim();
+
+        // Split query into words for better multi-word search
+        const queryWords = query.split(/\s+/);
+
+        // Check if all query words are found in any of the searchable fields
+        searchMatch = queryWords.every(
+          (word) =>
+            job.title?.toLowerCase().includes(word) ||
+            job.company?.toLowerCase().includes(word) ||
+            job.location?.toLowerCase().includes(word) ||
+            job.type?.toLowerCase().includes(word) ||
+            (job.description && job.description.toLowerCase().includes(word)) ||
+            (job.skills &&
+              job.skills.some((skill: string) =>
+                skill.toLowerCase().includes(word)
+              )) ||
+            (job.companyContact &&
+              job.companyContact.toLowerCase().includes(word)) ||
+            (job.companyEmail && job.companyEmail.toLowerCase().includes(word))
+        );
+      }
+
+      return statusMatch && searchMatch;
     });
   }
 
+  onJobSearchChange() {
+    this.filterJobsForAdmin();
+  }
+
+  clearUserFilters() {
+    this.userSearchQuery = '';
+    this.selectedUserRoleFilter = '';
+    this.selectedUserStatusFilter = '';
+    this.filterUsers();
+  }
+
+  clearJobFilters() {
+    this.jobSearchQuery = '';
+    this.selectedJobStatusFilter = '';
+    this.filterJobsForAdmin();
+  }
+
+  getUserResultsText(): string {
+    const total = this.allUsers.length;
+    const filtered = this.filteredUsers.length;
+
+    if (
+      this.userSearchQuery ||
+      this.selectedUserRoleFilter ||
+      this.selectedUserStatusFilter
+    ) {
+      return `Showing ${filtered} of ${total} users`;
+    }
+    return `${total} users total`;
+  }
+
+  getJobResultsText(): string {
+    const total = this.allJobsForAdmin.length;
+    const filtered = this.filteredJobsForAdmin.length;
+
+    if (this.jobSearchQuery || this.selectedJobStatusFilter) {
+      return `Showing ${filtered} of ${total} jobs`;
+    }
+    return `${total} jobs total`;
+  }
+
   updateJobStatusAsAdmin(job: any) {
+    console.log(
+      'Updating job status for job:',
+      job.id,
+      'to active:',
+      job.isActive
+    );
     this.authSubscription.add(
       this.adminManagementService
         .updateJobStatus(job.id, job.isActive)
         .subscribe({
           next: (updatedJob) => {
+            console.log('Job status updated successfully:', updatedJob);
             const index = this.allJobsForAdmin.findIndex(
               (j) => j.id === job.id
             );
@@ -1980,9 +2171,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
               };
             }
             this.filterJobsForAdmin();
+            // Show success message
+            this.successMessage = `Job ${
+              job.isActive ? 'activated' : 'deactivated'
+            } successfully`;
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 3000);
           },
           error: (error) => {
             console.error('Error updating job status:', error);
+            // Revert the toggle state
+            job.isActive = !job.isActive;
             this.errorMessage =
               'Failed to update job status. Please try again.';
             setTimeout(() => {
@@ -1999,15 +2199,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
         `Are you sure you want to delete the job "${job.title}"? This action cannot be undone.`
       )
     ) {
+      console.log('Deleting job:', job.id);
       this.authSubscription.add(
         this.adminManagementService.deleteJobAsAdmin(job.id).subscribe({
           next: () => {
+            console.log('Job deleted successfully:', job.id);
             this.allJobsForAdmin = this.allJobsForAdmin.filter(
               (j) => j.id !== job.id
             );
             this.filterJobsForAdmin();
             // Reload stats
             this.loadJobManagementStats();
+            // Show success message
+            this.successMessage = `Job "${job.title}" deleted successfully`;
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 3000);
           },
           error: (error) => {
             console.error('Error deleting job:', error);
@@ -2041,5 +2248,42 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   getTimeAgoAdmin(dateString: string): string {
     return this.adminManagementService.getTimeAgo(dateString);
+  }
+
+  // Helper method to get search examples for users
+  getUserSearchExamples(): string[] {
+    return [
+      'John Doe',
+      'john.doe@email.com',
+      'Tech Corp',
+      'New York',
+      'Software Engineer',
+    ];
+  }
+
+  // Helper method to get search examples for jobs
+  getJobSearchExamples(): string[] {
+    return [
+      'Software Engineer',
+      'Google',
+      'Remote',
+      'JavaScript React',
+      'Senior Developer',
+    ];
+  }
+
+  // Debug method to test API connectivity
+  testApiConnection() {
+    console.log('Testing API connection...');
+    this.authSubscription.add(
+      this.adminManagementService.getAllUsers().subscribe({
+        next: (users) => {
+          console.log('API connection successful. Users loaded:', users.length);
+        },
+        error: (error) => {
+          console.error('API connection failed:', error);
+        },
+      })
+    );
   }
 }
