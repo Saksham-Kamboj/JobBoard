@@ -31,10 +31,16 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   }
 
   private checkAuth(url: string): Observable<boolean> {
-    return this.authService.isAuthenticated$.pipe(
+    return this.authService.currentUser$.pipe(
       take(1),
-      map((isAuthenticated) => {
-        if (isAuthenticated) {
+      map((user) => {
+        if (user) {
+          // Check if user is active
+          if (!user.isActive) {
+            this.authService.logout();
+            alert('Your account has been deactivated by an administrator.');
+            return false;
+          }
           return true;
         } else {
           this.router.navigate(['/auth/signin'], {
@@ -68,6 +74,13 @@ export class RoleGuard implements CanActivate {
       map((user) => {
         if (!user) {
           this.router.navigate(['/auth/signin']);
+          return false;
+        }
+
+        // Check if user is active
+        if (!user.isActive) {
+          this.authService.logout();
+          alert('Your account has been deactivated by an administrator.');
           return false;
         }
 

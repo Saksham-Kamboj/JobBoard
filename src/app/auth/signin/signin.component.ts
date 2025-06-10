@@ -92,7 +92,7 @@ export class SigninComponent implements OnInit {
     });
   }
 
-  // Demo login methods
+  // Demo login methods - Updated to match db.json credentials
   loginAsJobSeeker(): void {
     this.signinForm.patchValue({
       email: 'jobseeker@demo.com',
@@ -104,7 +104,15 @@ export class SigninComponent implements OnInit {
   loginAsCompany(): void {
     this.signinForm.patchValue({
       email: 'company@demo.com',
-      password: 'password123',
+      password: 'Company@123',
+    });
+    this.onSubmit();
+  }
+
+  loginAsAdmin(): void {
+    this.signinForm.patchValue({
+      email: 'admin@demo.com',
+      password: 'Admin@123',
     });
     this.onSubmit();
   }

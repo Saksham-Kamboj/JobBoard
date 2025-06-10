@@ -9,7 +9,7 @@
       "password": "password123",
       "createdAt": "2024-01-01T00:00:00.000Z",
       "isActive": true,
-      "updatedAt": "2025-06-09T08:55:38.086Z"
+      "updatedAt": "2025-06-10T07:12:46.222Z"
     },
     {
       "id": "demo-admin",
@@ -29,6 +29,7 @@
       "firstName": "Company",
       "lastName": "Representative",
       "role": "company",
+      "password": "Company@123",
       "createdAt": "2024-01-01T00:00:00.000Z",
       "isActive": true,
       "phone": "+1 (555) 888-0001",
@@ -40,15 +41,30 @@
       "industry": "technology"
     },
     {
-      "id": "mbep7e5zdmrlik6v66j",
-      "email": "saksham@ekvayu.com",
+      "id": "mbq1ii1eot0g9knrfej",
+      "email": "pravin@ekvayu.com",
+      "firstName": "Pravin",
+      "lastName": "Kumar",
+      "role": "company",
+      "createdAt": "2025-06-10T04:47:59.186Z",
+      "isActive": true,
+      "companyName": "Ekvayu Tech Pvt Ltd",
+      "companyDescription": "Ekvayu, founded in 2021 by IIT Kanpur alumni with over three decades of IT industry experience, is a cybersecurity solutions provider. Leveraging state-of-the-art technologies such as AI/ML, digital security, and embedded systems, we offer complete services designed to meet diverse cybersecurity needs. Our expertise spans Automotive Cyber Security (ISO 21434), VAPT of Applications/Infra, ISMS design & implementation, PCI DSS, HIPAA, ISO 27001 compliance, data center audits, and Virtual CISO services. At Ekvayu, we are committed to safeguarding your digital assets with innovative and reliable cybersecurity solutions.",
+      "companyWebsite": "https://ekvayu.com",
+      "companySize": "11-50",
+      "industry": "technology",
+      "updatedAt": "2025-06-10T07:39:40.884Z"
+    },
+    {
+      "id": "mbq7nsg3g03kqbn1i8g",
+      "email": "tanushri@ekvayu.com",
       "firstName": "Saksham",
       "lastName": "Kamboj",
-      "role": "job-seeker",
-      "createdAt": "2025-06-02T06:17:57.623Z",
+      "role": "company",
+      "createdAt": "2025-06-10T07:40:03.651Z",
       "isActive": true,
-      "password": "Saksham1@",
-      "updatedAt": "2025-06-09T10:27:03.397Z"
+      "password": "saksham",
+      "updatedAt": "2025-06-10T07:48:18.367Z"
     }
   ],
   "userProfiles": [
@@ -84,7 +100,8 @@
           "Git",
           "Node.js",
           "MongoDB",
-          "Next.js"
+          "Next.js",
+          "Angular.js"
         ],
         "preferredJobTypes": [
           "full-time",
@@ -99,7 +116,8 @@
           "min": 1200000,
           "max": 2000000,
           "currency": "INR"
-        }
+        },
+        "jobAlertFrequency": "weekly"
       },
       "education": [
         {
@@ -131,13 +149,13 @@
         }
       ],
       "resume": {
-        "fileName": "01 A B Testing.docx",
-        "fileUrl": "/uploads/resumes/01 A B Testing.docx",
-        "uploadedAt": "2025-06-05T09:06:49.815Z",
-        "fileSize": 179183
+        "fileName": "Component_Based_Design[1].docx",
+        "fileUrl": "/uploads/resumes/Component_Based_Design[1].docx",
+        "uploadedAt": "2025-06-10T05:21:52.262Z",
+        "fileSize": 365434
       },
       "createdAt": "2024-12-01T10:00:00.000Z",
-      "updatedAt": "2025-06-05T09:06:50.823Z"
+      "updatedAt": "2025-06-10T06:24:51.030Z"
     },
     {
       "userId": "demo-company",
@@ -212,15 +230,81 @@
       "id": "4sftsdosq",
       "createdAt": "2025-06-09T10:16:29.555Z",
       "updatedAt": "2025-06-09T10:25:31.529Z"
+    },
+    {
+      "id": "profile-mbq1ii1eot0g9knrfej",
+      "userId": "mbq1ii1eot0g9knrfej",
+      "personalInfo": {
+        "firstName": "Pravin",
+        "lastName": "Kumar",
+        "email": "pravin@ekvayu.com",
+        "phone": "+91 98731 34795",
+        "address": {
+          "street": "Sector-62",
+          "city": "Noida",
+          "state": "Uttar Pradesh",
+          "zipCode": "201301",
+          "country": "India"
+        },
+        "linkedinUrl": "https://linkedin.com/in/ekvayu",
+        "portfolioUrl": "https://ekvayu.com",
+        "githubUrl": "https://github.com/ekvayu"
+      },
+      "professionalInfo": {
+        "currentTitle": "",
+        "yearsOfExperience": 0,
+        "summary": "",
+        "skills": [],
+        "preferredJobTypes": [],
+        "preferredLocations": [],
+        "expectedSalary": {
+          "min": 0,
+          "max": 0,
+          "currency": "USD"
+        }
+      },
+      "education": [],
+      "experience": [],
+      "createdAt": "2025-06-10T04:48:15.162Z",
+      "updatedAt": "2025-06-10T04:50:39.368Z"
+    },
+    {
+      "id": "profile-mbq7nsg3g03kqbn1i8g",
+      "userId": "mbq7nsg3g03kqbn1i8g",
+      "personalInfo": {
+        "firstName": "",
+        "lastName": "",
+        "email": "",
+        "phone": "",
+        "address": {
+          "street": "",
+          "city": "",
+          "state": "",
+          "zipCode": "",
+          "country": ""
+        }
+      },
+      "professionalInfo": {
+        "currentTitle": "",
+        "yearsOfExperience": 0,
+        "summary": "",
+        "skills": [],
+        "preferredJobTypes": [],
+        "preferredLocations": [],
+        "expectedSalary": {
+          "min": 0,
+          "max": 0,
+          "currency": "USD"
+        },
+        "jobAlertFrequency": "weekly"
+      },
+      "education": [],
+      "experience": [],
+      "createdAt": "2025-06-10T07:48:03.123Z",
+      "updatedAt": "2025-06-10T07:48:03.123Z"
     }
   ],
   "savedJobs": [
-    {
-      "id": "saved1",
-      "userId": "demo-job-seeker",
-      "jobId": null,
-      "savedAt": "2024-12-08T10:30:00.000Z"
-    },
     {
       "id": "saved2",
       "userId": "demo-job-seeker",
@@ -232,12 +316,6 @@
       "userId": "demo-job-seeker",
       "jobId": "6",
       "savedAt": "2024-12-06T09:45:00.000Z"
-    },
-    {
-      "id": "saved4",
-      "userId": "mbep7e5zdmrlik6v66j",
-      "jobId": "2",
-      "savedAt": "2025-06-02T08:15:00.000Z"
     }
   ],
   "dashboardStats": [
@@ -251,15 +329,6 @@
       "lastUpdated": "2024-12-15T10:00:00.000Z"
     },
     {
-      "id": "stats-mbep7e5zdmrlik6v66j",
-      "userId": "mbep7e5zdmrlik6v66j",
-      "appliedJobs": 1,
-      "savedJobs": 1,
-      "profileViews": 12,
-      "interviewsScheduled": 0,
-      "lastUpdated": "2025-06-05T09:10:33.323Z"
-    },
-    {
       "id": "admin-stats-demo-admin",
       "userId": "demo-admin",
       "totalJobs": 10,
@@ -270,60 +339,6 @@
     }
   ],
   "jobApplications": [
-    {
-      "id": "app1",
-      "jobId": null,
-      "userId": "demo-job-seeker",
-      "applicationData": {
-        "personalInfo": {
-          "firstName": "Rahul",
-          "lastName": "Sharma",
-          "email": "jobseeker@demo.com",
-          "phone": "+91 98765 43210",
-          "address": {
-            "street": "123 MG Road",
-            "city": "Bangalore",
-            "state": "Karnataka",
-            "zipCode": "560001",
-            "country": "India"
-          }
-        },
-        "coverLetter": "I am excited to apply for the Senior Frontend Developer position at TechMahindra. With over 5 years of experience in frontend development and expertise in React and TypeScript, I believe I would be a valuable addition to your team.",
-        "resume": {
-          "fileName": "john_doe_resume.pdf",
-          "fileUrl": "/uploads/resumes/john_doe_resume.pdf",
-          "fileSize": 245760
-        },
-        "additionalDocuments": []
-      },
-      "status": "pending",
-      "submittedAt": "2024-12-10T09:30:00.000Z",
-      "updatedAt": "2025-06-09T07:15:26.045Z",
-      "notes": "",
-      "applicationStatus": {
-        "current": "interview",
-        "history": [
-          {
-            "status": "submitted",
-            "timestamp": "2024-12-10T09:30:00.000Z",
-            "note": "Application submitted successfully"
-          },
-          {
-            "status": "reviewed",
-            "timestamp": "2024-12-11T10:15:00.000Z",
-            "note": "Application reviewed by HR team"
-          },
-          {
-            "status": "interview",
-            "timestamp": "2024-12-12T14:20:00.000Z",
-            "note": "Interview scheduled for December 15th"
-          }
-        ],
-        "nextSteps": "Interview scheduled for December 15th",
-        "interviewDate": "2024-12-15T08:30:00.000Z",
-        "feedback": ""
-      }
-    },
     {
       "id": "app2",
       "jobId": "2",
@@ -370,7 +385,7 @@
     },
     {
       "id": "simkt5xwh",
-      "jobId": null,
+      "jobId": "3",
       "userId": "demo-job-seeker",
       "applicationData": {
         "personalInfo": {
@@ -418,7 +433,7 @@
     },
     {
       "id": "qu3wruc2t",
-      "jobId": null,
+      "jobId": "4",
       "userId": "demo-job-seeker",
       "applicationData": {
         "personalInfo": {
@@ -453,7 +468,7 @@
     },
     {
       "id": "demo-app-1",
-      "jobId": null,
+      "jobId": "5",
       "userId": "demo-job-seeker",
       "applicationData": {
         "personalInfo": {
@@ -483,39 +498,8 @@
       "notes": ""
     },
     {
-      "id": "demo-app-2",
-      "jobId": null,
-      "userId": "mbep7e5zdmrlik6v66j",
-      "applicationData": {
-        "personalInfo": {
-          "firstName": "Saksham",
-          "lastName": "Kamboj",
-          "email": "saksham@ekvayu.com",
-          "phone": "+91 98765 43210",
-          "address": {
-            "street": "456 Tech Street",
-            "city": "Bangalore",
-            "state": "Karnataka",
-            "zipCode": "560001",
-            "country": "India"
-          }
-        },
-        "coverLetter": "I am interested in the Software Engineer position at Demo Tech Solutions. My experience with modern web technologies and passion for building scalable applications makes me an ideal candidate.",
-        "resume": {
-          "fileName": "saksham_kamboj_resume.pdf",
-          "fileUrl": "/uploads/resumes/saksham_kamboj_resume.pdf",
-          "fileSize": 198432
-        },
-        "additionalDocuments": []
-      },
-      "status": "reviewed",
-      "submittedAt": "2025-06-08T14:20:00.000Z",
-      "updatedAt": "2025-06-09T09:15:00.000Z",
-      "notes": "Strong technical background"
-    },
-    {
       "id": "demo-app-3",
-      "jobId": null,
+      "jobId": "7",
       "userId": "demo-job-seeker",
       "applicationData": {
         "personalInfo": {
@@ -543,6 +527,41 @@
       "submittedAt": "2025-06-07T11:45:00.000Z",
       "updatedAt": "2025-06-08T16:30:00.000Z",
       "notes": "Excellent QA experience"
+    },
+    {
+      "jobId": "NasKN54",
+      "userId": "demo-job-seeker",
+      "applicationData": {
+        "personalInfo": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "jobseeker@demo.com",
+          "phone": "+1 (555) 123-4567",
+          "address": {
+            "street": "123 Main Street",
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94105",
+            "country": "United States"
+          },
+          "linkedinUrl": "https://linkedin.com/in/johndoe",
+          "portfolioUrl": "https://johndoe.dev",
+          "githubUrl": "https://github.com/johndoe"
+        },
+        "coverLetter": "I am writing to express my interest in the IT position at your organization. With a strong foundation in computer science and hands-on experience in system support, software development, and troubleshooting, I am confident in my ability to contribute effectively to your team.\n\nIn my previous role, I managed the deployment and maintenance of IT infrastructure, provided technical support to end-users, and collaborated on developing web-based applications. I am skilled in technologies such as JavaScript, Python, React, and Node.js, and I continuously seek opportunities to learn and grow with emerging tools and methodologies.",
+        "resume": {
+          "fileName": "01 A B Testing.docx",
+          "fileUrl": "/uploads/resumes/01 A B Testing.docx",
+          "uploadedAt": "2025-06-05T09:06:49.815Z",
+          "fileSize": 179183
+        },
+        "additionalDocuments": []
+      },
+      "status": "reviewed",
+      "notes": "",
+      "id": "8xw809nnj",
+      "submittedAt": "2025-06-10T05:04:25.103Z",
+      "updatedAt": "2025-06-10T05:05:19.075Z"
     }
   ],
   "jobs": [
@@ -576,7 +595,7 @@
         "Creative project bonuses"
       ],
       "postedDate": "2024-11-28",
-      "applicationDeadline": "2025-01-10",
+      "applicationDeadline": "2025-08-10",
       "companyDescription": "Flipkart is India's leading e-commerce marketplace offering a wide range of products. We are committed to transforming commerce in India through technology and innovation, providing exceptional customer experiences.",
       "contactEmail": "careers@flipkart.com",
       "experienceLevel": "mid",
@@ -590,7 +609,8 @@
       ],
       "isActive": true,
       "applicationCount": 28,
-      "featured": false
+      "featured": false,
+      "updatedAt": "2025-06-10T07:10:01.114Z"
     },
     {
       "id": "3",
@@ -622,7 +642,7 @@
         "Catered lunches"
       ],
       "postedDate": "2024-11-30",
-      "applicationDeadline": "2025-01-12",
+      "applicationDeadline": "2025-07-12",
       "companyDescription": "Zomato is India's largest food aggregator and delivery platform. We connect millions of customers with restaurants and delivery partners, leveraging technology to transform the food industry in India and globally.",
       "contactEmail": "careers@zomato.com",
       "experienceLevel": "mid",
@@ -636,7 +656,8 @@
       ],
       "isActive": true,
       "applicationCount": 32,
-      "featured": false
+      "featured": false,
+      "updatedAt": "2025-06-10T06:40:48.084Z"
     },
     {
       "id": "4",
@@ -1013,7 +1034,7 @@
         "Portfolio building opportunities"
       ],
       "postedDate": "2024-12-20",
-      "applicationDeadline": "2025-02-15",
+      "applicationDeadline": "2025-06-20",
       "companyDescription": "Creative Minds Studio is a boutique design agency specializing in brand identity, print design, and digital marketing materials.",
       "contactEmail": "design-jobs@creativeminds.com",
       "experienceLevel": "mid",
@@ -1056,7 +1077,7 @@
         "Career advancement paths"
       ],
       "postedDate": "2024-12-25",
-      "applicationDeadline": "2025-02-25",
+      "applicationDeadline": "2025-06-25",
       "companyDescription": "PeopleFirst Solutions is a human resources consulting firm that helps organizations build strong, engaged workforces through strategic HR practices.",
       "contactEmail": "hr-careers@peoplefirst.com",
       "experienceLevel": "senior",
@@ -1099,7 +1120,7 @@
         "Career advancement opportunities"
       ],
       "postedDate": "2025-01-02",
-      "applicationDeadline": "2025-03-05",
+      "applicationDeadline": "2025-06-25",
       "companyDescription": "ConsultPro Services provides business consulting and technology solutions to help organizations optimize their operations and achieve strategic goals.",
       "contactEmail": "ba-careers@consultpro.com",
       "experienceLevel": "mid",
@@ -1142,7 +1163,7 @@
         "Professional development opportunities"
       ],
       "postedDate": "2025-01-05",
-      "applicationDeadline": "2025-03-10",
+      "applicationDeadline": "2025-07-10",
       "companyDescription": "HealthCare Plus is a leading healthcare provider committed to delivering exceptional patient care through innovative medical services and compassionate healthcare professionals.",
       "contactEmail": "nursing-careers@healthcareplus.com",
       "experienceLevel": "mid",
@@ -1185,7 +1206,7 @@
         "Career growth opportunities"
       ],
       "postedDate": "2025-01-08",
-      "applicationDeadline": "2025-03-15",
+      "applicationDeadline": "2025-07-30",
       "companyDescription": "BrandBoost Marketing is a full-service marketing agency helping small and medium businesses build their brand presence and reach their target audiences.",
       "contactEmail": "marketing-jobs@brandboost.com",
       "experienceLevel": "entry",
@@ -1228,7 +1249,7 @@
         "Leadership development programs"
       ],
       "postedDate": "2025-01-10",
-      "applicationDeadline": "2025-03-20",
+      "applicationDeadline": "2025-06-30",
       "companyDescription": "Enterprise Solutions Inc develops mission-critical software systems for Fortune 500 companies, focusing on scalability, reliability, and innovation.",
       "contactEmail": "architect-careers@enterprisesolutions.com",
       "experienceLevel": "executive",
@@ -1321,41 +1342,51 @@
       "postedDate": "2025-06-09",
       "applicationCount": 0,
       "companyId": "demo-company"
-    }
-  ],
-  "companies": [
-    {
-      "id": "1",
-      "name": "TechCorp Inc.",
-      "description": "Leading technology company specializing in innovative solutions",
-      "website": "https://techcorp.com",
-      "location": "San Francisco, CA",
-      "size": "100-500 employees",
-      "industry": "Technology",
-      "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=100&h=100&fit=crop",
-      "createdAt": "2024-01-01T00:00:00.000Z"
     },
     {
-      "id": "2",
-      "name": "DataSoft Solutions",
-      "description": "Data analytics and software development company",
-      "website": "https://datasoft.com",
-      "location": "New York, NY",
-      "size": "50-100 employees",
-      "industry": "Software",
-      "logo": "https://images.unsplash.com/photo-1551434678-e076c223a692?w=100&h=100&fit=crop",
-      "createdAt": "2024-01-01T00:00:00.000Z"
-    },
-    {
-      "id": "3",
-      "name": "Creative Agency",
-      "description": "Full-service creative and digital marketing agency",
-      "website": "https://creativeagency.com",
-      "location": "Los Angeles, CA",
-      "size": "10-50 employees",
-      "industry": "Marketing",
-      "logo": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=100&h=100&fit=crop",
-      "createdAt": "2024-01-01T00:00:00.000Z"
+      "title": "UX/UI Designer",
+      "company": "Ekvayu Tech Pvt Ltd",
+      "location": "Sector-62, Noida, UP-201301",
+      "type": "full-time",
+      "salary": "$45,000 - $60,000",
+      "description": "Join our creative team as a UX/UI Designer and help shape the future of digital experiences. You'll work on exciting projects for diverse clients, from startups to Fortune 500 companies.\\n\\nKey Responsibilities:\\n• Create user-centered designs through research, wireframing, and prototyping\\n• Develop design systems and maintain brand consistency\\n• Collaborate with developers to ensure design feasibility\\n• Conduct user testing and iterate based on feedback\\n• Present design concepts to clients and stakeholders\\n• Work closely with product managers to define user requirements\\n\\nWhat Makes This Role Special:\\n• Work with high-profile clients across various industries\\n• Access to the latest design tools and technologies\\n• Collaborative environment with talented designers\\n• Opportunity to lead design projects from concept to launch",
+      "requirements": [
+        "3+ years of UX/UI design experience",
+        "Proficiency in Figma, Sketch, or Adobe Creative Suite",
+        "Strong portfolio demonstrating design process",
+        "Understanding of user research methodologies",
+        "Knowledge of design systems and component libraries",
+        "Experience with prototyping tools",
+        "Excellent communication and presentation skills"
+      ],
+      "benefits": [
+        "Creative and collaborative work environment",
+        "Health and dental insurance",
+        "Flexible working hours",
+        "Professional development opportunities",
+        "Modern design tools and equipment",
+        "Team building events and retreats",
+        "Work-from-home options",
+        "Creative project bonuses"
+      ],
+      "skills": [
+        "Figma",
+        "Sketch",
+        "Adobe Creative Suite",
+        "Prototyping",
+        "User Research",
+        "Design Systems"
+      ],
+      "experienceLevel": "senior",
+      "contactEmail": "pravin@ekvayu.com",
+      "companyDescription": "Ekvayu, founded in 2021 by IIT Kanpur alumni with over three decades of IT industry experience, is a cybersecurity solutions provider. Leveraging state-of-the-art technologies such as AI/ML, digital security, and embedded systems, we offer complete services designed to meet diverse cybersecurity needs. Our expertise spans Automotive Cyber Security (ISO 21434), VAPT of Applications/Infra, ISMS design & implementation, PCI DSS, HIPAA, ISO 27001 compliance, data center audits, and Virtual CISO services. At Ekvayu, we are committed to safeguarding your digital assets with innovative and reliable cybersecurity solutions.",
+      "applicationDeadline": "2025-06-30",
+      "isActive": true,
+      "featured": false,
+      "postedDate": "2025-06-10",
+      "applicationCount": 0,
+      "companyId": "profile-mbq1ii1eot0g9knrfej",
+      "id": "NasKN54"
     }
   ],
   "userSettings": [
@@ -1363,7 +1394,7 @@
       "id": "settings-demo-job-seeker",
       "userId": "demo-job-seeker",
       "appearance": {
-        "theme": "light",
+        "theme": "dark",
         "language": "en",
         "fontSize": "medium",
         "compactMode": false
@@ -1389,9 +1420,9 @@
           "remote"
         ],
         "salaryRange": {
-          "min": 80000,
-          "max": 120000,
-          "currency": "USD"
+          "min": 800000,
+          "max": 1200000,
+          "currency": "INR"
         },
         "preferredLocations": [
           "San Francisco, CA",
@@ -1402,13 +1433,13 @@
         "autoApplyEnabled": false
       },
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2025-06-09T12:00:00.000Z"
+      "updatedAt": "2025-06-09T13:07:18.738Z"
     },
     {
       "id": "settings-demo-company",
       "userId": "demo-company",
       "appearance": {
-        "theme": "light",
+        "theme": "dark",
         "language": "en",
         "fontSize": "medium",
         "compactMode": false
@@ -1430,15 +1461,15 @@
       },
       "billing": {
         "currentPlan": "Professional",
-        "planPrice": 99,
-        "currency": "USD",
+        "planPrice": 8000,
+        "currency": "INR",
         "billingCycle": "monthly",
         "jobPostingsUsed": 15,
         "jobPostingsLimit": 25,
         "nextBillingDate": "2025-07-09T00:00:00.000Z"
       },
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2025-06-09T12:00:00.000Z"
+      "updatedAt": "2025-06-10T04:36:50.353Z"
     },
     {
       "id": "settings-demo-admin",
@@ -1458,7 +1489,41 @@
         "marketingEmails": false
       },
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2025-06-09T12:00:00.000Z"
+      "updatedAt": "2025-06-09T12:46:28.312Z"
+    },
+    {
+      "id": "settings-mbq1ii1eot0g9knrfej",
+      "userId": "mbq1ii1eot0g9knrfej",
+      "appearance": {
+        "theme": "dark",
+        "language": "en",
+        "fontSize": "medium",
+        "compactMode": false
+      },
+      "notifications": {
+        "emailNotifications": true,
+        "pushNotifications": false,
+        "marketingEmails": false
+      },
+      "createdAt": "2025-06-10T04:47:59.335Z",
+      "updatedAt": "2025-06-10T04:48:03.900Z"
+    },
+    {
+      "id": "settings-mbq7nsg3g03kqbn1i8g",
+      "userId": "mbq7nsg3g03kqbn1i8g",
+      "appearance": {
+        "theme": "dark",
+        "language": "en",
+        "fontSize": "medium",
+        "compactMode": false
+      },
+      "notifications": {
+        "emailNotifications": true,
+        "pushNotifications": false,
+        "marketingEmails": false
+      },
+      "createdAt": "2025-06-10T07:40:03.763Z",
+      "updatedAt": "2025-06-10T07:49:35.304Z"
     }
   ],
   "systemSettings": [

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, forkJoin, switchMap } from 'rxjs';
+import { Observable, map, forkJoin, switchMap, catchError, of } from 'rxjs';
 
 export interface AdminSettings {
   id: string;
@@ -162,8 +162,10 @@ export class AdminManagementService {
     });
   }
 
-  deleteUser(userId: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/users/${userId}`);
+  deleteUser(userId: string): Observable<any> {
+    // Use a simpler approach - just delete the user directly
+    // The UI will handle the immediate update and refresh
+    return this.http.delete(`${this.apiUrl}/users/${userId}`);
   }
 
   // Job Management Methods for Admin

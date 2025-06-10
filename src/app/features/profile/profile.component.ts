@@ -12,7 +12,6 @@ import { AuthService, User } from '../../core/services/auth.service';
 import {
   ProfileService,
   UserProfile,
-  DashboardStats,
 } from '../../core/services/profile.service';
 import {
   JobManagementService,
@@ -38,10 +37,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
   userProfile: UserProfile | null = null;
   profileForm: FormGroup;
   professionalForm: FormGroup;
+  educationForm: FormGroup;
+  experienceForm: FormGroup;
   companyForm: FormGroup;
   isEditingProfile = false;
   isEditingProfessional = false;
+  isEditingEducation = false;
+  isEditingExperience = false;
   isEditingCompany = false;
+  editingEducationId: string | null = null;
+  editingExperienceId: string | null = null;
 
   // Job and application data
   companyJobs: Job[] = [];
@@ -60,11 +65,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   selectedUserRoleFilter = '';
   selectedUserStatusFilter = '';
   selectedJobStatusFilter = '';
+  userSearchQuery = '';
+  jobSearchQuery = '';
   isEditingAdminSettings = false;
   adminSettingsForm: FormGroup;
   isLoading = false;
   profileUpdateSuccess = false;
   errorMessage = '';
+  successMessage = '';
   newSkill = '';
   newJobType = '';
   newLocation = '';
@@ -104,9 +112,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
       linkedin: [''],
       github: [''],
       twitter: [''],
+      // Company-specific fields
+      companyName: [''],
+      companyDescription: [''],
+      companyWebsite: ['', [Validators.pattern(/^https?:\/\/.+/)]],
+      companySize: [''],
+      industry: [''],
     });
 
     this.professionalForm = this.createProfessionalForm();
+    this.educationForm = this.createEducationForm();
+    this.experienceForm = this.createExperienceForm();
 
     this.companyForm = this.formBuilder.group({
       companyName: ['', [Validators.required, Validators.minLength(2)]],
@@ -143,6 +159,32 @@ export class ProfileComponent implements OnInit, OnDestroy {
       expectedSalaryMin: [0, [Validators.required, Validators.min(0)]],
       expectedSalaryMax: [0, [Validators.required, Validators.min(0)]],
       expectedSalaryCurrency: ['USD', [Validators.required]],
+      jobAlertFrequency: ['weekly', [Validators.required]],
+    });
+  }
+
+  private createEducationForm(): FormGroup {
+    return this.formBuilder.group({
+      institution: ['', [Validators.required]],
+      degree: ['', [Validators.required]],
+      field: ['', [Validators.required]],
+      startDate: ['', [Validators.required]],
+      endDate: [''],
+      gpa: [''],
+      description: [''],
+      isCurrentlyStudying: [false],
+    });
+  }
+
+  private createExperienceForm(): FormGroup {
+    return this.formBuilder.group({
+      company: ['', [Validators.required]],
+      position: ['', [Validators.required]],
+      location: [''],
+      startDate: ['', [Validators.required]],
+      endDate: [''],
+      description: [''],
+      isCurrentPosition: [false],
     });
   }
 
@@ -153,6 +195,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.currentUser = user;
         if (user) {
           this.setProfileSections(user.role);
+          this.updateFormValidation(user.role);
           this.loadUserProfile();
           this.loadCompanyData();
           if (user.role === 'company') {
@@ -216,15 +259,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.profileSections = [
           {
             id: 'personal',
-            title: 'Contact Information',
-            icon: 'user',
-            description: 'Update contact details',
-          },
-          {
-            id: 'company',
-            title: 'Company Profile',
+            title: 'Company Information',
             icon: 'building',
-            description: 'Manage company information',
+            description: 'Manage company details and contact information',
           },
           {
             id: 'jobs',
@@ -294,10 +331,26 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
+  updateFormValidation(role: string) {
+    if (role === 'company') {
+      // Add required validation for company fields
+      this.profileForm
+        .get('companyName')
+        ?.setValidators([Validators.required, Validators.minLength(2)]);
+      this.profileForm.get('companyName')?.updateValueAndValidity();
+    } else {
+      // Remove validation for company fields for non-company users
+      this.profileForm.get('companyName')?.clearValidators();
+      this.profileForm.get('companyName')?.updateValueAndValidity();
+    }
+  }
+
   setActiveSection(sectionId: string) {
     this.activeSection = sectionId;
     this.isEditingProfile = false;
     this.isEditingProfessional = false;
+    this.isEditingEducation = false;
+    this.isEditingExperience = false;
     this.isEditingCompany = false;
     this.clearMessages();
   }
@@ -338,6 +391,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
                 linkedin: profile.personalInfo.linkedinUrl || '',
                 github: profile.personalInfo.githubUrl || '',
                 twitter: '',
+                // Company fields for company users
+                companyName: this.currentUser?.companyName || '',
+                companyDescription: this.currentUser?.companyDescription || '',
+                companyWebsite: this.currentUser?.companyWebsite || '',
+                companySize: this.currentUser?.companySize || '',
+                industry: this.currentUser?.industry || '',
               });
 
               // Populate professional form with profile data
@@ -357,6 +416,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
                   profile.professionalInfo.expectedSalary?.max || 0,
                 expectedSalaryCurrency:
                   profile.professionalInfo.expectedSalary?.currency || 'USD',
+                jobAlertFrequency:
+                  profile.professionalInfo.jobAlertFrequency || 'weekly',
               });
             } else {
               // Fallback to basic user data if no profile exists
@@ -371,6 +432,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
                 linkedin: this.currentUser?.linkedin || '',
                 github: this.currentUser?.github || '',
                 twitter: this.currentUser?.twitter || '',
+                // Company fields for company users
+                companyName: this.currentUser?.companyName || '',
+                companyDescription: this.currentUser?.companyDescription || '',
+                companyWebsite: this.currentUser?.companyWebsite || '',
+                companySize: this.currentUser?.companySize || '',
+                industry: this.currentUser?.industry || '',
               });
             }
           },
@@ -390,6 +457,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
               linkedin: this.currentUser?.linkedin || '',
               github: this.currentUser?.github || '',
               twitter: this.currentUser?.twitter || '',
+              // Company fields for company users
+              companyName: this.currentUser?.companyName || '',
+              companyDescription: this.currentUser?.companyDescription || '',
+              companyWebsite: this.currentUser?.companyWebsite || '',
+              companySize: this.currentUser?.companySize || '',
+              industry: this.currentUser?.industry || '',
             });
           },
         })
@@ -409,6 +482,32 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.isEditingProfessional = !this.isEditingProfessional;
     if (!this.isEditingProfessional) {
       this.loadUserProfile(); // Reset form if canceling
+    }
+    this.clearMessages();
+  }
+
+  toggleEditEducation() {
+    this.isEditingEducation = !this.isEditingEducation;
+    if (!this.isEditingEducation) {
+      this.educationForm.reset();
+      this.editingEducationId = null;
+    } else {
+      // When starting a new form, ensure end date is enabled
+      const endDateControl = this.educationForm.get('endDate');
+      endDateControl?.enable();
+    }
+    this.clearMessages();
+  }
+
+  toggleEditExperience() {
+    this.isEditingExperience = !this.isEditingExperience;
+    if (!this.isEditingExperience) {
+      this.experienceForm.reset();
+      this.editingExperienceId = null;
+    } else {
+      // When starting a new form, ensure end date is enabled
+      const endDateControl = this.experienceForm.get('endDate');
+      endDateControl?.enable();
     }
     this.clearMessages();
   }
@@ -439,14 +538,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.clearMessages();
 
       const formValue = this.companyForm.value;
-      const updatedUser = {
-        ...this.currentUser,
-        companyName: formValue.companyName,
-        companyDescription: formValue.companyDescription,
-        companyWebsite: formValue.companyWebsite,
-        companySize: formValue.companySize,
-        industry: formValue.industry,
-      };
 
       // Update user in the backend
       this.authService.updateProfile(formValue).subscribe({
@@ -516,11 +607,35 @@ export class ProfileComponent implements OnInit, OnDestroy {
             max: 0,
             currency: 'USD',
           },
+          jobAlertFrequency:
+            this.userProfile?.professionalInfo.jobAlertFrequency || 'weekly',
         },
         education: this.userProfile?.education || [],
         experience: this.userProfile?.experience || [],
         resume: this.userProfile?.resume,
       };
+
+      // For company users, also update the user record with company information
+      if (this.currentUser.role === 'company') {
+        const userUpdateData = {
+          companyName: formValue.companyName,
+          companyDescription: formValue.companyDescription,
+          companyWebsite: formValue.companyWebsite,
+          companySize: formValue.companySize,
+          industry: formValue.industry,
+        };
+
+        this.authSubscription.add(
+          this.authService.updateProfile(userUpdateData).subscribe({
+            next: (updatedUser) => {
+              this.currentUser = updatedUser;
+            },
+            error: (error) => {
+              console.error('Error updating company user data:', error);
+            },
+          })
+        );
+      }
 
       if (this.userProfile) {
         // Update existing profile
@@ -597,6 +712,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           max: formValue.expectedSalaryMax,
           currency: formValue.expectedSalaryCurrency,
         },
+        jobAlertFrequency: formValue.jobAlertFrequency,
       };
 
       if (this.userProfile) {
@@ -648,6 +764,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private clearMessages() {
     this.profileUpdateSuccess = false;
     this.errorMessage = '';
+    this.successMessage = '';
   }
 
   getFieldError(
@@ -829,6 +946,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           max: 0,
           currency: 'USD',
         },
+        jobAlertFrequency: 'weekly',
       },
       education: [],
       experience: [],
@@ -990,6 +1108,467 @@ export class ProfileComponent implements OnInit, OnDestroy {
     );
   }
 
+  // Education and Experience Management Methods
+  onEducationSubmit() {
+    if (this.educationForm.valid && this.currentUser) {
+      this.isLoading = true;
+      this.clearMessages();
+
+      const formValue = this.educationForm.value;
+      const educationData = {
+        id: this.editingEducationId || 'edu' + Date.now(),
+        institution: formValue.institution,
+        degree: formValue.degree,
+        field: formValue.field,
+        startDate: formValue.startDate,
+        endDate: formValue.isCurrentlyStudying ? null : formValue.endDate,
+        current: formValue.isCurrentlyStudying,
+        gpa: formValue.gpa,
+        description: formValue.description,
+      };
+
+      if (this.userProfile) {
+        const currentEducation = this.userProfile.education || [];
+        let updatedEducation;
+
+        if (this.editingEducationId) {
+          // Update existing education
+          updatedEducation = currentEducation.map((edu) =>
+            edu.id === this.editingEducationId ? educationData : edu
+          );
+        } else {
+          // Add new education
+          updatedEducation = [...currentEducation, educationData];
+        }
+
+        const updatedProfile = {
+          ...this.userProfile,
+          education: updatedEducation,
+        };
+
+        this.authSubscription.add(
+          this.profileService.updateUserProfile(updatedProfile).subscribe({
+            next: (profile) => {
+              this.userProfile = profile;
+              this.isLoading = false;
+              this.isEditingEducation = false;
+              this.educationForm.reset();
+              this.editingEducationId = null;
+              this.profileUpdateSuccess = true;
+
+              setTimeout(() => {
+                this.profileUpdateSuccess = false;
+              }, 3000);
+            },
+            error: (error) => {
+              console.error('Error saving education:', error);
+              this.isLoading = false;
+              this.errorMessage = 'Failed to save education. Please try again.';
+
+              setTimeout(() => {
+                this.errorMessage = '';
+              }, 5000);
+            },
+          })
+        );
+      } else {
+        this.createProfileWithEducation(educationData);
+      }
+    } else {
+      this.markFormGroupTouched(this.educationForm);
+    }
+  }
+
+  onExperienceSubmit() {
+    if (this.experienceForm.valid && this.currentUser) {
+      this.isLoading = true;
+      this.clearMessages();
+
+      const formValue = this.experienceForm.value;
+      const experienceData = {
+        id: this.editingExperienceId || 'exp' + Date.now(),
+        company: formValue.company,
+        position: formValue.position,
+        location: formValue.location,
+        startDate: formValue.startDate,
+        endDate: formValue.isCurrentPosition ? null : formValue.endDate,
+        current: formValue.isCurrentPosition,
+        description: formValue.description,
+      };
+
+      if (this.userProfile) {
+        const currentExperience = this.userProfile.experience || [];
+        let updatedExperience;
+
+        if (this.editingExperienceId) {
+          // Update existing experience
+          updatedExperience = currentExperience.map((exp) =>
+            exp.id === this.editingExperienceId ? experienceData : exp
+          );
+        } else {
+          // Add new experience
+          updatedExperience = [...currentExperience, experienceData];
+        }
+
+        const updatedProfile = {
+          ...this.userProfile,
+          experience: updatedExperience,
+        };
+
+        this.authSubscription.add(
+          this.profileService.updateUserProfile(updatedProfile).subscribe({
+            next: (profile) => {
+              this.userProfile = profile;
+              this.isLoading = false;
+              this.isEditingExperience = false;
+              this.experienceForm.reset();
+              this.editingExperienceId = null;
+              this.profileUpdateSuccess = true;
+
+              setTimeout(() => {
+                this.profileUpdateSuccess = false;
+              }, 3000);
+            },
+            error: (error) => {
+              console.error('Error saving experience:', error);
+              this.isLoading = false;
+              this.errorMessage =
+                'Failed to save experience. Please try again.';
+
+              setTimeout(() => {
+                this.errorMessage = '';
+              }, 5000);
+            },
+          })
+        );
+      } else {
+        this.createProfileWithExperience(experienceData);
+      }
+    } else {
+      this.markFormGroupTouched(this.experienceForm);
+    }
+  }
+
+  private createProfileWithEducation(educationData: any): void {
+    if (!this.currentUser) return;
+
+    const profileData = {
+      userId: this.currentUser.id,
+      personalInfo: {
+        firstName: this.currentUser.firstName || '',
+        lastName: this.currentUser.lastName || '',
+        email: this.currentUser.email || '',
+        phone: this.currentUser.phone || '',
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          country: 'United States',
+        },
+      },
+      professionalInfo: {
+        currentTitle: '',
+        yearsOfExperience: 0,
+        summary: '',
+        skills: [],
+        preferredJobTypes: [],
+        preferredLocations: [],
+        expectedSalary: {
+          min: 0,
+          max: 0,
+          currency: 'USD',
+        },
+        jobAlertFrequency: 'weekly',
+      },
+      education: [educationData],
+      experience: [],
+      resume: undefined,
+    };
+
+    this.authSubscription.add(
+      this.profileService.createUserProfile(profileData).subscribe({
+        next: (profile: UserProfile) => {
+          this.userProfile = profile;
+          this.isLoading = false;
+          this.isEditingEducation = false;
+          this.educationForm.reset();
+          this.profileUpdateSuccess = true;
+
+          setTimeout(() => {
+            this.profileUpdateSuccess = false;
+          }, 3000);
+        },
+        error: (error: any) => {
+          console.error('Error creating profile:', error);
+          this.isLoading = false;
+          this.errorMessage = 'Failed to create profile. Please try again.';
+
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 5000);
+        },
+      })
+    );
+  }
+
+  private createProfileWithExperience(experienceData: any): void {
+    if (!this.currentUser) return;
+
+    const profileData = {
+      userId: this.currentUser.id,
+      personalInfo: {
+        firstName: this.currentUser.firstName || '',
+        lastName: this.currentUser.lastName || '',
+        email: this.currentUser.email || '',
+        phone: this.currentUser.phone || '',
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          country: 'United States',
+        },
+      },
+      professionalInfo: {
+        currentTitle: '',
+        yearsOfExperience: 0,
+        summary: '',
+        skills: [],
+        preferredJobTypes: [],
+        preferredLocations: [],
+        expectedSalary: {
+          min: 0,
+          max: 0,
+          currency: 'USD',
+        },
+        jobAlertFrequency: 'weekly',
+      },
+      education: [],
+      experience: [experienceData],
+      resume: undefined,
+    };
+
+    this.authSubscription.add(
+      this.profileService.createUserProfile(profileData).subscribe({
+        next: (profile: UserProfile) => {
+          this.userProfile = profile;
+          this.isLoading = false;
+          this.isEditingExperience = false;
+          this.experienceForm.reset();
+          this.profileUpdateSuccess = true;
+
+          setTimeout(() => {
+            this.profileUpdateSuccess = false;
+          }, 3000);
+        },
+        error: (error: any) => {
+          console.error('Error creating profile:', error);
+          this.isLoading = false;
+          this.errorMessage = 'Failed to create profile. Please try again.';
+
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 5000);
+        },
+      })
+    );
+  }
+
+  // Education Edit and Delete Methods
+  editEducation(education: any) {
+    this.editingEducationId = education.id;
+    this.isEditingEducation = true;
+
+    // Format dates for HTML date input (YYYY-MM-DD)
+    const formatDateForInput = (dateStr: string) => {
+      if (!dateStr) return '';
+      // If date is in YYYY-MM format, add -01 for the day
+      if (dateStr.match(/^\d{4}-\d{2}$/)) {
+        return dateStr + '-01';
+      }
+      // If date is already in YYYY-MM-DD format, return as is
+      if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        return dateStr;
+      }
+      return '';
+    };
+
+    // Populate form with existing data
+    this.educationForm.patchValue({
+      institution: education.institution,
+      degree: education.degree,
+      field: education.field,
+      startDate: formatDateForInput(education.startDate),
+      endDate: formatDateForInput(education.endDate),
+      gpa: education.gpa,
+      description: education.description,
+      isCurrentlyStudying: education.current || false,
+    });
+
+    // Handle end date field state based on current status
+    const endDateControl = this.educationForm.get('endDate');
+    if (education.current) {
+      endDateControl?.disable();
+    } else {
+      endDateControl?.enable();
+    }
+
+    this.clearMessages();
+  }
+
+  deleteEducation(educationId: string) {
+    if (confirm('Are you sure you want to delete this education entry?')) {
+      if (this.userProfile && this.userProfile.education) {
+        const updatedEducation = this.userProfile.education.filter(
+          (edu) => edu.id !== educationId
+        );
+
+        const updatedProfile = {
+          ...this.userProfile,
+          education: updatedEducation,
+        };
+
+        this.isLoading = true;
+        this.authSubscription.add(
+          this.profileService.updateUserProfile(updatedProfile).subscribe({
+            next: (profile) => {
+              this.userProfile = profile;
+              this.isLoading = false;
+              this.profileUpdateSuccess = true;
+
+              setTimeout(() => {
+                this.profileUpdateSuccess = false;
+              }, 3000);
+            },
+            error: (error) => {
+              console.error('Error deleting education:', error);
+              this.isLoading = false;
+              this.errorMessage =
+                'Failed to delete education. Please try again.';
+
+              setTimeout(() => {
+                this.errorMessage = '';
+              }, 5000);
+            },
+          })
+        );
+      }
+    }
+  }
+
+  // Experience Edit and Delete Methods
+  editExperience(experience: any) {
+    this.editingExperienceId = experience.id;
+    this.isEditingExperience = true;
+
+    // Format dates for HTML date input (YYYY-MM-DD)
+    const formatDateForInput = (dateStr: string) => {
+      if (!dateStr) return '';
+      // If date is in YYYY-MM format, add -01 for the day
+      if (dateStr.match(/^\d{4}-\d{2}$/)) {
+        return dateStr + '-01';
+      }
+      // If date is already in YYYY-MM-DD format, return as is
+      if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        return dateStr;
+      }
+      return '';
+    };
+
+    // Populate form with existing data
+    this.experienceForm.patchValue({
+      company: experience.company,
+      position: experience.position,
+      location: experience.location,
+      startDate: formatDateForInput(experience.startDate),
+      endDate: formatDateForInput(experience.endDate),
+      description: experience.description,
+      isCurrentPosition: experience.current || false,
+    });
+
+    // Handle end date field state based on current status
+    const endDateControl = this.experienceForm.get('endDate');
+    if (experience.current) {
+      endDateControl?.disable();
+    } else {
+      endDateControl?.enable();
+    }
+
+    this.clearMessages();
+  }
+
+  deleteExperience(experienceId: string) {
+    if (
+      confirm('Are you sure you want to delete this work experience entry?')
+    ) {
+      if (this.userProfile && this.userProfile.experience) {
+        const updatedExperience = this.userProfile.experience.filter(
+          (exp) => exp.id !== experienceId
+        );
+
+        const updatedProfile = {
+          ...this.userProfile,
+          experience: updatedExperience,
+        };
+
+        this.isLoading = true;
+        this.authSubscription.add(
+          this.profileService.updateUserProfile(updatedProfile).subscribe({
+            next: (profile) => {
+              this.userProfile = profile;
+              this.isLoading = false;
+              this.profileUpdateSuccess = true;
+
+              setTimeout(() => {
+                this.profileUpdateSuccess = false;
+              }, 3000);
+            },
+            error: (error) => {
+              console.error('Error deleting experience:', error);
+              this.isLoading = false;
+              this.errorMessage =
+                'Failed to delete experience. Please try again.';
+
+              setTimeout(() => {
+                this.errorMessage = '';
+              }, 5000);
+            },
+          })
+        );
+      }
+    }
+  }
+
+  // Checkbox Event Handlers
+  onCurrentlyStudyingChange(event: any) {
+    const isCurrentlyStudying = event.target.checked;
+    const endDateControl = this.educationForm.get('endDate');
+
+    if (isCurrentlyStudying) {
+      // Disable and clear end date when currently studying
+      endDateControl?.disable();
+      endDateControl?.setValue('');
+    } else {
+      // Enable end date when not currently studying
+      endDateControl?.enable();
+    }
+  }
+
+  onCurrentPositionChange(event: any) {
+    const isCurrentPosition = event.target.checked;
+    const endDateControl = this.experienceForm.get('endDate');
+
+    if (isCurrentPosition) {
+      // Disable and clear end date when currently working
+      endDateControl?.disable();
+      endDateControl?.setValue('');
+    } else {
+      // Enable end date when not currently working
+      endDateControl?.enable();
+    }
+  }
+
   // Job and Application Management Methods
   loadCompanyJobs() {
     if (this.currentUser?.role === 'company') {
@@ -1051,7 +1630,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   editJob(jobId: string) {
-    this.router.navigate(['/jobs/edit', jobId]);
+    this.router.navigate([`/jobs/${jobId}/edit`]);
   }
 
   viewJobApplications(jobId: string) {
@@ -1199,6 +1778,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         next: (users) => {
           this.allUsers = users;
           this.filteredUsers = [...users];
+          // Apply current filters after loading
+          this.filterUsers();
         },
         error: (error) => {
           console.error('Error loading users:', error);
@@ -1207,6 +1788,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
         },
       })
     );
+  }
+
+  // Force refresh user data from server
+  refreshUserData() {
+    console.log('Refreshing user data from server...');
+    this.loadAllUsers();
   }
 
   loadAllJobsForAdmin() {
@@ -1280,31 +1867,109 @@ export class ProfileComponent implements OnInit, OnDestroy {
   // User Management Methods
   filterUsers() {
     this.filteredUsers = this.allUsers.filter((user) => {
+      // Role filter
       const roleMatch =
         !this.selectedUserRoleFilter ||
         user.role === this.selectedUserRoleFilter;
+
+      // Status filter
       const statusMatch =
         !this.selectedUserStatusFilter ||
         (this.selectedUserStatusFilter === 'active' && user.isActive) ||
         (this.selectedUserStatusFilter === 'inactive' && !user.isActive);
-      return roleMatch && statusMatch;
+
+      // Search filter
+      let searchMatch = true;
+      if (this.userSearchQuery.trim()) {
+        const query = this.userSearchQuery.toLowerCase().trim();
+        const fullName = `${user.firstName || ''} ${
+          user.lastName || ''
+        }`.toLowerCase();
+        const reversedFullName = `${user.lastName || ''} ${
+          user.firstName || ''
+        }`.toLowerCase();
+
+        // Split query into words for better multi-word search
+        const queryWords = query.split(/\s+/);
+
+        // For names, check if the query matches the full name or individual parts
+        const nameMatch =
+          fullName.includes(query) ||
+          reversedFullName.includes(query) ||
+          queryWords.every(
+            (word) =>
+              fullName.includes(word) ||
+              user.firstName?.toLowerCase().includes(word) ||
+              user.lastName?.toLowerCase().includes(word)
+          );
+
+        // Check other fields
+        const otherFieldsMatch = queryWords.some(
+          (word) =>
+            user.email?.toLowerCase().includes(word) ||
+            user.companyName?.toLowerCase().includes(word) ||
+            user.location?.toLowerCase().includes(word) ||
+            user.phone?.includes(word)
+        );
+
+        searchMatch = nameMatch || otherFieldsMatch;
+      }
+
+      return roleMatch && statusMatch && searchMatch;
     });
   }
 
+  onUserSearchChange() {
+    this.filterUsers();
+  }
+
   updateUserStatus(user: UserManagement) {
+    // Confirm deactivation for active users
+    if (user.isActive === false) {
+      const confirmDeactivation = confirm(
+        `Are you sure you want to deactivate ${user.firstName} ${user.lastName}?\n\nThis will immediately log them out and prevent them from accessing the system.`
+      );
+      if (!confirmDeactivation) {
+        // Revert the toggle
+        user.isActive = true;
+        return;
+      }
+    }
+
+    console.log(
+      'Updating user status for user:',
+      user.id,
+      'to active:',
+      user.isActive
+    );
+
     this.authSubscription.add(
       this.adminManagementService
         .updateUserStatus(user.id, user.isActive)
         .subscribe({
           next: (updatedUser) => {
+            console.log('User status updated successfully:', updatedUser);
             const index = this.allUsers.findIndex((u) => u.id === user.id);
             if (index !== -1) {
               this.allUsers[index] = updatedUser;
             }
             this.filterUsers();
+
+            // Show success message with additional info for deactivation
+            if (user.isActive) {
+              this.successMessage = `User ${user.firstName} ${user.lastName} activated successfully`;
+            } else {
+              this.successMessage = `User ${user.firstName} ${user.lastName} deactivated successfully. They will be logged out automatically.`;
+            }
+
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 5000);
           },
           error: (error) => {
             console.error('Error updating user status:', error);
+            // Revert the toggle state
+            user.isActive = !user.isActive;
             this.errorMessage =
               'Failed to update user status. Please try again.';
             setTimeout(() => {
@@ -1331,14 +1996,23 @@ export class ProfileComponent implements OnInit, OnDestroy {
         )}?`
       )
     ) {
+      console.log('Updating user role for user:', user.id, 'to role:', newRole);
       this.authSubscription.add(
         this.adminManagementService.updateUserRole(user.id, newRole).subscribe({
           next: (updatedUser) => {
+            console.log('User role updated successfully:', updatedUser);
             const index = this.allUsers.findIndex((u) => u.id === user.id);
             if (index !== -1) {
               this.allUsers[index] = updatedUser;
             }
             this.filterUsers();
+            // Show success message
+            this.successMessage = `User role updated to ${this.adminManagementService.getUserRoleDisplayName(
+              newRole
+            )} successfully`;
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 3000);
           },
           error: (error) => {
             console.error('Error updating user role:', error);
@@ -1358,15 +2032,48 @@ export class ProfileComponent implements OnInit, OnDestroy {
         `Are you sure you want to delete ${user.firstName} ${user.lastName}? This action cannot be undone.`
       )
     ) {
+      console.log('Deleting user:', user.id);
+      this.isLoading = true;
+      this.clearMessages(); // Clear any existing messages
+
       this.authSubscription.add(
         this.adminManagementService.deleteUser(user.id).subscribe({
           next: () => {
+            console.log('User deleted successfully:', user.id);
+
+            // Immediately remove user from local arrays for instant UI feedback
             this.allUsers = this.allUsers.filter((u) => u.id !== user.id);
-            this.filterUsers();
+            this.filteredUsers = this.filteredUsers.filter(
+              (u) => u.id !== user.id
+            );
+
+            // Force refresh from server to ensure data consistency
+            this.refreshUserData();
+
+            this.isLoading = false;
+
+            // Show success message
+            this.successMessage = `User ${user.firstName} ${user.lastName} deleted successfully`;
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 3000);
           },
           error: (error) => {
             console.error('Error deleting user:', error);
-            this.errorMessage = 'Failed to delete user. Please try again.';
+            this.isLoading = false;
+
+            // Show detailed error message
+            let errorMsg = 'Failed to delete user. Please try again.';
+            if (error.status === 404) {
+              errorMsg = 'User not found. It may have already been deleted.';
+            } else if (error.status === 403) {
+              errorMsg = 'You do not have permission to delete this user.';
+            } else if (error.status === 0) {
+              errorMsg =
+                'Network error. Please check your connection and try again.';
+            }
+
+            this.errorMessage = errorMsg;
             setTimeout(() => {
               this.errorMessage = '';
             }, 5000);
@@ -1379,21 +2086,97 @@ export class ProfileComponent implements OnInit, OnDestroy {
   // Job Management Methods for Admin
   filterJobsForAdmin() {
     this.filteredJobsForAdmin = this.allJobsForAdmin.filter((job) => {
+      // Status filter
       const statusMatch =
         !this.selectedJobStatusFilter ||
         this.adminManagementService
           .getJobStatusDisplayName(job)
           .toLowerCase() === this.selectedJobStatusFilter;
-      return statusMatch;
+
+      // Search filter
+      let searchMatch = true;
+      if (this.jobSearchQuery.trim()) {
+        const query = this.jobSearchQuery.toLowerCase().trim();
+
+        // Split query into words for better multi-word search
+        const queryWords = query.split(/\s+/);
+
+        // Check if all query words are found in any of the searchable fields
+        searchMatch = queryWords.every(
+          (word) =>
+            job.title?.toLowerCase().includes(word) ||
+            job.company?.toLowerCase().includes(word) ||
+            job.location?.toLowerCase().includes(word) ||
+            job.type?.toLowerCase().includes(word) ||
+            (job.description && job.description.toLowerCase().includes(word)) ||
+            (job.skills &&
+              job.skills.some((skill: string) =>
+                skill.toLowerCase().includes(word)
+              )) ||
+            (job.companyContact &&
+              job.companyContact.toLowerCase().includes(word)) ||
+            (job.companyEmail && job.companyEmail.toLowerCase().includes(word))
+        );
+      }
+
+      return statusMatch && searchMatch;
     });
   }
 
+  onJobSearchChange() {
+    this.filterJobsForAdmin();
+  }
+
+  clearUserFilters() {
+    this.userSearchQuery = '';
+    this.selectedUserRoleFilter = '';
+    this.selectedUserStatusFilter = '';
+    this.filterUsers();
+  }
+
+  clearJobFilters() {
+    this.jobSearchQuery = '';
+    this.selectedJobStatusFilter = '';
+    this.filterJobsForAdmin();
+  }
+
+  getUserResultsText(): string {
+    const total = this.allUsers.length;
+    const filtered = this.filteredUsers.length;
+
+    if (
+      this.userSearchQuery ||
+      this.selectedUserRoleFilter ||
+      this.selectedUserStatusFilter
+    ) {
+      return `Showing ${filtered} of ${total} users`;
+    }
+    return `${total} users total`;
+  }
+
+  getJobResultsText(): string {
+    const total = this.allJobsForAdmin.length;
+    const filtered = this.filteredJobsForAdmin.length;
+
+    if (this.jobSearchQuery || this.selectedJobStatusFilter) {
+      return `Showing ${filtered} of ${total} jobs`;
+    }
+    return `${total} jobs total`;
+  }
+
   updateJobStatusAsAdmin(job: any) {
+    console.log(
+      'Updating job status for job:',
+      job.id,
+      'to active:',
+      job.isActive
+    );
     this.authSubscription.add(
       this.adminManagementService
         .updateJobStatus(job.id, job.isActive)
         .subscribe({
           next: (updatedJob) => {
+            console.log('Job status updated successfully:', updatedJob);
             const index = this.allJobsForAdmin.findIndex(
               (j) => j.id === job.id
             );
@@ -1404,9 +2187,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
               };
             }
             this.filterJobsForAdmin();
+            // Show success message
+            this.successMessage = `Job ${
+              job.isActive ? 'activated' : 'deactivated'
+            } successfully`;
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 3000);
           },
           error: (error) => {
             console.error('Error updating job status:', error);
+            // Revert the toggle state
+            job.isActive = !job.isActive;
             this.errorMessage =
               'Failed to update job status. Please try again.';
             setTimeout(() => {
@@ -1423,15 +2215,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
         `Are you sure you want to delete the job "${job.title}"? This action cannot be undone.`
       )
     ) {
+      console.log('Deleting job:', job.id);
       this.authSubscription.add(
         this.adminManagementService.deleteJobAsAdmin(job.id).subscribe({
           next: () => {
+            console.log('Job deleted successfully:', job.id);
             this.allJobsForAdmin = this.allJobsForAdmin.filter(
               (j) => j.id !== job.id
             );
             this.filterJobsForAdmin();
             // Reload stats
             this.loadJobManagementStats();
+            // Show success message
+            this.successMessage = `Job "${job.title}" deleted successfully`;
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 3000);
           },
           error: (error) => {
             console.error('Error deleting job:', error);
@@ -1465,5 +2264,42 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   getTimeAgoAdmin(dateString: string): string {
     return this.adminManagementService.getTimeAgo(dateString);
+  }
+
+  // Helper method to get search examples for users
+  getUserSearchExamples(): string[] {
+    return [
+      'John Doe',
+      'john.doe@email.com',
+      'Tech Corp',
+      'New York',
+      'Software Engineer',
+    ];
+  }
+
+  // Helper method to get search examples for jobs
+  getJobSearchExamples(): string[] {
+    return [
+      'Software Engineer',
+      'Google',
+      'Remote',
+      'JavaScript React',
+      'Senior Developer',
+    ];
+  }
+
+  // Debug method to test API connectivity
+  testApiConnection() {
+    console.log('Testing API connection...');
+    this.authSubscription.add(
+      this.adminManagementService.getAllUsers().subscribe({
+        next: (users) => {
+          console.log('API connection successful. Users loaded:', users.length);
+        },
+        error: (error) => {
+          console.error('API connection failed:', error);
+        },
+      })
+    );
   }
 }

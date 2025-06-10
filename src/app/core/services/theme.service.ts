@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 export class ThemeService {
   private renderer: Renderer2;
   private isDarkModeSubject = new BehaviorSubject<boolean>(false);
+  private isInitialized = false;
 
   public isDarkMode$ = this.isDarkModeSubject.asObservable();
 
@@ -20,13 +21,24 @@ export class ThemeService {
   }
 
   private initializeTheme(): void {
-    // Check for saved theme preference or default to light mode
+    // Check for saved theme preference in sessionStorage first
     const savedTheme = sessionStorage.getItem('theme');
+
+    // Check system preference as fallback
     const prefersDark = window.matchMedia(
       '(prefers-color-scheme: dark)'
     ).matches;
 
-    const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+    // Determine initial theme
+    let isDark = false;
+    if (savedTheme) {
+      isDark = savedTheme === 'dark';
+    } else {
+      // If no saved theme, use system preference
+      isDark = prefersDark;
+      // Save the initial preference to sessionStorage
+      sessionStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
 
     // Set the initial theme state
     this.isDarkModeSubject.next(isDark);
@@ -34,10 +46,7 @@ export class ThemeService {
     // Apply theme immediately to avoid flash
     this.applyThemeToDOM(isDark);
 
-    // Save to sessionStorage if not already saved
-    if (!savedTheme) {
-      sessionStorage.setItem('theme', isDark ? 'dark' : 'light');
-    }
+    this.isInitialized = true;
   }
 
   private applyThemeToDOM(isDark: boolean): void {
@@ -61,5 +70,35 @@ export class ThemeService {
 
   getCurrentTheme(): boolean {
     return this.isDarkModeSubject.value;
+  }
+
+  // Method to sync theme from user settings (called by settings service)
+  syncThemeFromSettings(themeFromSettings: 'light' | 'dark'): void {
+    const isDark = themeFromSettings === 'dark';
+    const currentTheme = this.isDarkModeSubject.value;
+
+    // Only update if different from current theme
+    if (isDark !== currentTheme) {
+      this.setTheme(isDark);
+    }
+  }
+
+  // Method to restore theme from sessionStorage (useful for page refresh)
+  restoreThemeFromStorage(): void {
+    if (!this.isInitialized) {
+      this.initializeTheme();
+    } else {
+      // Re-check sessionStorage in case it was cleared
+      const savedTheme = sessionStorage.getItem('theme');
+      if (!savedTheme) {
+        // If sessionStorage was cleared, save current theme
+        sessionStorage.setItem('theme', this.getThemeString());
+      }
+    }
+  }
+
+  // Method to get theme as string for settings
+  getThemeString(): 'light' | 'dark' {
+    return this.isDarkModeSubject.value ? 'dark' : 'light';
   }
 }
