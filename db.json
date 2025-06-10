@@ -700,7 +700,7 @@
         "Catered lunches"
       ],
       "postedDate": "2024-11-30",
-      "applicationDeadline": "2025-01-12",
+      "applicationDeadline": "2025-07-12",
       "companyDescription": "Zomato is India's largest food aggregator and delivery platform. We connect millions of customers with restaurants and delivery partners, leveraging technology to transform the food industry in India and globally.",
       "contactEmail": "careers@zomato.com",
       "experienceLevel": "mid",
@@ -714,7 +714,8 @@
       ],
       "isActive": true,
       "applicationCount": 32,
-      "featured": false
+      "featured": false,
+      "updatedAt": "2025-06-10T06:40:48.084Z"
     },
     {
       "id": "4",
