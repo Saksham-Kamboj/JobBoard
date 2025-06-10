@@ -1,0 +1,81 @@
+<div class="manage-users-page">
+  <div class="container">
+    <div class="header">
+      <h1>Manage Users</h1>
+      <p>View and manage all registered users</p>
+    </div>
+
+    <div class="filters">
+      <div class="search-box">
+        <input 
+          type="text" 
+          placeholder="Search users by name or email..."
+          [(ngModel)]="searchQuery"
+          class="search-input">
+      </div>
+      <div class="role-filter">
+        <select [(ngModel)]="selectedRole" class="role-select">
+          <option value="all">All Roles</option>
+          <option value="job-seeker">Job Seekers</option>
+          <option value="company">Companies</option>
+          <option value="admin">Admins</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="users-table" *ngIf="filteredUsers.length > 0; else noUsers">
+      <div class="table-header">
+        <div class="col-name">Name</div>
+        <div class="col-email">Email</div>
+        <div class="col-role">Role</div>
+        <div class="col-status">Status</div>
+        <div class="col-join-date">Join Date</div>
+        <div class="col-last-login">Last Login</div>
+        <div class="col-actions">Actions</div>
+      </div>
+
+      <div class="table-row" *ngFor="let user of filteredUsers">
+        <div class="col-name">
+          <div class="user-info">
+            <div class="user-avatar">{{ user.name.charAt(0).toUpperCase() }}</div>
+            <span>{{ user.name }}</span>
+          </div>
+        </div>
+        <div class="col-email">{{ user.email }}</div>
+        <div class="col-role">
+          <span class="role-badge" [class]="'role-' + user.role">{{ user.role }}</span>
+        </div>
+        <div class="col-status">
+          <span class="status-badge" [class]="'status-' + user.status">{{ user.status }}</span>
+        </div>
+        <div class="col-join-date">{{ user.joinDate | date }}</div>
+        <div class="col-last-login">{{ user.lastLogin | date }}</div>
+        <div class="col-actions">
+          <button class="action-btn view-btn" (click)="viewUserDetails(user.id)">
+            View
+          </button>
+          <button 
+            class="action-btn toggle-btn"
+            [class.activate-btn]="user.status === 'inactive'"
+            [class.deactivate-btn]="user.status === 'active'"
+            (click)="toggleUserStatus(user.id)">
+            {{ user.status === 'active' ? 'Deactivate' : 'Activate' }}
+          </button>
+          <button 
+            class="action-btn delete-btn" 
+            (click)="deleteUser(user.id)"
+            *ngIf="user.role !== 'admin'">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noUsers>
+      <div class="no-users">
+        <h2>No Users Found</h2>
+        <p>No users match your current search criteria.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

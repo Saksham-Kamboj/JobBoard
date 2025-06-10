@@ -43,7 +43,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
           }
           return true;
         } else {
-          this.router.navigate(['/auth/signin'], {
+          this.router.navigate(['/login'], {
             queryParams: { returnUrl: url },
           });
           return false;
@@ -73,7 +73,7 @@ export class RoleGuard implements CanActivate {
       take(1),
       map((user) => {
         if (!user) {
-          this.router.navigate(['/auth/signin']);
+          this.router.navigate(['/login']);
           return false;
         }
 
@@ -112,8 +112,9 @@ export class RoleGuard implements CanActivate {
     // Let other routes fall through to 404 if user doesn't have access
     const redirectRoutes = [
       '/dashboard',
-      '/admin/dashboard',
       '/admin',
+      '/company',
+      '/jobseeker',
       '/post-job',
     ];
 
@@ -126,9 +127,9 @@ export class RoleGuard implements CanActivate {
     if (userRole === 'admin') {
       this.router.navigate(['/admin/dashboard']);
     } else if (userRole === 'company') {
-      this.router.navigate(['/profile']); // Company users go to profile page
+      this.router.navigate(['/company/dashboard']);
     } else {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/jobseeker/home']);
     }
   }
 }
@@ -148,9 +149,9 @@ export class GuestGuard implements CanActivate {
           if (user?.role === 'admin') {
             this.router.navigate(['/admin/dashboard']);
           } else if (user?.role === 'company') {
-            this.router.navigate(['/profile']); // Company users go to profile page
+            this.router.navigate(['/company/dashboard']);
           } else {
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/jobseeker/home']);
           }
           return false;
         }

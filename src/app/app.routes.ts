@@ -60,7 +60,34 @@ export const routes: Routes = [
       ),
   },
 
+  // Public routes
+  {
+    path: 'about',
+    loadComponent: () =>
+      import('./features/about/about.component').then((m) => m.AboutComponent),
+  },
+  {
+    path: 'contact',
+    loadComponent: () =>
+      import('./features/contact/contact.component').then(
+        (m) => m.ContactComponent
+      ),
+  },
+
   // Authentication routes (only for guests)
+  {
+    path: 'login',
+    canActivate: [GuestGuard],
+    loadComponent: () =>
+      import('./auth/signin/signin.component').then((m) => m.SigninComponent),
+  },
+  {
+    path: 'register',
+    canActivate: [GuestGuard],
+    loadComponent: () =>
+      import('./auth/signup/signup.component').then((m) => m.SignupComponent),
+  },
+  // Keep old auth routes for backward compatibility
   {
     path: 'auth',
     canActivate: [GuestGuard],
@@ -87,7 +114,103 @@ export const routes: Routes = [
     ],
   },
 
-  // Dashboard routes for different roles
+  // Job-Seeker Routes
+  {
+    path: 'jobseeker',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { role: 'job-seeker' },
+    children: [
+      {
+        path: 'home',
+        loadComponent: () =>
+          import('./features/home/home.component').then((m) => m.HomeComponent),
+      },
+      {
+        path: 'jobs',
+        loadComponent: () =>
+          import('./features/jobs/job-list/job-list.component').then(
+            (m) => m.JobListComponent
+          ),
+      },
+      {
+        path: 'applied',
+        loadComponent: () =>
+          import('./features/jobs/applied-jobs/applied-jobs.component').then(
+            (m) => m.AppliedJobsComponent
+          ),
+      },
+      {
+        path: 'saved',
+        loadComponent: () =>
+          import('./features/jobs/saved-jobs/saved-jobs.component').then(
+            (m) => m.SavedJobsComponent
+          ),
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/profile/profile.component').then(
+            (m) => m.ProfileComponent
+          ),
+      },
+      {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full',
+      },
+    ],
+  },
+
+  // Company Routes
+  {
+    path: 'company',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { role: 'company' },
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import(
+            './features/dashboard/job-seeker-dashboard/job-seeker-dashboard.component'
+          ).then((m) => m.JobSeekerDashboardComponent),
+      },
+      {
+        path: 'post-job',
+        loadComponent: () =>
+          import('./features/jobs/job-post/job-post.component').then(
+            (m) => m.JobPostComponent
+          ),
+      },
+      {
+        path: 'my-jobs',
+        loadComponent: () =>
+          import('./features/jobs/my-jobs/my-jobs.component').then(
+            (m) => m.MyJobsComponent
+          ),
+      },
+      {
+        path: 'applicants/:jobId',
+        loadComponent: () =>
+          import(
+            './features/jobs/job-applicants/job-applicants.component'
+          ).then((m) => m.JobApplicantsComponent),
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/profile/profile.component').then(
+            (m) => m.ProfileComponent
+          ),
+      },
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
+      },
+    ],
+  },
+
+  // Keep old dashboard route for backward compatibility
   {
     path: 'dashboard',
     canActivate: [AuthGuard],
@@ -124,7 +247,7 @@ export const routes: Routes = [
       ),
   },
 
-  // Protected routes for admins
+  // Admin Routes
   {
     path: 'admin',
     canActivate: [AuthGuard, RoleGuard],
@@ -138,11 +261,38 @@ export const routes: Routes = [
           ).then((m) => m.AdminDashboardComponent),
       },
       {
-        path: 'jobs',
+        path: 'manage-users',
+        loadComponent: () =>
+          import('./features/admin/manage-users/manage-users.component').then(
+            (m) => m.ManageUsersComponent
+          ),
+      },
+      {
+        path: 'manage-jobs',
         loadComponent: () =>
           import(
             './features/jobs/job-management/job-management.component'
           ).then((m) => m.JobManagementComponent),
+      },
+      {
+        path: 'reports',
+        loadComponent: () =>
+          import('./features/admin/reports/reports.component').then(
+            (m) => m.ReportsComponent
+          ),
+      },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./features/settings/settings.component').then(
+            (m) => m.SettingsComponent
+          ),
+      },
+      // Keep old routes for backward compatibility
+      {
+        path: 'jobs',
+        redirectTo: 'manage-jobs',
+        pathMatch: 'full',
       },
       {
         path: '',
