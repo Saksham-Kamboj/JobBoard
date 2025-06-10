@@ -54,7 +54,8 @@
           <label for="firstName" class="form-label">First Name</label>
           <div class="input-group" [class.error]="hasFieldError('firstName')">
             <input type="text" id="firstName" formControlName="firstName" placeholder="Enter first name"
-              class="form-input name-input" [class.error]="hasFieldError('firstName')">
+              class="form-input name-input" [class.error]="hasFieldError('firstName')" autocomplete="given-name"
+              autocapitalize="words">
           </div>
           <div class="error-message" *ngIf="hasFieldError('firstName')">
             {{ getFieldError('firstName') }}
@@ -65,7 +66,8 @@
           <label for="lastName" class="form-label">Last Name</label>
           <div class="input-group" [class.error]="hasFieldError('lastName')">
             <input type="text" id="lastName" formControlName="lastName" placeholder="Enter last name"
-              class="form-input name-input" [class.error]="hasFieldError('lastName')">
+              class="form-input name-input" [class.error]="hasFieldError('lastName')" autocomplete="family-name"
+              autocapitalize="words">
           </div>
           <div class="error-message" *ngIf="hasFieldError('lastName')">
             {{ getFieldError('lastName') }}
@@ -86,7 +88,8 @@
               </svg>
             </div>
             <input type="text" id="companyName" formControlName="companyName" placeholder="Enter company name"
-              class="form-input" [class.error]="hasFieldError('companyName')">
+              class="form-input" [class.error]="hasFieldError('companyName')" autocomplete="organization"
+              autocapitalize="words">
           </div>
           <div class="error-message" *ngIf="hasFieldError('companyName')">
             {{ getFieldError('companyName') }}
@@ -105,7 +108,7 @@
               </svg>
             </div>
             <input type="url" id="companyWebsite" formControlName="companyWebsite" placeholder="https://company.com"
-              class="form-input" [class.error]="hasFieldError('companyWebsite')">
+              class="form-input" [class.error]="hasFieldError('companyWebsite')" autocomplete="url" inputmode="url">
           </div>
           <div class="error-message" *ngIf="hasFieldError('companyWebsite')">
             {{ getFieldError('companyWebsite') }}
@@ -181,7 +184,7 @@
             </svg>
           </div>
           <input type="email" id="email" formControlName="email" placeholder="Enter your email" class="form-input"
-            [class.error]="hasFieldError('email')">
+            [class.error]="hasFieldError('email')" autocomplete="email" inputmode="email">
         </div>
         <div class="error-message" *ngIf="hasFieldError('email')">
           {{ getFieldError('email') }}
@@ -200,7 +203,8 @@
             </svg>
           </div>
           <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
-            placeholder="Create a password" class="form-input" [class.error]="hasFieldError('password')">
+            placeholder="Create a password" class="form-input" [class.error]="hasFieldError('password')"
+            autocomplete="new-password">
           <button type="button" (click)="togglePasswordVisibility()" class="password-toggle"
             aria-label="Toggle password visibility">
             <svg *ngIf="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -235,7 +239,7 @@
           </div>
           <input [type]="showConfirmPassword ? 'text' : 'password'" id="confirmPassword"
             formControlName="confirmPassword" placeholder="Confirm your password" class="form-input"
-            [class.error]="hasFieldError('confirmPassword')">
+            [class.error]="hasFieldError('confirmPassword')" autocomplete="new-password">
           <button type="button" (click)="toggleConfirmPasswordVisibility()" class="password-toggle"
             aria-label="Toggle confirm password visibility">
             <svg *ngIf="!showConfirmPassword" width="20" height="20" viewBox="0 0 24 24" fill="none"

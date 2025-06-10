@@ -66,7 +66,7 @@
             </svg>
           </div>
           <input type="email" id="email" formControlName="email" placeholder="Enter your email" class="form-input"
-            [class.error]="hasFieldError('email')">
+            [class.error]="hasFieldError('email')" autocomplete="email" inputmode="email">
         </div>
         <div class="error-message" *ngIf="hasFieldError('email')">
           {{ getFieldError('email') }}
@@ -85,7 +85,8 @@
             </svg>
           </div>
           <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
-            placeholder="Enter your password" class="form-input" [class.error]="hasFieldError('password')">
+            placeholder="Enter your password" class="form-input" [class.error]="hasFieldError('password')"
+            autocomplete="current-password">
           <button type="button" (click)="togglePasswordVisibility()" class="password-toggle"
             aria-label="Toggle password visibility">
             <svg *ngIf="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none"

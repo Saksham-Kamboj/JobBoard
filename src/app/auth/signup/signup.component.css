@@ -187,29 +187,112 @@
   text-decoration: underline;
 }
 
-/* Responsive Design */
-@media (max-width: 640px) {
+/* Enhanced Responsive Design */
+
+/* Large screens (1200px+) */
+@media (min-width: 1200px) {
+  .auth-card {
+    max-width: 520px;
+    padding: 3rem;
+  }
+
+  .role-selection {
+    gap: 1.25rem;
+  }
+
+  .role-btn {
+    padding: 1.25rem;
+  }
+
+  .company-fields {
+    padding: 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .name-row {
+    gap: 1.25rem;
+  }
+
+  .company-row {
+    gap: 1.25rem;
+  }
+}
+
+/* Medium screens (768px - 1199px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .auth-card {
+    max-width: 500px;
+    padding: 2.5rem;
+  }
+
+  .role-selection {
+    gap: 1rem;
+  }
+
+  .company-fields {
+    padding: 1.75rem;
+    margin: 1.25rem 0;
+  }
+}
+
+/* Small screens (640px - 767px) */
+@media (min-width: 640px) and (max-width: 767px) {
+  .auth-card {
+    max-width: 450px;
+    padding: 2rem;
+  }
+
   .role-selection {
     flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .name-row {
+    gap: 1rem;
+  }
+
+  .company-row {
+    gap: 1rem;
+  }
+
+  .company-fields {
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .role-btn {
+    padding: 0.875rem;
+  }
+}
+
+/* Extra small screens (480px - 639px) */
+@media (min-width: 480px) and (max-width: 639px) {
+  .auth-card {
+    padding: 1.75rem;
+  }
+
+  .role-selection {
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
   .name-row {
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
   .company-row {
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
   .company-fields {
-    padding: 1rem;
-    margin: 0.75rem 0;
+    padding: 1.25rem;
+    margin: 0.875rem 0;
   }
 
   .role-btn {
-    padding: 0.75rem;
+    padding: 0.875rem;
   }
 
   .checkbox-label {
@@ -217,19 +300,204 @@
   }
 }
 
-@media (max-width: 480px) {
+/* Mobile screens (320px - 479px) */
+@media (max-width: 479px) {
   .auth-card {
     padding: 1.5rem;
+    max-width: none;
+  }
+
+  .auth-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .auth-title {
+    font-size: 1.5rem;
+  }
+
+  .auth-subtitle {
+    font-size: 0.8125rem;
+  }
+
+  .role-selection {
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
   .role-btn {
     flex-direction: column;
     text-align: center;
     gap: 0.5rem;
+    padding: 0.875rem;
   }
 
   .role-content {
     align-items: center;
+  }
+
+  .role-title {
+    font-size: 0.8125rem;
+  }
+
+  .role-subtitle {
+    font-size: 0.6875rem;
+  }
+
+  .name-row {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .company-row {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .company-fields {
+    padding: 1rem;
+    margin: 0.75rem 0;
+  }
+
+  .checkbox-label {
+    align-items: flex-start;
+    gap: 0.625rem;
+  }
+
+  .checkbox-text {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  .form-label {
+    font-size: 0.8125rem;
+  }
+
+  .form-input {
+    font-size: 0.8125rem;
+  }
+
+  .form-select {
+    font-size: 0.8125rem;
+    padding: 0.6875rem 2.25rem 0.6875rem 0.875rem;
+  }
+
+  .form-textarea {
+    font-size: 0.8125rem;
+    padding: 0.6875rem 0.875rem;
+    min-height: 70px;
+  }
+
+  .submit-btn {
+    padding: 0.8125rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .auth-footer p {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Ultra small screens (below 320px) */
+@media (max-width: 319px) {
+  .auth-card {
+    padding: 1.25rem;
+  }
+
+  .auth-title {
+    font-size: 1.375rem;
+  }
+
+  .role-btn {
+    padding: 0.75rem;
+  }
+
+  .role-title {
+    font-size: 0.75rem;
+  }
+
+  .role-subtitle {
+    font-size: 0.625rem;
+  }
+
+  .company-fields {
+    padding: 0.875rem;
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    font-size: 0.75rem;
+  }
+
+  .submit-btn {
+    padding: 0.75rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* Landscape orientation adjustments for mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+  .auth-container {
+    padding: 1rem;
+    align-items: flex-start;
+    padding-top: 1rem;
+  }
+
+  .auth-card {
+    margin: 0 auto;
+  }
+
+  .auth-header {
+    margin-bottom: 1rem;
+  }
+
+  .auth-form {
+    gap: 1rem;
+  }
+
+  .company-fields {
+    padding: 1rem;
+    margin: 0.75rem 0;
+  }
+
+  .auth-footer {
+    margin-top: 1rem;
+    padding-top: 1rem;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .role-btn {
+    min-height: 44px;
+  }
+
+  .demo-btn {
+    min-height: 44px;
+  }
+
+  .submit-btn {
+    min-height: 44px;
+  }
+
+  .checkbox {
+    min-width: 20px;
+    min-height: 20px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .role-btn {
+    border-width: 2px;
+  }
+
+  .role-btn.active {
+    border-width: 3px;
+  }
+
+  .company-fields {
+    border-width: 2px;
   }
 }
 
