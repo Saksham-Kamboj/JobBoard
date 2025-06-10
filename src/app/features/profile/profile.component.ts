@@ -12,7 +12,6 @@ import { AuthService, User } from '../../core/services/auth.service';
 import {
   ProfileService,
   UserProfile,
-  DashboardStats,
 } from '../../core/services/profile.service';
 import {
   JobManagementService,
@@ -1925,12 +1924,25 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   updateUserStatus(user: UserManagement) {
+    // Confirm deactivation for active users
+    if (user.isActive === false) {
+      const confirmDeactivation = confirm(
+        `Are you sure you want to deactivate ${user.firstName} ${user.lastName}?\n\nThis will immediately log them out and prevent them from accessing the system.`
+      );
+      if (!confirmDeactivation) {
+        // Revert the toggle
+        user.isActive = true;
+        return;
+      }
+    }
+
     console.log(
       'Updating user status for user:',
       user.id,
       'to active:',
       user.isActive
     );
+
     this.authSubscription.add(
       this.adminManagementService
         .updateUserStatus(user.id, user.isActive)
@@ -1942,13 +1954,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
               this.allUsers[index] = updatedUser;
             }
             this.filterUsers();
-            // Show success message
-            this.successMessage = `User ${
-              user.isActive ? 'activated' : 'deactivated'
-            } successfully`;
+
+            // Show success message with additional info for deactivation
+            if (user.isActive) {
+              this.successMessage = `User ${user.firstName} ${user.lastName} activated successfully`;
+            } else {
+              this.successMessage = `User ${user.firstName} ${user.lastName} deactivated successfully. They will be logged out automatically.`;
+            }
+
             setTimeout(() => {
               this.successMessage = '';
-            }, 3000);
+            }, 5000);
           },
           error: (error) => {
             console.error('Error updating user status:', error);

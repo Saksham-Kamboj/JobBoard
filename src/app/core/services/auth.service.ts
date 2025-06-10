@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, catchError, tap, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, interval } from 'rxjs';
+import { map, catchError, tap, switchMap, takeWhile } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 export interface User {
@@ -59,6 +59,7 @@ export class AuthService {
   private readonly API_URL = 'http://localhost:3000';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   private tokenSubject = new BehaviorSubject<string | null>(null);
+  private statusCheckInterval: any;
 
   public currentUser$ = this.currentUserSubject.asObservable();
   public token$ = this.tokenSubject.asObservable();
@@ -66,6 +67,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {
     this.loadStoredAuth();
+    this.startUserStatusMonitoring();
   }
 
   private loadStoredAuth(): void {
@@ -181,6 +183,7 @@ export class AuthService {
   }
 
   logout(): void {
+    this.stopUserStatusMonitoring();
     this.clearStoredAuth();
     this.router.navigate(['/auth/signin']);
   }
@@ -291,5 +294,56 @@ export class AuthService {
 
     // In a real application, you would also update the user on the server
     // this.http.put<User>(`${this.API_URL}/users/${updatedUser.id}`, updatedUser).subscribe();
+  }
+
+  // User status monitoring methods
+  private startUserStatusMonitoring(): void {
+    // Check user status every 30 seconds if user is logged in
+    this.statusCheckInterval = interval(30000)
+      .pipe(takeWhile(() => this.isAuthenticated()))
+      .subscribe(() => {
+        this.checkUserStatus();
+      });
+  }
+
+  private stopUserStatusMonitoring(): void {
+    if (this.statusCheckInterval) {
+      this.statusCheckInterval.unsubscribe();
+      this.statusCheckInterval = null;
+    }
+  }
+
+  private checkUserStatus(): void {
+    const currentUser = this.getCurrentUser();
+    if (!currentUser) return;
+
+    this.http.get<User>(`${this.API_URL}/users/${currentUser.id}`).subscribe({
+      next: (user) => {
+        if (!user.isActive) {
+          console.log('User account has been deactivated. Logging out...');
+          this.forceLogout(
+            'Your account has been deactivated by an administrator.'
+          );
+        }
+      },
+      error: (error) => {
+        console.error('Error checking user status:', error);
+        // If user not found (deleted), force logout
+        if (error.status === 404) {
+          this.forceLogout('Your account has been removed.');
+        }
+      },
+    });
+  }
+
+  private forceLogout(message: string): void {
+    this.stopUserStatusMonitoring();
+    this.clearStoredAuth();
+
+    // Show message to user
+    alert(message);
+
+    // Navigate to signin page
+    this.router.navigate(['/auth/signin']);
   }
 }

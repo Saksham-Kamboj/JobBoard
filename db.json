@@ -62,9 +62,9 @@
       "lastName": "Kamboj",
       "role": "company",
       "createdAt": "2025-06-10T07:40:03.651Z",
-      "isActive": false,
+      "isActive": true,
       "password": "saksham",
-      "updatedAt": "2025-06-10T07:41:15.309Z"
+      "updatedAt": "2025-06-10T07:48:18.367Z"
     }
   ],
   "userProfiles": [
@@ -267,6 +267,41 @@
       "experience": [],
       "createdAt": "2025-06-10T04:48:15.162Z",
       "updatedAt": "2025-06-10T04:50:39.368Z"
+    },
+    {
+      "id": "profile-mbq7nsg3g03kqbn1i8g",
+      "userId": "mbq7nsg3g03kqbn1i8g",
+      "personalInfo": {
+        "firstName": "",
+        "lastName": "",
+        "email": "",
+        "phone": "",
+        "address": {
+          "street": "",
+          "city": "",
+          "state": "",
+          "zipCode": "",
+          "country": ""
+        }
+      },
+      "professionalInfo": {
+        "currentTitle": "",
+        "yearsOfExperience": 0,
+        "summary": "",
+        "skills": [],
+        "preferredJobTypes": [],
+        "preferredLocations": [],
+        "expectedSalary": {
+          "min": 0,
+          "max": 0,
+          "currency": "USD"
+        },
+        "jobAlertFrequency": "weekly"
+      },
+      "education": [],
+      "experience": [],
+      "createdAt": "2025-06-10T07:48:03.123Z",
+      "updatedAt": "2025-06-10T07:48:03.123Z"
     }
   ],
   "savedJobs": [
@@ -1477,7 +1512,7 @@
       "id": "settings-mbq7nsg3g03kqbn1i8g",
       "userId": "mbq7nsg3g03kqbn1i8g",
       "appearance": {
-        "theme": "light",
+        "theme": "dark",
         "language": "en",
         "fontSize": "medium",
         "compactMode": false
@@ -1488,7 +1523,7 @@
         "marketingEmails": false
       },
       "createdAt": "2025-06-10T07:40:03.763Z",
-      "updatedAt": "2025-06-10T07:40:03.763Z"
+      "updatedAt": "2025-06-10T07:49:35.304Z"
     }
   ],
   "systemSettings": [
