@@ -140,7 +140,7 @@ select:autofill {
 }
 
 .compact-filter {
-  padding: 0.6rem 0.75rem;
+  padding: 0.7rem 0.75rem;
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: 6px;
