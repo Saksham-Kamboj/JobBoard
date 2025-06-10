@@ -102,7 +102,7 @@
         "expectedSalary": {
           "min": 1200000,
           "max": 2000000,
-          "currency": "INR"
+          "currency": "USD"
         }
       },
       "education": [
@@ -135,13 +135,13 @@
         }
       ],
       "resume": {
-        "fileName": "01 A B Testing.docx",
-        "fileUrl": "/uploads/resumes/01 A B Testing.docx",
-        "uploadedAt": "2025-06-05T09:06:49.815Z",
-        "fileSize": 179183
+        "fileName": "Component_Based_Design[1].docx",
+        "fileUrl": "/uploads/resumes/Component_Based_Design[1].docx",
+        "uploadedAt": "2025-06-10T05:21:52.262Z",
+        "fileSize": 365434
       },
       "createdAt": "2024-12-01T10:00:00.000Z",
-      "updatedAt": "2025-06-05T09:06:50.823Z"
+      "updatedAt": "2025-06-10T05:21:53.266Z"
     },
     {
       "userId": "demo-company",

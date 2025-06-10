@@ -38,10 +38,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
   userProfile: UserProfile | null = null;
   profileForm: FormGroup;
   professionalForm: FormGroup;
+  educationForm: FormGroup;
+  experienceForm: FormGroup;
   companyForm: FormGroup;
   isEditingProfile = false;
   isEditingProfessional = false;
+  isEditingEducation = false;
+  isEditingExperience = false;
   isEditingCompany = false;
+  editingEducationId: string | null = null;
+  editingExperienceId: string | null = null;
 
   // Job and application data
   companyJobs: Job[] = [];
@@ -113,6 +119,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
 
     this.professionalForm = this.createProfessionalForm();
+    this.educationForm = this.createEducationForm();
+    this.experienceForm = this.createExperienceForm();
 
     this.companyForm = this.formBuilder.group({
       companyName: ['', [Validators.required, Validators.minLength(2)]],
@@ -149,6 +157,31 @@ export class ProfileComponent implements OnInit, OnDestroy {
       expectedSalaryMin: [0, [Validators.required, Validators.min(0)]],
       expectedSalaryMax: [0, [Validators.required, Validators.min(0)]],
       expectedSalaryCurrency: ['USD', [Validators.required]],
+    });
+  }
+
+  private createEducationForm(): FormGroup {
+    return this.formBuilder.group({
+      institution: ['', [Validators.required]],
+      degree: ['', [Validators.required]],
+      field: ['', [Validators.required]],
+      startDate: ['', [Validators.required]],
+      endDate: [''],
+      gpa: [''],
+      description: [''],
+      isCurrentlyStudying: [false],
+    });
+  }
+
+  private createExperienceForm(): FormGroup {
+    return this.formBuilder.group({
+      company: ['', [Validators.required]],
+      position: ['', [Validators.required]],
+      location: [''],
+      startDate: ['', [Validators.required]],
+      endDate: [''],
+      description: [''],
+      isCurrentPosition: [false],
     });
   }
 
@@ -313,6 +346,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.activeSection = sectionId;
     this.isEditingProfile = false;
     this.isEditingProfessional = false;
+    this.isEditingEducation = false;
+    this.isEditingExperience = false;
     this.isEditingCompany = false;
     this.clearMessages();
   }
@@ -442,6 +477,32 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.isEditingProfessional = !this.isEditingProfessional;
     if (!this.isEditingProfessional) {
       this.loadUserProfile(); // Reset form if canceling
+    }
+    this.clearMessages();
+  }
+
+  toggleEditEducation() {
+    this.isEditingEducation = !this.isEditingEducation;
+    if (!this.isEditingEducation) {
+      this.educationForm.reset();
+      this.editingEducationId = null;
+    } else {
+      // When starting a new form, ensure end date is enabled
+      const endDateControl = this.educationForm.get('endDate');
+      endDateControl?.enable();
+    }
+    this.clearMessages();
+  }
+
+  toggleEditExperience() {
+    this.isEditingExperience = !this.isEditingExperience;
+    if (!this.isEditingExperience) {
+      this.experienceForm.reset();
+      this.editingExperienceId = null;
+    } else {
+      // When starting a new form, ensure end date is enabled
+      const endDateControl = this.experienceForm.get('endDate');
+      endDateControl?.enable();
     }
     this.clearMessages();
   }
@@ -1035,6 +1096,465 @@ export class ProfileComponent implements OnInit, OnDestroy {
         },
       })
     );
+  }
+
+  // Education and Experience Management Methods
+  onEducationSubmit() {
+    if (this.educationForm.valid && this.currentUser) {
+      this.isLoading = true;
+      this.clearMessages();
+
+      const formValue = this.educationForm.value;
+      const educationData = {
+        id: this.editingEducationId || 'edu' + Date.now(),
+        institution: formValue.institution,
+        degree: formValue.degree,
+        field: formValue.field,
+        startDate: formValue.startDate,
+        endDate: formValue.isCurrentlyStudying ? null : formValue.endDate,
+        current: formValue.isCurrentlyStudying,
+        gpa: formValue.gpa,
+        description: formValue.description,
+      };
+
+      if (this.userProfile) {
+        const currentEducation = this.userProfile.education || [];
+        let updatedEducation;
+
+        if (this.editingEducationId) {
+          // Update existing education
+          updatedEducation = currentEducation.map((edu) =>
+            edu.id === this.editingEducationId ? educationData : edu
+          );
+        } else {
+          // Add new education
+          updatedEducation = [...currentEducation, educationData];
+        }
+
+        const updatedProfile = {
+          ...this.userProfile,
+          education: updatedEducation,
+        };
+
+        this.authSubscription.add(
+          this.profileService.updateUserProfile(updatedProfile).subscribe({
+            next: (profile) => {
+              this.userProfile = profile;
+              this.isLoading = false;
+              this.isEditingEducation = false;
+              this.educationForm.reset();
+              this.editingEducationId = null;
+              this.profileUpdateSuccess = true;
+
+              setTimeout(() => {
+                this.profileUpdateSuccess = false;
+              }, 3000);
+            },
+            error: (error) => {
+              console.error('Error saving education:', error);
+              this.isLoading = false;
+              this.errorMessage = 'Failed to save education. Please try again.';
+
+              setTimeout(() => {
+                this.errorMessage = '';
+              }, 5000);
+            },
+          })
+        );
+      } else {
+        this.createProfileWithEducation(educationData);
+      }
+    } else {
+      this.markFormGroupTouched(this.educationForm);
+    }
+  }
+
+  onExperienceSubmit() {
+    if (this.experienceForm.valid && this.currentUser) {
+      this.isLoading = true;
+      this.clearMessages();
+
+      const formValue = this.experienceForm.value;
+      const experienceData = {
+        id: this.editingExperienceId || 'exp' + Date.now(),
+        company: formValue.company,
+        position: formValue.position,
+        location: formValue.location,
+        startDate: formValue.startDate,
+        endDate: formValue.isCurrentPosition ? null : formValue.endDate,
+        current: formValue.isCurrentPosition,
+        description: formValue.description,
+      };
+
+      if (this.userProfile) {
+        const currentExperience = this.userProfile.experience || [];
+        let updatedExperience;
+
+        if (this.editingExperienceId) {
+          // Update existing experience
+          updatedExperience = currentExperience.map((exp) =>
+            exp.id === this.editingExperienceId ? experienceData : exp
+          );
+        } else {
+          // Add new experience
+          updatedExperience = [...currentExperience, experienceData];
+        }
+
+        const updatedProfile = {
+          ...this.userProfile,
+          experience: updatedExperience,
+        };
+
+        this.authSubscription.add(
+          this.profileService.updateUserProfile(updatedProfile).subscribe({
+            next: (profile) => {
+              this.userProfile = profile;
+              this.isLoading = false;
+              this.isEditingExperience = false;
+              this.experienceForm.reset();
+              this.editingExperienceId = null;
+              this.profileUpdateSuccess = true;
+
+              setTimeout(() => {
+                this.profileUpdateSuccess = false;
+              }, 3000);
+            },
+            error: (error) => {
+              console.error('Error saving experience:', error);
+              this.isLoading = false;
+              this.errorMessage =
+                'Failed to save experience. Please try again.';
+
+              setTimeout(() => {
+                this.errorMessage = '';
+              }, 5000);
+            },
+          })
+        );
+      } else {
+        this.createProfileWithExperience(experienceData);
+      }
+    } else {
+      this.markFormGroupTouched(this.experienceForm);
+    }
+  }
+
+  private createProfileWithEducation(educationData: any): void {
+    if (!this.currentUser) return;
+
+    const profileData = {
+      userId: this.currentUser.id,
+      personalInfo: {
+        firstName: this.currentUser.firstName || '',
+        lastName: this.currentUser.lastName || '',
+        email: this.currentUser.email || '',
+        phone: this.currentUser.phone || '',
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          country: 'United States',
+        },
+      },
+      professionalInfo: {
+        currentTitle: '',
+        yearsOfExperience: 0,
+        summary: '',
+        skills: [],
+        preferredJobTypes: [],
+        preferredLocations: [],
+        expectedSalary: {
+          min: 0,
+          max: 0,
+          currency: 'USD',
+        },
+      },
+      education: [educationData],
+      experience: [],
+      resume: undefined,
+    };
+
+    this.authSubscription.add(
+      this.profileService.createUserProfile(profileData).subscribe({
+        next: (profile: UserProfile) => {
+          this.userProfile = profile;
+          this.isLoading = false;
+          this.isEditingEducation = false;
+          this.educationForm.reset();
+          this.profileUpdateSuccess = true;
+
+          setTimeout(() => {
+            this.profileUpdateSuccess = false;
+          }, 3000);
+        },
+        error: (error: any) => {
+          console.error('Error creating profile:', error);
+          this.isLoading = false;
+          this.errorMessage = 'Failed to create profile. Please try again.';
+
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 5000);
+        },
+      })
+    );
+  }
+
+  private createProfileWithExperience(experienceData: any): void {
+    if (!this.currentUser) return;
+
+    const profileData = {
+      userId: this.currentUser.id,
+      personalInfo: {
+        firstName: this.currentUser.firstName || '',
+        lastName: this.currentUser.lastName || '',
+        email: this.currentUser.email || '',
+        phone: this.currentUser.phone || '',
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          country: 'United States',
+        },
+      },
+      professionalInfo: {
+        currentTitle: '',
+        yearsOfExperience: 0,
+        summary: '',
+        skills: [],
+        preferredJobTypes: [],
+        preferredLocations: [],
+        expectedSalary: {
+          min: 0,
+          max: 0,
+          currency: 'USD',
+        },
+      },
+      education: [],
+      experience: [experienceData],
+      resume: undefined,
+    };
+
+    this.authSubscription.add(
+      this.profileService.createUserProfile(profileData).subscribe({
+        next: (profile: UserProfile) => {
+          this.userProfile = profile;
+          this.isLoading = false;
+          this.isEditingExperience = false;
+          this.experienceForm.reset();
+          this.profileUpdateSuccess = true;
+
+          setTimeout(() => {
+            this.profileUpdateSuccess = false;
+          }, 3000);
+        },
+        error: (error: any) => {
+          console.error('Error creating profile:', error);
+          this.isLoading = false;
+          this.errorMessage = 'Failed to create profile. Please try again.';
+
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 5000);
+        },
+      })
+    );
+  }
+
+  // Education Edit and Delete Methods
+  editEducation(education: any) {
+    this.editingEducationId = education.id;
+    this.isEditingEducation = true;
+
+    // Format dates for HTML date input (YYYY-MM-DD)
+    const formatDateForInput = (dateStr: string) => {
+      if (!dateStr) return '';
+      // If date is in YYYY-MM format, add -01 for the day
+      if (dateStr.match(/^\d{4}-\d{2}$/)) {
+        return dateStr + '-01';
+      }
+      // If date is already in YYYY-MM-DD format, return as is
+      if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        return dateStr;
+      }
+      return '';
+    };
+
+    // Populate form with existing data
+    this.educationForm.patchValue({
+      institution: education.institution,
+      degree: education.degree,
+      field: education.field,
+      startDate: formatDateForInput(education.startDate),
+      endDate: formatDateForInput(education.endDate),
+      gpa: education.gpa,
+      description: education.description,
+      isCurrentlyStudying: education.current || false,
+    });
+
+    // Handle end date field state based on current status
+    const endDateControl = this.educationForm.get('endDate');
+    if (education.current) {
+      endDateControl?.disable();
+    } else {
+      endDateControl?.enable();
+    }
+
+    this.clearMessages();
+  }
+
+  deleteEducation(educationId: string) {
+    if (confirm('Are you sure you want to delete this education entry?')) {
+      if (this.userProfile && this.userProfile.education) {
+        const updatedEducation = this.userProfile.education.filter(
+          (edu) => edu.id !== educationId
+        );
+
+        const updatedProfile = {
+          ...this.userProfile,
+          education: updatedEducation,
+        };
+
+        this.isLoading = true;
+        this.authSubscription.add(
+          this.profileService.updateUserProfile(updatedProfile).subscribe({
+            next: (profile) => {
+              this.userProfile = profile;
+              this.isLoading = false;
+              this.profileUpdateSuccess = true;
+
+              setTimeout(() => {
+                this.profileUpdateSuccess = false;
+              }, 3000);
+            },
+            error: (error) => {
+              console.error('Error deleting education:', error);
+              this.isLoading = false;
+              this.errorMessage =
+                'Failed to delete education. Please try again.';
+
+              setTimeout(() => {
+                this.errorMessage = '';
+              }, 5000);
+            },
+          })
+        );
+      }
+    }
+  }
+
+  // Experience Edit and Delete Methods
+  editExperience(experience: any) {
+    this.editingExperienceId = experience.id;
+    this.isEditingExperience = true;
+
+    // Format dates for HTML date input (YYYY-MM-DD)
+    const formatDateForInput = (dateStr: string) => {
+      if (!dateStr) return '';
+      // If date is in YYYY-MM format, add -01 for the day
+      if (dateStr.match(/^\d{4}-\d{2}$/)) {
+        return dateStr + '-01';
+      }
+      // If date is already in YYYY-MM-DD format, return as is
+      if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        return dateStr;
+      }
+      return '';
+    };
+
+    // Populate form with existing data
+    this.experienceForm.patchValue({
+      company: experience.company,
+      position: experience.position,
+      location: experience.location,
+      startDate: formatDateForInput(experience.startDate),
+      endDate: formatDateForInput(experience.endDate),
+      description: experience.description,
+      isCurrentPosition: experience.current || false,
+    });
+
+    // Handle end date field state based on current status
+    const endDateControl = this.experienceForm.get('endDate');
+    if (experience.current) {
+      endDateControl?.disable();
+    } else {
+      endDateControl?.enable();
+    }
+
+    this.clearMessages();
+  }
+
+  deleteExperience(experienceId: string) {
+    if (
+      confirm('Are you sure you want to delete this work experience entry?')
+    ) {
+      if (this.userProfile && this.userProfile.experience) {
+        const updatedExperience = this.userProfile.experience.filter(
+          (exp) => exp.id !== experienceId
+        );
+
+        const updatedProfile = {
+          ...this.userProfile,
+          experience: updatedExperience,
+        };
+
+        this.isLoading = true;
+        this.authSubscription.add(
+          this.profileService.updateUserProfile(updatedProfile).subscribe({
+            next: (profile) => {
+              this.userProfile = profile;
+              this.isLoading = false;
+              this.profileUpdateSuccess = true;
+
+              setTimeout(() => {
+                this.profileUpdateSuccess = false;
+              }, 3000);
+            },
+            error: (error) => {
+              console.error('Error deleting experience:', error);
+              this.isLoading = false;
+              this.errorMessage =
+                'Failed to delete experience. Please try again.';
+
+              setTimeout(() => {
+                this.errorMessage = '';
+              }, 5000);
+            },
+          })
+        );
+      }
+    }
+  }
+
+  // Checkbox Event Handlers
+  onCurrentlyStudyingChange(event: any) {
+    const isCurrentlyStudying = event.target.checked;
+    const endDateControl = this.educationForm.get('endDate');
+
+    if (isCurrentlyStudying) {
+      // Disable and clear end date when currently studying
+      endDateControl?.disable();
+      endDateControl?.setValue('');
+    } else {
+      // Enable end date when not currently studying
+      endDateControl?.enable();
+    }
+  }
+
+  onCurrentPositionChange(event: any) {
+    const isCurrentPosition = event.target.checked;
+    const endDateControl = this.experienceForm.get('endDate');
+
+    if (isCurrentPosition) {
+      // Disable and clear end date when currently working
+      endDateControl?.disable();
+      endDateControl?.setValue('');
+    } else {
+      // Enable end date when not currently working
+      endDateControl?.enable();
+    }
   }
 
   // Job and Application Management Methods
