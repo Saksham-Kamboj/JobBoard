@@ -88,7 +88,8 @@
           "Git",
           "Node.js",
           "MongoDB",
-          "Next.js"
+          "Next.js",
+          "Angular.js"
         ],
         "preferredJobTypes": [
           "full-time",
@@ -102,8 +103,9 @@
         "expectedSalary": {
           "min": 1200000,
           "max": 2000000,
-          "currency": "USD"
-        }
+          "currency": "INR"
+        },
+        "jobAlertFrequency": "weekly"
       },
       "education": [
         {
@@ -141,7 +143,7 @@
         "fileSize": 365434
       },
       "createdAt": "2024-12-01T10:00:00.000Z",
-      "updatedAt": "2025-06-10T05:21:53.266Z"
+      "updatedAt": "2025-06-10T06:24:51.030Z"
     },
     {
       "userId": "demo-company",
@@ -1475,9 +1477,9 @@
           "remote"
         ],
         "salaryRange": {
-          "min": 80000,
-          "max": 120000,
-          "currency": "USD"
+          "min": 800000,
+          "max": 1200000,
+          "currency": "INR"
         },
         "preferredLocations": [
           "San Francisco, CA",
@@ -1516,8 +1518,8 @@
       },
       "billing": {
         "currentPlan": "Professional",
-        "planPrice": 99,
-        "currency": "USD",
+        "planPrice": 8000,
+        "currency": "INR",
         "billingCycle": "monthly",
         "jobPostingsUsed": 15,
         "jobPostingsLimit": 25,

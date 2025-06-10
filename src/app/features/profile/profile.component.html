@@ -852,6 +852,25 @@
               </div>
             </div>
           </div>
+
+          <div class="personal-info-item" *ngIf="userProfile.professionalInfo.jobAlertFrequency">
+            <div class="personal-info-header">
+              <div class="personal-info-details">
+                <h3 class="personal-info-title">Job Alert Frequency</h3>
+                <p class="personal-info-description">How often you receive job notifications</p>
+                <p class="personal-info-meta">Alerts sent {{ userProfile.professionalInfo.jobAlertFrequency }}</p>
+              </div>
+            </div>
+            <div class="personal-info-content">
+              <div class="personal-info-grid">
+                <div class="personal-info-value">
+                  <span class="personal-info-label">Frequency</span>
+                  <span class="personal-info-text">{{ userProfile.professionalInfo.jobAlertFrequency | titlecase
+                    }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Professional Info Edit Mode -->
@@ -982,6 +1001,16 @@
                   </div>
                 </div>
               </div>
+              <div class="form-group">
+                <label for="jobAlertFrequency" class="form-label">Job Alert Frequency</label>
+                <select id="jobAlertFrequency" formControlName="jobAlertFrequency" class="form-select">
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="never">Never</option>
+                </select>
+                <small class="form-help">How often you want to receive job alerts matching your preferences</small>
+              </div>
             </div>
           </div>
 
@@ -1018,6 +1047,7 @@
                     <option value="EUR">EUR</option>
                     <option value="GBP">GBP</option>
                     <option value="CAD">CAD</option>
+                    <option value="INR">INR</option>
                   </select>
                 </div>
               </div>

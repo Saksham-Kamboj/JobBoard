@@ -34,6 +34,7 @@ export interface UserProfile {
       max: number;
       currency: string;
     };
+    jobAlertFrequency: string;
   };
   education: Array<{
     id: string;
@@ -171,6 +172,7 @@ export class ProfileService {
           max: 0,
           currency: 'USD',
         },
+        jobAlertFrequency: 'weekly',
       },
       education: [],
       experience: [],

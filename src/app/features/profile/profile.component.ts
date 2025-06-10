@@ -157,6 +157,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       expectedSalaryMin: [0, [Validators.required, Validators.min(0)]],
       expectedSalaryMax: [0, [Validators.required, Validators.min(0)]],
       expectedSalaryCurrency: ['USD', [Validators.required]],
+      jobAlertFrequency: ['weekly', [Validators.required]],
     });
   }
 
@@ -413,6 +414,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
                   profile.professionalInfo.expectedSalary?.max || 0,
                 expectedSalaryCurrency:
                   profile.professionalInfo.expectedSalary?.currency || 'USD',
+                jobAlertFrequency:
+                  profile.professionalInfo.jobAlertFrequency || 'weekly',
               });
             } else {
               // Fallback to basic user data if no profile exists
@@ -602,6 +605,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
             max: 0,
             currency: 'USD',
           },
+          jobAlertFrequency:
+            this.userProfile?.professionalInfo.jobAlertFrequency || 'weekly',
         },
         education: this.userProfile?.education || [],
         experience: this.userProfile?.experience || [],
@@ -705,6 +710,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           max: formValue.expectedSalaryMax,
           currency: formValue.expectedSalaryCurrency,
         },
+        jobAlertFrequency: formValue.jobAlertFrequency,
       };
 
       if (this.userProfile) {
@@ -937,6 +943,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           max: 0,
           currency: 'USD',
         },
+        jobAlertFrequency: 'weekly',
       },
       education: [],
       experience: [],
@@ -1269,6 +1276,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           max: 0,
           currency: 'USD',
         },
+        jobAlertFrequency: 'weekly',
       },
       education: [educationData],
       experience: [],
@@ -1331,6 +1339,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           max: 0,
           currency: 'USD',
         },
+        jobAlertFrequency: 'weekly',
       },
       education: [],
       experience: [experienceData],

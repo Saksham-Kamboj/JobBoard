@@ -161,12 +161,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
             icon: 'shield',
             description: 'Control your profile visibility and privacy settings',
           },
-          {
-            id: 'preferences',
-            title: 'Job Preferences',
-            icon: 'briefcase',
-            description: 'Set your job search preferences and filters',
-          },
         ];
         break;
 
