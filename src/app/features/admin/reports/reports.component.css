@@ -62,11 +62,11 @@
 }
 
 .stat-change.positive {
-  color: #059669;
+  color: var(--success);
 }
 
 .stat-change.negative {
-  color: #dc2626;
+  color: var(--destructive);
 }
 
 .stat-change.neutral {
@@ -247,18 +247,18 @@
 }
 
 .icon-user_registered {
-  background: #dbeafe;
-  color: #1e40af;
+  background: oklch(from var(--primary) l c h / 0.1);
+  color: var(--primary);
 }
 
 .icon-job_posted {
-  background: #fef3c7;
-  color: #92400e;
+  background: oklch(from var(--warning) l c h / 0.1);
+  color: var(--warning);
 }
 
 .icon-application_submitted {
-  background: #d1fae5;
-  color: #065f46;
+  background: oklch(from var(--success) l c h / 0.1);
+  color: var(--success);
 }
 
 .activity-content {
@@ -329,12 +329,12 @@
   .reports-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .category-item {
     grid-template-columns: 1fr;
     gap: 0.5rem;
   }
-  
+
   .export-buttons {
     grid-template-columns: 1fr;
   }

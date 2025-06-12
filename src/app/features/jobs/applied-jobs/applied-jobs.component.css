@@ -74,23 +74,23 @@
 }
 
 .status-under-review {
-  background: #fef3c7;
-  color: #92400e;
+  background: oklch(from var(--warning) l c h / 0.1);
+  color: var(--warning);
 }
 
 .status-interview-scheduled {
-  background: #dbeafe;
-  color: #1e40af;
+  background: oklch(from var(--primary) l c h / 0.1);
+  color: var(--primary);
 }
 
 .status-rejected {
-  background: #fee2e2;
-  color: #dc2626;
+  background: oklch(from var(--destructive) l c h / 0.1);
+  color: var(--destructive);
 }
 
 .status-accepted {
-  background: #d1fae5;
-  color: #065f46;
+  background: oklch(from var(--success) l c h / 0.1);
+  color: var(--success);
 }
 
 .no-jobs {
@@ -130,7 +130,7 @@
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .job-status {
     align-self: flex-end;
   }

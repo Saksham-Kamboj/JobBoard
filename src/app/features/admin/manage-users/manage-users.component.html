@@ -7,10 +7,7 @@
 
     <div class="filters">
       <div class="search-box">
-        <input 
-          type="text" 
-          placeholder="Search users by name or email..."
-          [(ngModel)]="searchQuery"
+        <input type="text" placeholder="Search users by name or email..." [(ngModel)]="searchQuery"
           class="search-input">
       </div>
       <div class="role-filter">
@@ -54,17 +51,11 @@
           <button class="action-btn view-btn" (click)="viewUserDetails(user.id)">
             View
           </button>
-          <button 
-            class="action-btn toggle-btn"
-            [class.activate-btn]="user.status === 'inactive'"
-            [class.deactivate-btn]="user.status === 'active'"
-            (click)="toggleUserStatus(user.id)">
+          <button class="action-btn toggle-btn" [class.activate-btn]="user.status === 'inactive'"
+            [class.deactivate-btn]="user.status === 'active'" (click)="toggleUserStatus(user.id)">
             {{ user.status === 'active' ? 'Deactivate' : 'Activate' }}
           </button>
-          <button 
-            class="action-btn delete-btn" 
-            (click)="deleteUser(user.id)"
-            *ngIf="user.role !== 'admin'">
+          <button class="action-btn delete-btn" (click)="deleteUser(user.id)" *ngIf="user.role !== 'admin'">
             Delete
           </button>
         </div>

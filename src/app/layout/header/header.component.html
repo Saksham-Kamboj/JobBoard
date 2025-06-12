@@ -21,7 +21,6 @@
 
             <!-- Admin Navigation -->
             <ng-container *ngIf="isLoggedIn && currentUser?.role === 'admin'">
-                <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link">Dashboard</a>
                 <a routerLink="/admin/manage-users" routerLinkActive="active" class="nav-link">Manage Users</a>
                 <a routerLink="/admin/manage-jobs" routerLinkActive="active" class="nav-link">Manage Jobs</a>
                 <a routerLink="/admin/reports" routerLinkActive="active" class="nav-link">Reports</a>
