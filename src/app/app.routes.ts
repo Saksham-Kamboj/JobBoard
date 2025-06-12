@@ -210,21 +210,15 @@ export const routes: Routes = [
     ],
   },
 
-  // Keep old dashboard route for backward compatibility
+  // Job-Seeker Dashboard route (exclusive to job-seekers)
   {
     path: 'dashboard',
-    canActivate: [AuthGuard],
-    children: [
-      {
-        path: '',
-        canActivate: [RoleGuard],
-        data: { roles: ['job-seeker', 'company'] },
-        loadComponent: () =>
-          import(
-            './features/job-seeker/dashboard/job-seeker-dashboard.component'
-          ).then((m) => m.JobSeekerDashboardComponent),
-      },
-    ],
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['job-seeker'] },
+    loadComponent: () =>
+      import(
+        './features/job-seeker/dashboard/job-seeker-dashboard.component'
+      ).then((m) => m.JobSeekerDashboardComponent),
   },
 
   // Settings page (accessible to all authenticated users)
