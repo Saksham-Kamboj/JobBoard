@@ -147,13 +147,6 @@ export const routes: Routes = [
           ).then((m) => m.SavedJobsComponent),
       },
       {
-        path: 'profile',
-        loadComponent: () =>
-          import('./features/profile/profile.component').then(
-            (m) => m.ProfileComponent
-          ),
-      },
-      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full',
@@ -198,8 +191,8 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadComponent: () =>
-          import('./features/profile/profile.component').then(
-            (m) => m.ProfileComponent
+          import('./features/company/profile/company-profile.component').then(
+            (m) => m.CompanyProfileComponent
           ),
       },
       {
@@ -230,6 +223,17 @@ export const routes: Routes = [
 
   // Job-seeker Settings route (exclusive to job-seekers)
   {
+    path: 'profile',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['job-seeker'] },
+    loadComponent: () =>
+      import('./features/job-seeker/profile/job-seeker-profile.component').then(
+        (m) => m.JobSeekerProfileComponent
+      ),
+  },
+
+  // Job-seeker Settings route (exclusive to job-seekers)
+  {
     path: 'settings',
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['job-seeker'] },
@@ -237,16 +241,6 @@ export const routes: Routes = [
       import(
         './features/job-seeker/settings/job-seeker-settings.component'
       ).then((m) => m.JobSeekerSettingsComponent),
-  },
-
-  // Profile page (accessible to all authenticated users)
-  {
-    path: 'profile',
-    canActivate: [AuthGuard],
-    loadComponent: () =>
-      import('./features/profile/profile.component').then(
-        (m) => m.ProfileComponent
-      ),
   },
 
   // Admin Routes
@@ -281,6 +275,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/admin/reports/reports.component').then(
             (m) => m.ReportsComponent
+          ),
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/admin/profile/admin-profile.component').then(
+            (m) => m.AdminProfileComponent
           ),
       },
       {

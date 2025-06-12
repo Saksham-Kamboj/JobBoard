@@ -87,7 +87,26 @@
                         </svg>
                     </button>
                     <div class="dropdown-menu">
-                        <a routerLink="/profile" class="dropdown-item">
+                        <!-- Role-based Profile Links -->
+                        <a *ngIf="currentUser?.role === 'admin'" routerLink="/admin/profile" class="dropdown-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor"
+                                    stroke-width="2" />
+                                <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+                            </svg>
+                            Admin Profile
+                        </a>
+                        <a *ngIf="currentUser?.role === 'company'" routerLink="/company/profile" class="dropdown-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor"
+                                    stroke-width="2" />
+                                <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+                            </svg>
+                            Company Profile
+                        </a>
+                        <a *ngIf="currentUser?.role === 'job-seeker'" routerLink="/profile" class="dropdown-item">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor"
@@ -292,7 +311,13 @@
                         [alt]="currentUser?.firstName + ' ' + currentUser?.lastName" class="mobile-avatar">
                     <span class="mobile-user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
                 </div>
-                <a routerLink="/profile" class="mobile-nav-link" (click)="toggleMenu()">Profile</a>
+                <!-- Role-based Profile Links for Mobile -->
+                <a *ngIf="currentUser?.role === 'admin'" routerLink="/admin/profile" class="mobile-nav-link"
+                    (click)="toggleMenu()">Admin Profile</a>
+                <a *ngIf="currentUser?.role === 'company'" routerLink="/company/profile" class="mobile-nav-link"
+                    (click)="toggleMenu()">Company Profile</a>
+                <a *ngIf="currentUser?.role === 'job-seeker'" routerLink="/profile" class="mobile-nav-link"
+                    (click)="toggleMenu()">Profile</a>
                 <!-- Role-based Dashboard Links for Mobile -->
                 <a *ngIf="currentUser?.role === 'admin'" routerLink="/admin/dashboard" class="mobile-nav-link"
                     (click)="toggleMenu()">Admin Dashboard</a>

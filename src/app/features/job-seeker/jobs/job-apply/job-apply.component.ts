@@ -310,7 +310,7 @@ export class JobApplyComponent implements OnInit, OnDestroy {
   }
 
   goToProfile(): void {
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/jobseeker/profile']);
   }
 
   continueWithoutProfile(): void {
@@ -318,7 +318,7 @@ export class JobApplyComponent implements OnInit, OnDestroy {
   }
 
   editProfile(): void {
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/jobseeker/profile']);
   }
 
   getProfileInitials(): string {
