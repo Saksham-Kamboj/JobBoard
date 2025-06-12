@@ -25,6 +25,21 @@ export interface UserSettings {
     platformAnalytics?: boolean;
     pushNotifications: boolean;
     marketingEmails: boolean;
+    // Admin-specific notifications
+    userRegistrations?: boolean;
+    jobPostings?: boolean;
+    reportGeneration?: boolean;
+    securityAlerts?: boolean;
+    maintenanceNotifications?: boolean;
+    // Company-specific notifications
+    applicationAlerts?: boolean;
+    interviewReminders?: boolean;
+    jobExpirationAlerts?: boolean;
+    // Job-seeker-specific notifications
+    newJobMatches?: boolean;
+    interviewInvitations?: boolean;
+    weeklyJobDigest?: boolean;
+    companyFollowUps?: boolean;
   };
   privacy?: {
     profileVisibility: string;
@@ -32,17 +47,35 @@ export interface UserSettings {
     showPhone: boolean;
     allowSearchEngines: boolean;
     showOnlineStatus: boolean;
+    // Job-seeker-specific privacy settings
+    showSalaryExpectation?: boolean;
+    allowRecruiterContact?: boolean;
+    showApplicationHistory?: boolean;
+    allowDataExport?: boolean;
+    enableProfileAnalytics?: boolean;
+    // Company-specific privacy settings
+    showCompanyInSearch?: boolean;
+    shareAnalytics?: boolean;
+    enableCookies?: boolean;
+    dataRetentionPeriod?: string;
   };
   jobPreferences?: {
     preferredJobTypes: string[];
-    salaryRange: {
+    salaryRange?: {
       min: number;
       max: number;
       currency: string;
     };
     preferredLocations: string[];
-    jobAlertFrequency: string;
-    autoApplyEnabled: boolean;
+    jobAlertFrequency?: string;
+    autoApplyEnabled?: boolean;
+    // Additional job-seeker preferences
+    remoteWork?: boolean;
+    salaryExpectation?: string;
+    experienceLevel?: string;
+    availabilityDate?: string;
+    willingToRelocate?: boolean;
+    preferredIndustries?: string[];
   };
   companySettings?: {
     companySize: string;
@@ -60,6 +93,23 @@ export interface UserSettings {
     jobPostingsLimit: number;
     nextBillingDate: string;
   };
+  applications?: {
+    autoFillApplications: boolean;
+    saveApplicationDrafts: boolean;
+    requireCoverLetterReminder: boolean;
+    trackApplicationStatus: boolean;
+    enableQuickApply: boolean;
+    defaultCoverLetter: string;
+  };
+  company?: {
+    autoReplyToApplications?: boolean;
+    showCompanySize?: boolean;
+    showSalaryRanges?: boolean;
+    enableQuickApply?: boolean;
+    requireCoverLetter?: boolean;
+    allowRemoteApplications?: boolean;
+    publicCompanyProfile?: boolean;
+  };
   createdAt: string;
   updatedAt: string;
 }
@@ -70,6 +120,7 @@ export interface SystemSettings {
   platformDescription: string;
   supportEmail: string;
   allowRegistration: boolean;
+  allowUserRegistration?: boolean; // Alias for allowRegistration
   requireEmailVerification: boolean;
   maintenanceMode: boolean;
   maxJobPostingsPerCompany: number;
@@ -77,6 +128,11 @@ export interface SystemSettings {
   featuredJobPrice: number;
   privacyPolicyUrl: string;
   termsOfServiceUrl: string;
+  // Additional admin settings
+  enableJobApproval?: boolean;
+  maxJobsPerCompany?: number;
+  sessionTimeout?: number;
+  enableAnalytics?: boolean;
   analytics: {
     trackingEnabled: boolean;
     weeklyReportsEnabled: boolean;
@@ -84,9 +140,16 @@ export interface SystemSettings {
   };
   security: {
     requireTwoFactorAuth: boolean;
+    requireTwoFactor?: boolean; // Alias for requireTwoFactorAuth
     sessionTimeoutMinutes: number;
     passwordMinLength: number;
     dataRetentionDays: number;
+    // Additional security settings
+    enforcePasswordPolicy?: boolean;
+    sessionSecurity?: string;
+    loginAttempts?: number;
+    accountLockoutTime?: number;
+    auditLogging?: boolean;
   };
   createdAt: string;
   updatedAt: string;
@@ -285,17 +348,33 @@ export class SettingsService {
   }
 
   updateCompanySettings(
-    companySettings: Partial<UserSettings['companySettings']>
+    companySettings: Partial<UserSettings['company']>
   ): Observable<UserSettings> {
     const currentSettings = this.userSettingsSubject.value;
-    if (!currentSettings || !currentSettings.companySettings) {
+    if (!currentSettings) {
       return throwError(() => new Error('No current settings found'));
     }
 
     return this.updateUserSettings({
-      companySettings: {
-        ...currentSettings.companySettings,
+      company: {
+        ...currentSettings.company,
         ...companySettings,
+      },
+    });
+  }
+
+  updateApplicationSettings(
+    applicationSettings: Partial<UserSettings['applications']>
+  ): Observable<UserSettings> {
+    const currentSettings = this.userSettingsSubject.value;
+    if (!currentSettings || !currentSettings.applications) {
+      return throwError(() => new Error('No current settings found'));
+    }
+
+    return this.updateUserSettings({
+      applications: {
+        ...currentSettings.applications,
+        ...applicationSettings,
       },
     });
   }

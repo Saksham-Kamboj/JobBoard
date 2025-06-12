@@ -7,22 +7,22 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { AuthService, User } from '../../core/services/auth.service';
-import { ThemeService } from '../../core/services/theme.service';
+import { AuthService, User } from '../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
 import {
   SettingsService,
   UserSettings,
   SystemSettings,
-} from '../../core/services/settings.service';
+} from '../../../core/services/settings.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-settings',
+  selector: 'app-admin-settings',
   imports: [CommonModule, RouterModule, ReactiveFormsModule],
-  templateUrl: './settings.component.html',
-  styleUrl: './settings.component.css',
+  templateUrl: './admin-settings.component.html',
+  styleUrl: './admin-settings.component.css',
 })
-export class SettingsComponent implements OnInit, OnDestroy {
+export class AdminSettingsComponent implements OnInit, OnDestroy {
   isDarkMode = false;
   currentUser: User | null = null;
   private authSubscription: Subscription = new Subscription();
@@ -34,30 +34,82 @@ export class SettingsComponent implements OnInit, OnDestroy {
   passwordUpdateSuccess = false;
   errorMessage = '';
 
-  // Settings categories - will be dynamically set based on user role
-  settingsCategories: any[] = [];
+  // Admin-specific settings categories
+  settingsCategories = [
+    {
+      id: 'appearance',
+      title: 'Appearance',
+      icon: 'palette',
+      description: 'Customize the admin interface theme and layout',
+    },
+    {
+      id: 'account',
+      title: 'Account Security',
+      icon: 'user',
+      description: 'Manage your admin account and security settings',
+    },
+    {
+      id: 'notifications',
+      title: 'Admin Notifications',
+      icon: 'bell',
+      description: 'Configure system alerts and admin notifications',
+    },
+    {
+      id: 'system',
+      title: 'System Configuration',
+      icon: 'settings',
+      description: 'Configure platform-wide system settings',
+    },
+    {
+      id: 'security',
+      title: 'Security & Compliance',
+      icon: 'shield',
+      description: 'Manage security policies and compliance settings',
+    },
+    {
+      id: 'analytics',
+      title: 'Analytics & Reports',
+      icon: 'bar-chart',
+      description: 'Configure analytics tracking and reporting',
+    },
+  ];
 
   activeCategory = 'appearance';
 
-  // Dynamic settings data
+  // Settings data
   userSettings: UserSettings | null = null;
   systemSettings: SystemSettings | null = null;
 
-  // Notification settings (will be populated from userSettings)
+  // Admin notification settings
   notificationSettings = {
     emailNotifications: true,
-    jobAlerts: true,
-    applicationUpdates: true,
-    marketingEmails: false,
-    pushNotifications: true,
+    systemAlerts: true,
+    userRegistrations: true,
+    jobPostings: true,
+    reportGeneration: true,
+    securityAlerts: true,
+    maintenanceNotifications: true,
   };
 
-  // Privacy settings (will be populated from userSettings)
-  privacySettings = {
-    profileVisibility: 'public',
-    showEmail: false,
-    showPhone: false,
-    allowSearchEngines: true,
+  // System configuration settings
+  systemConfig = {
+    allowUserRegistration: true,
+    requireEmailVerification: true,
+    enableJobApproval: false,
+    maxJobsPerCompany: 50,
+    sessionTimeout: 30,
+    enableAnalytics: true,
+    maintenanceMode: false,
+  };
+
+  // Security settings
+  securitySettings = {
+    enforcePasswordPolicy: true,
+    requireTwoFactor: false,
+    sessionSecurity: 'high',
+    loginAttempts: 5,
+    accountLockoutTime: 30,
+    auditLogging: true,
   };
 
   constructor(
@@ -89,16 +141,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.authSubscription.add(
       this.authService.currentUser$.subscribe((user) => {
         this.currentUser = user;
-        this.setSettingsCategories();
-
-        // Load user settings when user is available
-        if (user) {
+        if (user && user.role === 'admin') {
           this.loadUserSettings(user.id);
-
-          // Load system settings for admin users
-          if (user.role === 'admin') {
-            this.loadSystemSettings();
-          }
+          this.loadSystemSettings();
         }
       })
     );
@@ -116,118 +161,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.authSubscription.add(
       this.settingsService.systemSettings$.subscribe((settings) => {
         this.systemSettings = settings;
+        this.updateSystemConfigFromSettings(settings);
       })
     );
   }
 
   ngOnDestroy() {
     this.authSubscription.unsubscribe();
-  }
-
-  setSettingsCategories() {
-    if (!this.currentUser) {
-      this.settingsCategories = [];
-      return;
-    }
-
-    const baseCategories = [
-      {
-        id: 'appearance',
-        title: 'Appearance',
-        icon: 'palette',
-        description: 'Customize the look and feel of your interface',
-      },
-      {
-        id: 'account',
-        title: 'Account',
-        icon: 'user',
-        description: 'Manage your account information and security',
-      },
-    ];
-
-    switch (this.currentUser.role) {
-      case 'job-seeker':
-        this.settingsCategories = [
-          ...baseCategories,
-          {
-            id: 'notifications',
-            title: 'Notifications',
-            icon: 'bell',
-            description: 'Manage job alerts and application notifications',
-          },
-          {
-            id: 'privacy',
-            title: 'Privacy & Profile',
-            icon: 'shield',
-            description: 'Control your profile visibility and privacy settings',
-          },
-        ];
-        break;
-
-      case 'company':
-        this.settingsCategories = [
-          ...baseCategories,
-          {
-            id: 'notifications',
-            title: 'Notifications',
-            icon: 'bell',
-            description: 'Manage application and hiring notifications',
-          },
-          {
-            id: 'company',
-            title: 'Company Settings',
-            icon: 'building',
-            description: 'Manage company profile and hiring preferences',
-          },
-          {
-            id: 'billing',
-            title: 'Billing & Plans',
-            icon: 'credit-card',
-            description: 'Manage subscription and billing information',
-          },
-        ];
-        break;
-
-      case 'admin':
-        this.settingsCategories = [
-          ...baseCategories,
-          {
-            id: 'notifications',
-            title: 'Notifications',
-            icon: 'bell',
-            description: 'Manage system and admin notifications',
-          },
-          {
-            id: 'system',
-            title: 'System Settings',
-            icon: 'settings',
-            description: 'Configure platform-wide settings',
-          },
-          {
-            id: 'security',
-            title: 'Security & Compliance',
-            icon: 'shield',
-            description: 'Manage security policies and compliance settings',
-          },
-          {
-            id: 'analytics',
-            title: 'Analytics & Reports',
-            icon: 'bar-chart',
-            description: 'View platform analytics and generate reports',
-          },
-        ];
-        break;
-
-      default:
-        this.settingsCategories = baseCategories;
-    }
-
-    // Set default active category if current one is not available
-    if (
-      !this.settingsCategories.find((cat) => cat.id === this.activeCategory)
-    ) {
-      this.activeCategory = this.settingsCategories[0]?.id || 'appearance';
-    }
   }
 
   setActiveCategory(categoryId: string) {
@@ -242,16 +182,17 @@ export class SettingsComponent implements OnInit, OnDestroy {
         this.updateLocalSettingsFromUserSettings(settings);
       },
       error: (error) => {
-        console.error('Error loading user settings:', error);
+        console.error('Error loading admin settings:', error);
       },
     });
   }
 
-  // Load system settings from database (admin only)
+  // Load system settings from database
   loadSystemSettings() {
     this.settingsService.getSystemSettings().subscribe({
       next: (settings) => {
         this.systemSettings = settings;
+        this.updateSystemConfigFromSettings(settings);
       },
       error: (error) => {
         console.error('Error loading system settings:', error);
@@ -259,36 +200,49 @@ export class SettingsComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Update local settings objects from user settings
+  // Update local settings from user settings
   updateLocalSettingsFromUserSettings(settings: UserSettings) {
-    // Update notification settings
+    // Update admin notification settings
     this.notificationSettings = {
       emailNotifications: settings.notifications.emailNotifications,
-      jobAlerts: settings.notifications.jobAlerts || false,
-      applicationUpdates: settings.notifications.applicationUpdates || false,
-      marketingEmails: settings.notifications.marketingEmails,
-      pushNotifications: settings.notifications.pushNotifications,
+      systemAlerts: settings.notifications.systemAlerts || true,
+      userRegistrations: settings.notifications.userRegistrations || true,
+      jobPostings: settings.notifications.jobPostings || true,
+      reportGeneration: settings.notifications.reportGeneration || true,
+      securityAlerts: settings.notifications.securityAlerts || true,
+      maintenanceNotifications:
+        settings.notifications.maintenanceNotifications || true,
     };
 
-    // Update privacy settings if available
-    if (settings.privacy) {
-      this.privacySettings = {
-        profileVisibility: settings.privacy.profileVisibility,
-        showEmail: settings.privacy.showEmail,
-        showPhone: settings.privacy.showPhone,
-        allowSearchEngines: settings.privacy.allowSearchEngines,
-      };
-    }
-
     // Update theme from appearance settings
-    if (
-      settings.appearance.theme &&
-      (settings.appearance.theme === 'light' ||
-        settings.appearance.theme === 'dark')
-    ) {
+    if (settings.appearance.theme) {
       this.themeService.syncThemeFromSettings(
         settings.appearance.theme as 'light' | 'dark'
       );
+    }
+  }
+
+  // Update system config from system settings
+  updateSystemConfigFromSettings(settings: SystemSettings | null) {
+    if (settings) {
+      this.systemConfig = {
+        allowUserRegistration: settings.allowUserRegistration ?? true,
+        requireEmailVerification: settings.requireEmailVerification ?? true,
+        enableJobApproval: settings.enableJobApproval ?? false,
+        maxJobsPerCompany: settings.maxJobsPerCompany ?? 50,
+        sessionTimeout: settings.sessionTimeout ?? 30,
+        enableAnalytics: settings.enableAnalytics ?? true,
+        maintenanceMode: settings.maintenanceMode ?? false,
+      };
+
+      this.securitySettings = {
+        enforcePasswordPolicy: settings.security?.enforcePasswordPolicy ?? true,
+        requireTwoFactor: settings.security?.requireTwoFactor ?? false,
+        sessionSecurity: settings.security?.sessionSecurity ?? 'high',
+        loginAttempts: settings.security?.loginAttempts ?? 5,
+        accountLockoutTime: settings.security?.accountLockoutTime ?? 30,
+        auditLogging: settings.security?.auditLogging ?? true,
+      };
     }
   }
 
@@ -302,11 +256,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
         .updateAppearanceSettings({ theme: newTheme })
         .subscribe({
           next: (settings) => {
-            console.log('Theme updated in database:', newTheme);
+            console.log('Admin theme updated:', newTheme);
           },
           error: (error) => {
-            console.error('Error updating theme:', error);
-            // Revert theme change if database update fails
+            console.error('Error updating admin theme:', error);
             this.themeService.toggleTheme();
           },
         });
@@ -323,32 +276,52 @@ export class SettingsComponent implements OnInit, OnDestroy {
         .updateNotificationSettings(notificationUpdate)
         .subscribe({
           next: (settings) => {
-            console.log('Notification setting updated:', setting, value);
+            console.log('Admin notification setting updated:', setting, value);
           },
           error: (error) => {
-            console.error('Error updating notification setting:', error);
-            // Revert the change on error
+            console.error('Error updating admin notification setting:', error);
             (this.notificationSettings as any)[setting] = !value;
           },
         });
     }
   }
 
-  updatePrivacySetting(setting: string, value: any) {
-    (this.privacySettings as any)[setting] = value;
+  updateSystemSetting(setting: string, value: any) {
+    (this.systemConfig as any)[setting] = value;
 
     // Save to database
-    if (this.userSettings) {
-      const privacyUpdate = { [setting]: value };
-      this.settingsService.updatePrivacySettings(privacyUpdate).subscribe({
+    const systemUpdate = { [setting]: value };
+    this.settingsService.updateSystemSettings(systemUpdate).subscribe({
+      next: (settings) => {
+        console.log('System setting updated:', setting, value);
+      },
+      error: (error) => {
+        console.error('Error updating system setting:', error);
+        // Revert the change on error
+        this.loadSystemSettings();
+      },
+    });
+  }
+
+  updateSecuritySetting(setting: string, value: any) {
+    (this.securitySettings as any)[setting] = value;
+
+    // Save to database - need to include all required security fields
+    if (this.systemSettings?.security) {
+      const securityUpdate = {
+        security: {
+          ...this.systemSettings.security,
+          [setting]: value,
+        },
+      };
+      this.settingsService.updateSystemSettings(securityUpdate).subscribe({
         next: (settings) => {
-          console.log('Privacy setting updated:', setting, value);
+          console.log('Security setting updated:', setting, value);
         },
         error: (error) => {
-          console.error('Error updating privacy setting:', error);
+          console.error('Error updating security setting:', error);
           // Revert the change on error
-          (this.privacySettings as any)[setting] =
-            setting === 'profileVisibility' ? 'public' : false;
+          this.loadSystemSettings();
         },
       });
     }
@@ -359,30 +332,19 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.updateNotificationSetting(setting, target.checked);
   }
 
-  onPrivacyChange(event: Event, setting: string) {
+  onSystemConfigChange(event: Event, setting: string) {
     const target = event.target as HTMLInputElement;
-    this.updatePrivacySetting(setting, target.checked);
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    this.updateSystemSetting(setting, value);
   }
 
-  onPrivacySelectChange(event: Event, setting: string) {
-    const target = event.target as HTMLSelectElement;
-    this.updatePrivacySetting(setting, target.value);
-  }
-
-  exportData() {
-    // Implement data export functionality
-    console.log('Exporting user data...');
-  }
-
-  deleteAccount() {
-    // Implement account deletion functionality
-    if (
-      confirm(
-        'Are you sure you want to delete your account? This action cannot be undone.'
-      )
-    ) {
-      console.log('Deleting account...');
-    }
+  onSecurityChange(event: Event, setting: string) {
+    const target = event.target as HTMLInputElement | HTMLSelectElement;
+    const value =
+      target.type === 'checkbox'
+        ? (target as HTMLInputElement).checked
+        : target.value;
+    this.updateSecuritySetting(setting, value);
   }
 
   toggleChangePassword() {
@@ -469,5 +431,34 @@ export class SettingsComponent implements OnInit, OnDestroy {
       }
     }
     return null;
+  }
+
+  // Admin-specific actions
+  generateSystemReport() {
+    console.log('Generating system report...');
+    // Implement system report generation
+  }
+
+  exportSystemData() {
+    console.log('Exporting system data...');
+    // Implement system data export
+  }
+
+  clearSystemCache() {
+    if (confirm('Are you sure you want to clear the system cache?')) {
+      console.log('Clearing system cache...');
+      // Implement cache clearing
+    }
+  }
+
+  runSystemMaintenance() {
+    if (
+      confirm(
+        'Are you sure you want to run system maintenance? This may affect platform performance.'
+      )
+    ) {
+      console.log('Running system maintenance...');
+      // Implement system maintenance
+    }
   }
 }

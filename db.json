@@ -1411,14 +1411,23 @@
         "applicationUpdates": true,
         "profileViews": true,
         "pushNotifications": false,
-        "marketingEmails": false
+        "marketingEmails": false,
+        "newJobMatches": true,
+        "interviewInvitations": true,
+        "weeklyJobDigest": true,
+        "companyFollowUps": true
       },
       "privacy": {
-        "profileVisibility": "public",
+        "profileVisibility": "employers-only",
         "showEmail": false,
         "showPhone": false,
         "allowSearchEngines": true,
-        "showOnlineStatus": true
+        "showOnlineStatus": true,
+        "showSalaryExpectation": false,
+        "allowRecruiterContact": true,
+        "showApplicationHistory": false,
+        "allowDataExport": true,
+        "enableProfileAnalytics": true
       },
       "jobPreferences": {
         "preferredJobTypes": [
@@ -1436,10 +1445,27 @@
           "New York, NY"
         ],
         "jobAlertFrequency": "weekly",
-        "autoApplyEnabled": false
+        "autoApplyEnabled": false,
+        "remoteWork": true,
+        "salaryExpectation": "₹8-12 LPA",
+        "experienceLevel": "mid-level",
+        "availabilityDate": "2024-02-01",
+        "willingToRelocate": false,
+        "preferredIndustries": [
+          "Technology",
+          "Software"
+        ]
+      },
+      "applications": {
+        "autoFillApplications": true,
+        "saveApplicationDrafts": true,
+        "requireCoverLetterReminder": true,
+        "trackApplicationStatus": true,
+        "enableQuickApply": true,
+        "defaultCoverLetter": "Dear Hiring Manager,\n\nI am excited to apply for this position..."
       },
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2025-06-09T13:07:18.738Z"
+      "updatedAt": "2025-06-12T09:04:57.887Z"
     },
     {
       "id": "settings-demo-company",
@@ -1456,14 +1482,31 @@
         "jobPostingExpiry": true,
         "weeklyReports": true,
         "pushNotifications": true,
-        "marketingEmails": false
+        "marketingEmails": false,
+        "applicationAlerts": true,
+        "interviewReminders": true,
+        "jobExpirationAlerts": true
       },
-      "companySettings": {
-        "companySize": "201-500",
+      "company": {
         "autoReplyToApplications": true,
-        "applicationDeadlineReminders": true,
+        "showCompanySize": true,
+        "showSalaryRanges": true,
+        "enableQuickApply": true,
         "requireCoverLetter": false,
-        "allowAnonymousApplications": false
+        "allowRemoteApplications": true,
+        "publicCompanyProfile": true
+      },
+      "privacy": {
+        "profileVisibility": "public",
+        "showEmail": true,
+        "showPhone": false,
+        "allowSearchEngines": true,
+        "showOnlineStatus": true,
+        "showCompanyInSearch": true,
+        "allowDataExport": true,
+        "shareAnalytics": false,
+        "enableCookies": true,
+        "dataRetentionPeriod": "2-years"
       },
       "billing": {
         "currentPlan": "Professional",
@@ -1492,10 +1535,15 @@
         "userReports": true,
         "platformAnalytics": true,
         "pushNotifications": true,
-        "marketingEmails": false
+        "marketingEmails": false,
+        "userRegistrations": true,
+        "jobPostings": true,
+        "reportGeneration": true,
+        "securityAlerts": true,
+        "maintenanceNotifications": true
       },
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2025-06-12T07:32:13.123Z"
+      "updatedAt": "2025-06-12T09:26:27.383Z"
     },
     {
       "id": "settings-mbq1ii1eot0g9knrfej",
@@ -1539,6 +1587,7 @@
       "platformDescription": "Professional job board platform connecting talented individuals with leading companies worldwide.",
       "supportEmail": "support@jobboardpro.com",
       "allowRegistration": true,
+      "allowUserRegistration": true,
       "requireEmailVerification": true,
       "maintenanceMode": false,
       "maxJobPostingsPerCompany": 25,
@@ -1546,6 +1595,10 @@
       "featuredJobPrice": 99.99,
       "privacyPolicyUrl": "/privacy-policy",
       "termsOfServiceUrl": "/terms-of-service",
+      "enableJobApproval": false,
+      "maxJobsPerCompany": 50,
+      "sessionTimeout": 30,
+      "enableAnalytics": true,
       "analytics": {
         "trackingEnabled": true,
         "weeklyReportsEnabled": true,
@@ -1553,9 +1606,15 @@
       },
       "security": {
         "requireTwoFactorAuth": false,
+        "requireTwoFactor": false,
         "sessionTimeoutMinutes": 30,
         "passwordMinLength": 8,
-        "dataRetentionDays": 90
+        "dataRetentionDays": 90,
+        "enforcePasswordPolicy": true,
+        "sessionSecurity": "high",
+        "loginAttempts": 5,
+        "accountLockoutTime": 30,
+        "auditLogging": true
       },
       "createdAt": "2024-01-01T00:00:00.000Z",
       "updatedAt": "2025-06-09T12:00:00.000Z"

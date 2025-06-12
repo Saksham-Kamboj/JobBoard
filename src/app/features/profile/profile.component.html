@@ -1578,7 +1578,7 @@
                 </div>
               </div>
               <div class="personal-info-actions">
-                <a routerLink="/settings" class="btn-secondary">
+                <a [routerLink]="getSettingsRoute()" class="btn-secondary">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
                     <path
@@ -1632,7 +1632,7 @@
               <h3 class="preference-title">Platform Settings</h3>
               <p class="preference-description">Configure platform-wide settings and preferences</p>
             </div>
-            <a routerLink="/settings" class="btn-secondary">
+            <a [routerLink]="getSettingsRoute()" class="btn-secondary">
               Go to Settings
             </a>
           </div>
@@ -1642,7 +1642,7 @@
               <h3 class="preference-title">System Administration</h3>
               <p class="preference-description">Access advanced admin tools and configuration</p>
             </div>
-            <a routerLink="/settings" class="btn-secondary">
+            <a [routerLink]="getSettingsRoute()" class="btn-secondary">
               Manage System
             </a>
           </div>

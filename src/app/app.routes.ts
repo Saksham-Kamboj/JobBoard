@@ -203,6 +203,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'settings',
+        loadComponent: () =>
+          import('./features/company/settings/company-settings.component').then(
+            (m) => m.CompanySettingsComponent
+          ),
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',
@@ -221,14 +228,15 @@ export const routes: Routes = [
       ).then((m) => m.JobSeekerDashboardComponent),
   },
 
-  // Settings page (accessible to all authenticated users)
+  // Job-seeker Settings route (exclusive to job-seekers)
   {
     path: 'settings',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['job-seeker'] },
     loadComponent: () =>
-      import('./shared/settings/settings.component').then(
-        (m) => m.SettingsComponent
-      ),
+      import(
+        './features/job-seeker/settings/job-seeker-settings.component'
+      ).then((m) => m.JobSeekerSettingsComponent),
   },
 
   // Profile page (accessible to all authenticated users)
@@ -278,8 +286,8 @@ export const routes: Routes = [
       {
         path: 'settings',
         loadComponent: () =>
-          import('./shared/settings/settings.component').then(
-            (m) => m.SettingsComponent
+          import('./features/admin/settings/admin-settings.component').then(
+            (m) => m.AdminSettingsComponent
           ),
       },
       // Keep old routes for backward compatibility

@@ -3,7 +3,8 @@
   <div class="dashboard-header">
     <div class="welcome-section">
       <h1 class="welcome-title">{{ getCompanyName() }} Dashboard</h1>
-      <p class="welcome-subtitle">Welcome back, {{ currentUser?.firstName }}! Manage your job postings and review applications</p>
+      <p class="welcome-subtitle">Welcome back, {{ currentUser?.firstName }}! Manage your job postings and review
+        applications</p>
     </div>
     <div class="header-actions">
       <button class="btn-primary" routerLink="/post-job">
@@ -15,7 +16,8 @@
       </button>
       <button class="btn-secondary" routerLink="/company/my-jobs">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" stroke="currentColor" stroke-width="2" />
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" stroke="currentColor"
+            stroke-width="2" />
           <rect x="8" y="2" width="8" height="4" rx="1" ry="1" stroke="currentColor" stroke-width="2" />
         </svg>
         Manage Jobs
@@ -28,7 +30,8 @@
     <div class="stat-card">
       <div class="stat-icon jobs">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" stroke="currentColor" stroke-width="2" />
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" stroke="currentColor"
+            stroke-width="2" />
           <rect x="8" y="2" width="8" height="4" rx="1" ry="1" stroke="currentColor" stroke-width="2" />
         </svg>
       </div>
@@ -104,7 +107,8 @@
           </div>
           <div class="job-metrics">
             <div class="metric">
-              <span class="metric-number" [ngClass]="getJobPerformanceClass(job.applications)">{{ job.applications }}</span>
+              <span class="metric-number" [ngClass]="getJobPerformanceClass(job.applications)">{{ job.applications
+                }}</span>
               <span class="metric-label">Applications</span>
             </div>
             <div class="job-status">
@@ -175,7 +179,8 @@
       <a routerLink="/company/my-jobs" class="action-card">
         <div class="action-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" stroke="currentColor" stroke-width="2" />
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" stroke="currentColor"
+              stroke-width="2" />
             <rect x="8" y="2" width="8" height="4" rx="1" ry="1" stroke="currentColor" stroke-width="2" />
           </svg>
         </div>
@@ -195,7 +200,7 @@
         <p class="action-description">Update your company information and branding</p>
       </a>
 
-      <a routerLink="/settings" class="action-card">
+      <a routerLink="/company/settings" class="action-card">
         <div class="action-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />

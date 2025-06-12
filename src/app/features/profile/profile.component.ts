@@ -212,6 +212,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.authSubscription.unsubscribe();
   }
 
+  getSettingsRoute(): string {
+    if (!this.currentUser) {
+      return '/settings';
+    }
+
+    switch (this.currentUser.role) {
+      case 'admin':
+        return '/admin/settings';
+      case 'company':
+        return '/company/settings';
+      case 'job-seeker':
+      default:
+        return '/settings';
+    }
+  }
+
   setProfileSections(role: string) {
     switch (role) {
       case 'job-seeker':
