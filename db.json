@@ -991,7 +991,7 @@
         "Financial planning assistance"
       ],
       "postedDate": "2024-12-18",
-      "applicationDeadline": "2025-02-10",
+      "applicationDeadline": "2025-07-10",
       "companyDescription": "FinanceFirst Corp is a leading financial services company providing investment management and advisory services to institutional and individual clients.",
       "contactEmail": "finance-careers@financefirst.com",
       "experienceLevel": "entry",
@@ -1091,7 +1091,8 @@
       ],
       "isActive": true,
       "applicationCount": 29,
-      "featured": false
+      "featured": false,
+      "updatedAt": "2025-06-12T06:52:19.404Z"
     },
     {
       "id": "16",
@@ -1134,7 +1135,8 @@
       ],
       "isActive": true,
       "applicationCount": 33,
-      "featured": false
+      "featured": false,
+      "updatedAt": "2025-06-12T06:52:19.403Z"
     },
     {
       "id": "17",
@@ -1177,7 +1179,8 @@
       ],
       "isActive": true,
       "applicationCount": 16,
-      "featured": true
+      "featured": true,
+      "updatedAt": "2025-06-12T06:52:19.403Z"
     },
     {
       "id": "18",
@@ -1220,7 +1223,8 @@
       ],
       "isActive": true,
       "applicationCount": 47,
-      "featured": false
+      "featured": false,
+      "updatedAt": "2025-06-12T06:52:19.403Z"
     },
     {
       "id": "19",
@@ -1264,7 +1268,8 @@
       ],
       "isActive": true,
       "applicationCount": 12,
-      "featured": true
+      "featured": true,
+      "updatedAt": "2025-06-12T06:52:19.403Z"
     },
     {
       "id": "20",
@@ -1341,7 +1346,8 @@
       "featured": false,
       "postedDate": "2025-06-09",
       "applicationCount": 0,
-      "companyId": "demo-company"
+      "companyId": "demo-company",
+      "updatedAt": "2025-06-12T06:52:19.402Z"
     },
     {
       "title": "UX/UI Designer",
@@ -1489,7 +1495,7 @@
         "marketingEmails": false
       },
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2025-06-09T12:46:28.312Z"
+      "updatedAt": "2025-06-12T07:32:13.123Z"
     },
     {
       "id": "settings-mbq1ii1eot0g9knrfej",

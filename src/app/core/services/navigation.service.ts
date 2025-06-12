@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NavigationService {
   private previousJobsUrl: string = '/jobs';
@@ -24,8 +24,8 @@ export class NavigationService {
   navigateBackToJobs(): void {
     if (Object.keys(this.previousJobsParams).length > 0) {
       // Navigate with preserved query parameters
-      this.router.navigate(['/jobs'], { 
-        queryParams: this.previousJobsParams 
+      this.router.navigate(['/jobs'], {
+        queryParams: this.previousJobsParams,
       });
     } else {
       // Navigate to jobs page without parameters
@@ -36,10 +36,14 @@ export class NavigationService {
   /**
    * Navigate to job detail page and store current jobs state
    */
-  navigateToJobDetail(jobId: string, currentUrl: string, currentParams: any): void {
+  navigateToJobDetail(
+    jobId: string,
+    currentUrl: string,
+    currentParams: any
+  ): void {
     // Store current jobs page state
     this.storeJobsPageState(currentUrl, currentParams);
-    
+
     // Navigate to job detail
     this.router.navigate(['/jobs', jobId]);
   }
@@ -56,6 +60,19 @@ export class NavigationService {
    */
   getPreviousJobsParams(): any {
     return { ...this.previousJobsParams };
+  }
+
+  /**
+   * Get the stored jobs page state (URL and params)
+   */
+  getJobsPageState(): { route: string; queryParams: any } | null {
+    if (this.previousJobsUrl) {
+      return {
+        route: this.previousJobsUrl,
+        queryParams: { ...this.previousJobsParams },
+      };
+    }
+    return null;
   }
 
   /**
@@ -90,7 +107,9 @@ export class NavigationService {
       descriptions.push(`Type: ${this.getJobTypeDisplay(params.type)}`);
     }
     if (params.level) {
-      descriptions.push(`Level: ${this.getExperienceLevelDisplay(params.level)}`);
+      descriptions.push(
+        `Level: ${this.getExperienceLevelDisplay(params.level)}`
+      );
     }
     if (params.salary) {
       descriptions.push(`Salary: ${this.getSalaryRangeDisplay(params.salary)}`);
@@ -103,18 +122,18 @@ export class NavigationService {
     const types: { [key: string]: string } = {
       'full-time': 'Full Time',
       'part-time': 'Part Time',
-      'contract': 'Contract',
-      'remote': 'Remote',
+      contract: 'Contract',
+      remote: 'Remote',
     };
     return types[type] || type;
   }
 
   private getExperienceLevelDisplay(level: string): string {
     const levels: { [key: string]: string } = {
-      'entry': 'Entry Level',
-      'mid': 'Mid Level',
-      'senior': 'Senior Level',
-      'executive': 'Executive Level',
+      entry: 'Entry Level',
+      mid: 'Mid Level',
+      senior: 'Senior Level',
+      executive: 'Executive Level',
     };
     return levels[level] || level;
   }
