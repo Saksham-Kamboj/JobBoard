@@ -7,26 +7,79 @@
   min-height: calc(100vh - 200px);
 }
 
-/* Settings Header */
-.settings-header {
+/* Settings Header - Removed as it's now integrated into profile header */
+
+/* Profile Header */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
   margin-bottom: 2rem;
+  padding: 2rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 
-.header-content {
-  text-align: center;
+.profile-avatar {
+  flex-shrink: 0;
 }
 
-.page-title {
+.avatar-circle {
+  width: 5rem;
+  height: 5rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-name {
   color: var(--foreground);
   font-size: 2rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
 }
 
-.page-subtitle {
-  color: var(--muted-foreground);
+.profile-role {
+  color: var(--primary);
   font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+}
+
+.profile-email {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  margin: 0 0 1rem 0;
+}
+
+.settings-info {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.settings-title {
+  color: var(--foreground);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.settings-description {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
   margin: 0;
+  line-height: 1.4;
 }
 
 /* Settings Layout */
@@ -460,6 +513,21 @@
     position: static;
   }
 
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .profile-name {
+    font-size: 1.5rem;
+  }
+
+  .settings-title {
+    font-size: 1.25rem;
+  }
+
   .nav-menu {
     flex-direction: row;
     overflow-x: auto;
@@ -480,6 +548,25 @@
 
   .settings-content {
     padding: 1.5rem;
+  }
+
+  .profile-header {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .profile-name {
+    font-size: 1.25rem;
+  }
+
+  .settings-title {
+    font-size: 1.125rem;
+  }
+
+  .avatar-circle {
+    width: 4rem;
+    height: 4rem;
+    font-size: 1.25rem;
   }
 
   .setting-item {

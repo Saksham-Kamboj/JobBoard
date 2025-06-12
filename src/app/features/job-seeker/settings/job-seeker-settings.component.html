@@ -1,9 +1,19 @@
 <div class="job-seeker-settings-container">
-  <!-- Header -->
-  <div class="settings-header">
-    <div class="header-content">
-      <h1 class="page-title">Job Seeker Settings</h1>
-      <p class="page-subtitle">Customize your job search experience and preferences</p>
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <div class="avatar-circle">
+        {{ getUserInitials() }}
+      </div>
+    </div>
+    <div class="profile-info">
+      <h1 class="profile-name">{{ getUserFullName() }}</h1>
+      <p class="profile-role">{{ getRoleDisplayName() }}</p>
+      <p class="profile-email">{{ currentUser?.email }}</p>
+      <div class="settings-info">
+        <h2 class="settings-title">Job Seeker Settings</h2>
+        <p class="settings-description">Customize your job search experience and preferences</p>
+      </div>
     </div>
   </div>
 

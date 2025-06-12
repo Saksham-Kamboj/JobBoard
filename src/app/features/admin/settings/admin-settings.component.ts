@@ -174,6 +174,38 @@ export class AdminSettingsComponent implements OnInit, OnDestroy {
     this.activeCategory = categoryId;
   }
 
+  // Helper methods for profile header
+  getUserInitials(): string {
+    if (this.currentUser) {
+      const first = this.currentUser.firstName?.charAt(0) || '';
+      const last = this.currentUser.lastName?.charAt(0) || '';
+      return (first + last).toUpperCase();
+    }
+    return 'U';
+  }
+
+  getUserFullName(): string {
+    if (this.currentUser) {
+      return `${this.currentUser.firstName || ''} ${
+        this.currentUser.lastName || ''
+      }`.trim();
+    }
+    return 'User';
+  }
+
+  getRoleDisplayName(): string {
+    if (this.currentUser?.role === 'job-seeker') {
+      return 'Job Seeker';
+    }
+    if (this.currentUser?.role) {
+      return (
+        this.currentUser.role.charAt(0).toUpperCase() +
+        this.currentUser.role.slice(1)
+      );
+    }
+    return 'User';
+  }
+
   // Load user settings from database
   loadUserSettings(userId: string) {
     this.settingsService.getUserSettings(userId).subscribe({

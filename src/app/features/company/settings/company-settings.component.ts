@@ -172,6 +172,38 @@ export class CompanySettingsComponent implements OnInit, OnDestroy {
     this.activeCategory = categoryId;
   }
 
+  // Helper methods for profile header
+  getUserInitials(): string {
+    if (this.currentUser) {
+      const first = this.currentUser.firstName?.charAt(0) || '';
+      const last = this.currentUser.lastName?.charAt(0) || '';
+      return (first + last).toUpperCase();
+    }
+    return 'U';
+  }
+
+  getUserFullName(): string {
+    if (this.currentUser) {
+      return `${this.currentUser.firstName || ''} ${
+        this.currentUser.lastName || ''
+      }`.trim();
+    }
+    return 'User';
+  }
+
+  getRoleDisplayName(): string {
+    if (this.currentUser?.role === 'job-seeker') {
+      return 'Job Seeker';
+    }
+    if (this.currentUser?.role) {
+      return (
+        this.currentUser.role.charAt(0).toUpperCase() +
+        this.currentUser.role.slice(1)
+      );
+    }
+    return 'User';
+  }
+
   // Load user settings from database
   loadUserSettings(userId: string) {
     this.settingsService.getUserSettings(userId).subscribe({
@@ -201,12 +233,14 @@ export class CompanySettingsComponent implements OnInit, OnDestroy {
     // Update company profile settings if available
     if (settings.company) {
       this.companySettings = {
-        autoReplyToApplications: settings.company.autoReplyToApplications ?? true,
+        autoReplyToApplications:
+          settings.company.autoReplyToApplications ?? true,
         showCompanySize: settings.company.showCompanySize ?? true,
         showSalaryRanges: settings.company.showSalaryRanges ?? true,
         enableQuickApply: settings.company.enableQuickApply ?? true,
         requireCoverLetter: settings.company.requireCoverLetter ?? false,
-        allowRemoteApplications: settings.company.allowRemoteApplications ?? true,
+        allowRemoteApplications:
+          settings.company.allowRemoteApplications ?? true,
         publicCompanyProfile: settings.company.publicCompanyProfile ?? true,
       };
     }
@@ -260,10 +294,17 @@ export class CompanySettingsComponent implements OnInit, OnDestroy {
         .updateNotificationSettings(notificationUpdate)
         .subscribe({
           next: (settings) => {
-            console.log('Company notification setting updated:', setting, value);
+            console.log(
+              'Company notification setting updated:',
+              setting,
+              value
+            );
           },
           error: (error) => {
-            console.error('Error updating company notification setting:', error);
+            console.error(
+              'Error updating company notification setting:',
+              error
+            );
             (this.notificationSettings as any)[setting] = !value;
           },
         });
@@ -320,7 +361,10 @@ export class CompanySettingsComponent implements OnInit, OnDestroy {
 
   onPrivacyChange(event: Event, setting: string) {
     const target = event.target as HTMLInputElement | HTMLSelectElement;
-    const value = target.type === 'checkbox' ? (target as HTMLInputElement).checked : target.value;
+    const value =
+      target.type === 'checkbox'
+        ? (target as HTMLInputElement).checked
+        : target.value;
     this.updatePrivacySetting(setting, value);
   }
 
