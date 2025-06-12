@@ -28,10 +28,8 @@
 
             <!-- Company Navigation -->
             <ng-container *ngIf="isLoggedIn && currentUser?.role === 'company'">
-                <a routerLink="/company/dashboard" routerLinkActive="active" class="nav-link">Dashboard</a>
                 <a routerLink="/company/post-job" routerLinkActive="active" class="nav-link">Post Job</a>
                 <a routerLink="/company/my-jobs" routerLinkActive="active" class="nav-link">My Jobs</a>
-                <a routerLink="/company/profile" routerLinkActive="active" class="nav-link">Profile</a>
             </ng-container>
 
             <!-- Job Seeker Navigation -->
@@ -40,7 +38,6 @@
                 <a routerLink="/jobseeker/jobs" routerLinkActive="active" class="nav-link">Jobs</a>
                 <a routerLink="/jobseeker/applied" routerLinkActive="active" class="nav-link">Applied Jobs</a>
                 <a routerLink="/jobseeker/saved" routerLinkActive="active" class="nav-link">Saved Jobs</a>
-                <a routerLink="/jobseeker/profile" routerLinkActive="active" class="nav-link">Profile</a>
             </ng-container>
         </nav>
 
@@ -226,14 +223,10 @@
 
             <!-- Company Mobile Navigation -->
             <ng-container *ngIf="isLoggedIn && currentUser?.role === 'company'">
-                <a routerLink="/company/dashboard" routerLinkActive="active" class="mobile-nav-link"
-                    (click)="toggleMenu()">Dashboard</a>
                 <a routerLink="/company/post-job" routerLinkActive="active" class="mobile-nav-link"
                     (click)="toggleMenu()">Post Job</a>
                 <a routerLink="/company/my-jobs" routerLinkActive="active" class="mobile-nav-link"
                     (click)="toggleMenu()">My Jobs</a>
-                <a routerLink="/company/profile" routerLinkActive="active" class="mobile-nav-link"
-                    (click)="toggleMenu()">Profile</a>
             </ng-container>
 
             <!-- Job Seeker Mobile Navigation -->
@@ -246,8 +239,6 @@
                     (click)="toggleMenu()">Applied Jobs</a>
                 <a routerLink="/jobseeker/saved" routerLinkActive="active" class="mobile-nav-link"
                     (click)="toggleMenu()">Saved Jobs</a>
-                <a routerLink="/jobseeker/profile" routerLinkActive="active" class="mobile-nav-link"
-                    (click)="toggleMenu()">Profile</a>
             </ng-container>
 
             <div class="mobile-auth" *ngIf="!isLoggedIn">
