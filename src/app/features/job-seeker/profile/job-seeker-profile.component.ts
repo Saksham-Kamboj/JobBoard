@@ -31,6 +31,7 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   educationForm: FormGroup;
   experienceForm: FormGroup;
   preferencesForm: FormGroup;
+  coverLetterForm: FormGroup;
 
   // UI state
   activeSection = 'personal';
@@ -39,6 +40,7 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   isEditingEducation = false;
   isEditingExperience = false;
   isEditingPreferences = false;
+  isEditingCoverLetter = false;
   isLoading = false;
   errorMessage = '';
   successMessage = '';
@@ -152,6 +154,10 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
       profileVisibility: ['public'],
       emailNotifications: [true],
       smsNotifications: [false],
+    });
+
+    this.coverLetterForm = this.fb.group({
+      content: ['', [Validators.required, Validators.minLength(50)]],
     });
 
     // Add form listeners for checkbox functionality
@@ -931,6 +937,135 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Cover Letter management
+  toggleEditCoverLetter() {
+    this.isEditingCoverLetter = !this.isEditingCoverLetter;
+    if (this.isEditingCoverLetter) {
+      this.populateCoverLetterForm();
+    } else {
+      this.coverLetterForm.reset();
+    }
+    this.clearMessages();
+  }
+
+  populateCoverLetterForm() {
+    if (this.userProfile?.coverLetter) {
+      this.coverLetterForm.patchValue({
+        content: this.userProfile.coverLetter.content || '',
+      });
+    } else {
+      // Set default cover letter template
+      const defaultCoverLetter = this.getDefaultCoverLetterTemplate();
+      this.coverLetterForm.patchValue({
+        content: defaultCoverLetter,
+      });
+    }
+  }
+
+  getDefaultCoverLetterTemplate(): string {
+    const firstName =
+      this.userProfile?.personalInfo?.firstName || '[Your Name]';
+    const currentTitle =
+      this.userProfile?.professionalInfo?.currentTitle ||
+      '[Your Current Title]';
+
+    return `Dear Hiring Manager,
+
+I am writing to express my strong interest in the [Position Title] role at [Company Name]. As a ${currentTitle} with [X years] of experience, I am excited about the opportunity to contribute to your team.
+
+In my current role, I have successfully [mention 2-3 key achievements or responsibilities that align with the job requirements]. My experience in [relevant skills/technologies] has prepared me well for this position, and I am particularly drawn to [specific aspect of the company/role].
+
+Key highlights of my qualifications include:
+• [Achievement or skill #1]
+• [Achievement or skill #2]
+• [Achievement or skill #3]
+
+I am impressed by [Company Name]'s [mention something specific about the company - values, products, mission, etc.] and would welcome the opportunity to discuss how my background and enthusiasm can contribute to your continued success.
+
+Thank you for considering my application. I look forward to hearing from you.
+
+Best regards,
+${firstName}`;
+  }
+
+  onCoverLetterSubmit() {
+    if (this.coverLetterForm.valid && this.userProfile && this.currentUser) {
+      this.isLoading = true;
+      this.clearMessages();
+
+      const formValue = this.coverLetterForm.value;
+
+      const coverLetterData = {
+        content: formValue.content,
+        lastUpdated: new Date().toISOString(),
+      };
+
+      const profileData = {
+        ...this.userProfile,
+        coverLetter: coverLetterData,
+      };
+
+      this.authSubscription.add(
+        this.profileService.updateUserProfile(profileData).subscribe({
+          next: (updatedProfile) => {
+            this.userProfile = updatedProfile;
+            this.isLoading = false;
+            this.isEditingCoverLetter = false;
+            this.successMessage = 'Cover letter updated successfully!';
+
+            // Auto-hide success message
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 3000);
+          },
+          error: (error) => {
+            console.error('Error updating cover letter:', error);
+            this.isLoading = false;
+            this.errorMessage =
+              'Failed to update cover letter. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+      );
+    } else {
+      this.markFormGroupTouched(this.coverLetterForm);
+    }
+  }
+
+  deleteCoverLetter() {
+    if (
+      this.userProfile &&
+      confirm('Are you sure you want to delete your cover letter?')
+    ) {
+      const profileData = {
+        ...this.userProfile,
+        coverLetter: undefined,
+      };
+
+      this.authSubscription.add(
+        this.profileService.updateUserProfile(profileData).subscribe({
+          next: (updatedProfile) => {
+            this.userProfile = updatedProfile;
+            this.successMessage = 'Cover letter deleted successfully';
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 3000);
+          },
+          error: (error) => {
+            console.error('Error deleting cover letter:', error);
+            this.errorMessage =
+              'Failed to delete cover letter. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+      );
+    }
+  }
+
   // Preferences management
   toggleEditPreferences() {
     this.isEditingPreferences = !this.isEditingPreferences;
@@ -1088,6 +1223,7 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
       endDate: 'End date',
       company: 'Company',
       position: 'Position',
+      content: 'Cover letter content',
     };
     return labels[fieldName] || fieldName;
   }

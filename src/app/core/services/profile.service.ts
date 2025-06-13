@@ -69,6 +69,10 @@ export interface UserProfile {
     uploadedAt: string;
     fileSize: number;
   };
+  coverLetter?: {
+    content: string;
+    lastUpdated: string;
+  };
   createdAt: string;
   updatedAt: string;
 }

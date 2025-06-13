@@ -9,7 +9,7 @@
       "password": "password123",
       "createdAt": "2024-01-01T00:00:00.000Z",
       "isActive": true,
-      "updatedAt": "2025-06-13T11:46:17.216Z",
+      "updatedAt": "2025-06-13T12:05:52.726Z",
       "phone": "+1 (555) 123-45672345"
     },
     {
@@ -151,12 +151,16 @@
         }
       ],
       "createdAt": "2024-12-01T10:00:00.000Z",
-      "updatedAt": "2025-06-13T11:46:17.176Z",
+      "updatedAt": "2025-06-13T12:05:52.695Z",
       "resume": {
         "fileName": "02 A B Testing.docx",
         "fileUrl": "blob:http://localhost:4200/3f449c56-7ba1-44f2-b39f-3f32811e618b",
         "uploadedAt": "2025-06-13T10:21:06.167Z",
         "fileSize": 354756
+      },
+      "coverLetter": {
+        "content": "Dear Hiring Manager,\n\nI am writing to express my strong interest in the [Position Title] role at [Company Name]. As a Frontend Developer with [X years] of experience, I am excited about the opportunity to contribute to your team.\n\nIn my current role, I have successfully [mention 2-3 key achievements or responsibilities that align with the job requirements]. My experience in [relevant skills/technologies] has prepared me well for this position, and I am particularly drawn to [specific aspect of the company/role].\n\nKey highlights of my qualifications include:\n• [Achievement or skill #1]\n• [Achievement or skill #2]\n• [Achievement or skill #3]\n\nI am impressed by [Company Name]'s [mention something specific about the company - values, products, mission, etc.] and would welcome the opportunity to discuss how my background and enthusiasm can contribute to your continued success.\n\nThank you for considering my application. I look forward to hearing from you.\n\nBest regards,\nJohn",
+        "lastUpdated": "2025-06-13T12:05:52.695Z"
       }
     },
     {
