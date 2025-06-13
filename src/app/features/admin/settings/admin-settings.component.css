@@ -2,7 +2,7 @@
 .admin-settings-container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 1rem;
   background: var(--background);
   min-height: calc(100vh - 200px);
 }

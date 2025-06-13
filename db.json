@@ -1408,15 +1408,15 @@
         "compactMode": false
       },
       "notifications": {
-        "emailNotifications": true,
-        "jobAlerts": true,
-        "applicationUpdates": true,
+        "emailNotifications": false,
+        "jobAlerts": false,
+        "applicationUpdates": false,
         "profileViews": true,
         "pushNotifications": false,
         "marketingEmails": false,
-        "newJobMatches": true,
-        "interviewInvitations": true,
-        "weeklyJobDigest": true,
+        "newJobMatches": false,
+        "interviewInvitations": false,
+        "weeklyJobDigest": false,
         "companyFollowUps": true
       },
       "privacy": {
@@ -1467,7 +1467,7 @@
         "defaultCoverLetter": "Dear Hiring Manager,\n\nI am excited to apply for this position..."
       },
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "updatedAt": "2025-06-12T09:04:57.887Z"
+      "updatedAt": "2025-06-13T11:53:25.790Z"
     },
     {
       "id": "settings-demo-company",
