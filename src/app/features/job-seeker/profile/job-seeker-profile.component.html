@@ -938,22 +938,55 @@
               </div>
             </div>
             <div class="form-card-content">
+              <!-- Email Notifications Toggle -->
               <div class="form-group">
-                <div class="checkbox-group">
-                  <label class="checkbox-label">
-                    <input type="checkbox" formControlName="emailNotifications" class="checkbox-input">
-                    <span class="checkbox-text">Email Notifications</span>
-                  </label>
-                  <p class="checkbox-description">Receive job alerts and updates via email</p>
+                <div class="toggle-group">
+                  <div class="toggle-content">
+                    <div class="toggle-header">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                          stroke="currentColor" stroke-width="2" />
+                        <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" />
+                      </svg>
+                      <div class="toggle-text">
+                        <label for="emailNotifications" class="toggle-label">Email Notifications</label>
+                        <p class="toggle-description">Receive job alerts and updates via email</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="toggle-switch">
+                    <input type="checkbox" id="emailNotifications" formControlName="emailNotifications"
+                      class="toggle-input">
+                    <label for="emailNotifications" class="toggle-slider">
+                      <span class="toggle-button"></span>
+                    </label>
+                  </div>
                 </div>
               </div>
+
+              <!-- SMS Notifications Toggle -->
               <div class="form-group">
-                <div class="checkbox-group">
-                  <label class="checkbox-label">
-                    <input type="checkbox" formControlName="smsNotifications" class="checkbox-input">
-                    <span class="checkbox-text">SMS Notifications</span>
-                  </label>
-                  <p class="checkbox-description">Receive urgent job alerts via SMS</p>
+                <div class="toggle-group">
+                  <div class="toggle-content">
+                    <div class="toggle-header">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+                        <line x1="12" y1="18" x2="12.01" y2="18" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                      <div class="toggle-text">
+                        <label for="smsNotifications" class="toggle-label">SMS Notifications</label>
+                        <p class="toggle-description">Receive urgent job alerts via SMS</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="toggle-switch">
+                    <input type="checkbox" id="smsNotifications" formControlName="smsNotifications"
+                      class="toggle-input">
+                    <label for="smsNotifications" class="toggle-slider">
+                      <span class="toggle-button"></span>
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -970,65 +1003,138 @@
         </form>
 
         <!-- Preferences Display -->
-        <div *ngIf="!isEditingPreferences" class="preferences-content">
-          <div class="preference-card">
-            <div class="preference-header">
-              <h3 class="preference-title">Job Alert Settings</h3>
-              <p class="preference-description">Configure how often you receive job notifications</p>
+        <div *ngIf="!isEditingPreferences" class="preferences-display">
+          <!-- Main Preferences Grid -->
+          <div class="preferences-grid-display">
+            <!-- Job Alert Settings -->
+            <div class="preference-display-card">
+              <div class="preference-display-header">
+                <div class="preference-display-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <div class="preference-display-content">
+                  <h3 class="preference-display-title">Job Alerts</h3>
+                  <p class="preference-display-description">Notification frequency</p>
+                </div>
+              </div>
+              <div class="preference-display-value">
+                <span class="preference-value-badge"
+                  [class]="'badge-' + (userProfile?.professionalInfo?.jobAlertFrequency || 'weekly')">
+                  {{ (userProfile?.professionalInfo?.jobAlertFrequency || 'weekly') | titlecase }}
+                </span>
+              </div>
             </div>
-            <div class="preference-body">
-              <div class="preference-item">
-                <span class="preference-label">Alert Frequency</span>
-                <span class="preference-value">{{ userProfile?.professionalInfo?.jobAlertFrequency || 'Weekly' }}</span>
+
+            <!-- Profile Visibility -->
+            <div class="preference-display-card">
+              <div class="preference-display-header">
+                <div class="preference-display-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" />
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                </div>
+                <div class="preference-display-content">
+                  <h3 class="preference-display-title">Profile Visibility</h3>
+                  <p class="preference-display-description">Who can see your profile</p>
+                </div>
+              </div>
+              <div class="preference-display-value">
+                <span class="preference-value-badge"
+                  [class]="'badge-' + (userProfile?.professionalInfo?.profileVisibility || 'public')">
+                  {{ (userProfile?.professionalInfo?.profileVisibility || 'public') | titlecase }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Email Notifications -->
+            <div class="preference-display-card">
+              <div class="preference-display-header">
+                <div class="preference-display-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                      stroke="currentColor" stroke-width="2" />
+                    <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                </div>
+                <div class="preference-display-content">
+                  <h3 class="preference-display-title">Email Notifications</h3>
+                  <p class="preference-display-description">Job alerts via email</p>
+                </div>
+              </div>
+              <div class="preference-display-value">
+                <span class="preference-value-badge"
+                  [class]="userProfile?.professionalInfo?.emailNotifications !== false ? 'badge-enabled' : 'badge-disabled'">
+                  {{ userProfile?.professionalInfo?.emailNotifications !== false ? 'Enabled' : 'Disabled' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- SMS Notifications -->
+            <div class="preference-display-card">
+              <div class="preference-display-header">
+                <div class="preference-display-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+                    <line x1="12" y1="18" x2="12.01" y2="18" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <div class="preference-display-content">
+                  <h3 class="preference-display-title">SMS Notifications</h3>
+                  <p class="preference-display-description">Urgent alerts via SMS</p>
+                </div>
+              </div>
+              <div class="preference-display-value">
+                <span class="preference-value-badge"
+                  [class]="userProfile?.professionalInfo?.smsNotifications ? 'badge-enabled' : 'badge-disabled'">
+                  {{ userProfile?.professionalInfo?.smsNotifications ? 'Enabled' : 'Disabled' }}
+                </span>
               </div>
             </div>
           </div>
 
-          <div class="preference-card">
-            <div class="preference-header">
-              <h3 class="preference-title">Profile Visibility</h3>
-              <p class="preference-description">Control who can see your profile</p>
+          <!-- Account Information Section -->
+          <div class="account-info-section">
+            <div class="account-info-header">
+              <h3 class="account-info-title">Account Information</h3>
+              <p class="account-info-description">Your account details and statistics</p>
             </div>
-            <div class="preference-body">
-              <div class="preference-item">
-                <span class="preference-label">Profile Visibility</span>
-                <span class="preference-value">{{ userProfile?.professionalInfo?.profileVisibility || 'Public' }}</span>
+            <div class="account-info-grid">
+              <div class="account-info-item">
+                <div class="account-info-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                    <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                </div>
+                <div class="account-info-content">
+                  <span class="account-info-label">Member Since</span>
+                  <span class="account-info-value">{{ formatDate(currentUser?.createdAt) }}</span>
+                </div>
               </div>
-            </div>
-          </div>
-
-          <div class="preference-card">
-            <div class="preference-header">
-              <h3 class="preference-title">Notification Settings</h3>
-              <p class="preference-description">Your current notification preferences</p>
-            </div>
-            <div class="preference-body">
-              <div class="preference-item">
-                <span class="preference-label">Email Notifications</span>
-                <span class="preference-value">{{ userProfile?.professionalInfo?.emailNotifications !== false ?
-                  'Enabled' : 'Disabled' }}</span>
-              </div>
-              <div class="preference-item">
-                <span class="preference-label">SMS Notifications</span>
-                <span class="preference-value">{{ userProfile?.professionalInfo?.smsNotifications ? 'Enabled' :
-                  'Disabled' }}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="preference-card">
-            <div class="preference-header">
-              <h3 class="preference-title">Account Information</h3>
-              <p class="preference-description">Basic account details</p>
-            </div>
-            <div class="preference-body">
-              <div class="preference-item">
-                <span class="preference-label">Member Since</span>
-                <span class="preference-value">{{ formatDate(currentUser?.createdAt) }}</span>
-              </div>
-              <div class="preference-item">
-                <span class="preference-label">Profile Completion</span>
-                <span class="preference-value">{{ getProfileCompletionPercentage() }}%</span>
+              <div class="account-info-item">
+                <div class="account-info-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                    <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <div class="account-info-content">
+                  <span class="account-info-label">Profile Completion</span>
+                  <div class="completion-wrapper">
+                    <span class="account-info-value">{{ getProfileCompletionPercentage() }}%</span>
+                    <div class="completion-bar">
+                      <div class="completion-progress" [style.width.%]="getProfileCompletionPercentage()"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
