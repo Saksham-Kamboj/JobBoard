@@ -14,12 +14,12 @@
   </div>
 
   <!-- Success/Error Messages -->
-  <div *ngIf="profileUpdateSuccess" class="alert alert-success">
+  <div *ngIf="successMessage" class="alert alert-success">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
       <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
     </svg>
-    Profile updated successfully!
+    {{ successMessage }}
   </div>
 
   <div *ngIf="errorMessage" class="alert alert-error">
@@ -29,14 +29,6 @@
       <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" />
     </svg>
     {{ errorMessage }}
-  </div>
-
-  <div *ngIf="successMessage" class="alert alert-success">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-    </svg>
-    {{ successMessage }}
   </div>
 
   <div class="profile-layout">
@@ -259,7 +251,225 @@
           </button>
         </div>
 
-        <!-- Professional Info content will be added in the next part -->
+        <!-- Professional Information Form -->
+        <div *ngIf="isEditingProfessional" class="profile-edit-form">
+          <form [formGroup]="professionalForm" (ngSubmit)="onProfessionalSubmit()">
+            <div class="form-card">
+              <div class="form-card-header">
+                <div class="form-card-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                </div>
+                <div class="form-card-title">
+                  <h3>Professional Details</h3>
+                  <p>Your career information and job preferences</p>
+                </div>
+              </div>
+              <div class="form-card-content">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="currentTitle" class="form-label">Current Job Title</label>
+                    <input type="text" id="currentTitle" formControlName="currentTitle" class="form-input"
+                      placeholder="e.g. Frontend Developer">
+                  </div>
+                  <div class="form-group">
+                    <label for="yearsOfExperience" class="form-label">Years of Experience</label>
+                    <input type="number" id="yearsOfExperience" formControlName="yearsOfExperience" class="form-input"
+                      min="0" max="50">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="summary" class="form-label">Professional Summary</label>
+                  <textarea id="summary" formControlName="summary" class="form-textarea" rows="4"
+                    placeholder="Brief description of your professional background and expertise..."></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="expectedSalaryMin" class="form-label">Expected Salary (Min)</label>
+                    <input type="number" id="expectedSalaryMin" formControlName="expectedSalaryMin" class="form-input"
+                      min="0">
+                  </div>
+                  <div class="form-group">
+                    <label for="expectedSalaryMax" class="form-label">Expected Salary (Max)</label>
+                    <input type="number" id="expectedSalaryMax" formControlName="expectedSalaryMax" class="form-input"
+                      min="0">
+                  </div>
+                  <div class="form-group">
+                    <label for="expectedSalaryCurrency" class="form-label">Currency</label>
+                    <select id="expectedSalaryCurrency" formControlName="expectedSalaryCurrency" class="form-select">
+                      <option value="USD">USD</option>
+                      <option value="INR">INR</option>
+                      <option value="EUR">EUR</option>
+                      <option value="GBP">GBP</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="jobAlertFrequency" class="form-label">Job Alert Frequency</label>
+                  <select id="jobAlertFrequency" formControlName="jobAlertFrequency" class="form-select">
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+          </form>
+
+          <!-- Skills Management (Outside Form) -->
+          <div class="form-card">
+            <div class="form-card-header">
+              <div class="form-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                    stroke="currentColor" stroke-width="2" />
+                </svg>
+              </div>
+              <div class="form-card-title">
+                <h3>Skills & Preferences</h3>
+                <p>Manage your skills and job preferences</p>
+              </div>
+            </div>
+            <div class="form-card-content">
+              <!-- Skills Section -->
+              <div class="form-group">
+                <label class="form-label">Skills</label>
+                <div class="skills-list" *ngIf="userProfile?.professionalInfo?.skills?.length">
+                  <span *ngFor="let skill of userProfile?.professionalInfo?.skills" class="skill-tag">
+                    {{ skill }}
+                    <button type="button" (click)="removeSkill(skill)" class="skill-remove">×</button>
+                  </span>
+                </div>
+                <div class="add-skill-input">
+                  <input type="text" [(ngModel)]="newSkill" placeholder="Add a skill..." class="form-input"
+                    (keyup.enter)="addSkill()">
+                  <button type="button" (click)="addSkill()" class="btn-secondary">Add</button>
+                </div>
+              </div>
+
+              <!-- Job Types Section -->
+              <div class="form-group">
+                <label class="form-label">Preferred Job Types</label>
+                <div class="preference-tags" *ngIf="userProfile?.professionalInfo?.preferredJobTypes?.length">
+                  <span *ngFor="let type of userProfile?.professionalInfo?.preferredJobTypes" class="preference-tag">
+                    {{ type }}
+                    <button type="button" (click)="removeJobType(type)" class="preference-remove">×</button>
+                  </span>
+                </div>
+                <div class="add-skill-input">
+                  <select [(ngModel)]="newJobType" class="form-select" style="flex: 1;">
+                    <option value="">Select job type...</option>
+                    <option *ngFor="let type of availableJobTypes" [value]="type">{{ type }}</option>
+                  </select>
+                  <button type="button" (click)="addJobType()" class="btn-secondary"
+                    [disabled]="!newJobType">Add</button>
+                </div>
+              </div>
+
+              <!-- Locations Section -->
+              <div class="form-group">
+                <label class="form-label">Preferred Locations</label>
+                <div class="preference-tags" *ngIf="userProfile?.professionalInfo?.preferredLocations?.length">
+                  <span *ngFor="let location of userProfile?.professionalInfo?.preferredLocations"
+                    class="preference-tag">
+                    {{ location }}
+                    <button type="button" (click)="removeLocation(location)" class="preference-remove">×</button>
+                  </span>
+                </div>
+                <div class="add-skill-input">
+                  <select [(ngModel)]="newLocation" class="form-select" style="flex: 1;">
+                    <option value="">Select location...</option>
+                    <option *ngFor="let location of availableLocations" [value]="location">{{ location }}</option>
+                  </select>
+                  <button type="button" (click)="addLocation()" class="btn-secondary"
+                    [disabled]="!newLocation">Add</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions at Bottom -->
+          <div class="form-actions-card">
+            <button type="button" (click)="toggleEditProfessional()" class="btn-secondary">Cancel</button>
+            <button type="button" (click)="saveProfessionalInfo()" class="btn-primary" [disabled]="isLoading">
+              <span *ngIf="isLoading" class="loading-spinner"></span>
+              {{ isLoading ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Professional Information Display -->
+        <div *ngIf="!isEditingProfessional" class="professional-info-display">
+          <div class="professional-info-item">
+            <div class="professional-info-header">
+              <h3 class="professional-info-title">Career Information</h3>
+              <p class="professional-info-description">Professional background and preferences</p>
+            </div>
+            <div class="professional-info-content">
+              <div class="professional-info-grid">
+                <div class="professional-info-value" *ngIf="userProfile?.professionalInfo?.currentTitle">
+                  <span class="professional-info-label">Current Title</span>
+                  <span class="professional-info-text">{{ userProfile?.professionalInfo?.currentTitle }}</span>
+                </div>
+                <div class="professional-info-value" *ngIf="userProfile?.professionalInfo?.yearsOfExperience">
+                  <span class="professional-info-label">Years of Experience</span>
+                  <span class="professional-info-text">{{ userProfile?.professionalInfo?.yearsOfExperience }}
+                    years</span>
+                </div>
+                <div class="professional-info-value" *ngIf="userProfile?.professionalInfo?.summary">
+                  <span class="professional-info-label">Summary</span>
+                  <span class="professional-info-text">{{ userProfile?.professionalInfo?.summary }}</span>
+                </div>
+                <div class="professional-info-value"
+                  *ngIf="userProfile?.professionalInfo?.expectedSalary?.min || userProfile?.professionalInfo?.expectedSalary?.max">
+                  <span class="professional-info-label">Expected Salary</span>
+                  <span class="professional-info-text">
+                    {{ userProfile?.professionalInfo?.expectedSalary?.currency }}
+                    {{ userProfile?.professionalInfo?.expectedSalary?.min | number }} -
+                    {{ userProfile?.professionalInfo?.expectedSalary?.max | number }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skills Section -->
+          <div class="skills-section" *ngIf="userProfile?.professionalInfo?.skills?.length">
+            <h4 class="skills-title">Skills</h4>
+            <div class="skills-list">
+              <span *ngFor="let skill of userProfile?.professionalInfo?.skills" class="skill-tag">
+                {{ skill }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Job Preferences -->
+          <div class="preferences-section">
+            <h4 class="preferences-title">Job Preferences</h4>
+            <div class="preferences-grid">
+              <div class="preference-item" *ngIf="userProfile?.professionalInfo?.preferredJobTypes?.length">
+                <span class="preference-label">Job Types</span>
+                <div class="preference-tags">
+                  <span *ngFor="let type of userProfile?.professionalInfo?.preferredJobTypes" class="preference-tag">
+                    {{ type }}
+                  </span>
+                </div>
+              </div>
+              <div class="preference-item" *ngIf="userProfile?.professionalInfo?.preferredLocations?.length">
+                <span class="preference-label">Preferred Locations</span>
+                <div class="preference-tags">
+                  <span *ngFor="let location of userProfile?.professionalInfo?.preferredLocations"
+                    class="preference-tag">
+                    {{ location }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Education Section -->
@@ -275,7 +485,144 @@
           </button>
         </div>
 
-        <!-- Education content will be added in the next part -->
+        <!-- Education Form -->
+        <form *ngIf="isEditingEducation" [formGroup]="educationForm" (ngSubmit)="onEducationSubmit()"
+          class="profile-edit-form">
+          <div class="form-card">
+            <div class="form-card-header">
+              <div class="form-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="2" />
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="currentColor"
+                    stroke-width="2" />
+                </svg>
+              </div>
+              <div class="form-card-title">
+                <h3>{{ editingEducationIndex >= 0 ? 'Edit' : 'Add' }} Education</h3>
+                <p>Educational background and qualifications</p>
+              </div>
+            </div>
+            <div class="form-card-content">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="institution" class="form-label">Institution *</label>
+                  <input type="text" id="institution" formControlName="institution" class="form-input"
+                    placeholder="e.g. Harvard University" [class.error]="getFieldError('institution', educationForm)">
+                  <div *ngIf="getFieldError('institution', educationForm)" class="field-error">
+                    {{ getFieldError('institution', educationForm) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="degree" class="form-label">Degree *</label>
+                  <input type="text" id="degree" formControlName="degree" class="form-input"
+                    placeholder="e.g. Bachelor of Science" [class.error]="getFieldError('degree', educationForm)">
+                  <div *ngIf="getFieldError('degree', educationForm)" class="field-error">
+                    {{ getFieldError('degree', educationForm) }}
+                  </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="fieldOfStudy" class="form-label">Field of Study *</label>
+                  <input type="text" id="fieldOfStudy" formControlName="fieldOfStudy" class="form-input"
+                    placeholder="e.g. Computer Science" [class.error]="getFieldError('fieldOfStudy', educationForm)">
+                  <div *ngIf="getFieldError('fieldOfStudy', educationForm)" class="field-error">
+                    {{ getFieldError('fieldOfStudy', educationForm) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="gpa" class="form-label">GPA</label>
+                  <input type="text" id="gpa" formControlName="gpa" class="form-input" placeholder="e.g. 3.8">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="startDate" class="form-label">Start Date *</label>
+                  <input type="month" id="startDate" formControlName="startDate" class="form-input"
+                    [class.error]="getFieldError('startDate', educationForm)">
+                  <div *ngIf="getFieldError('startDate', educationForm)" class="field-error">
+                    {{ getFieldError('startDate', educationForm) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="endDate" class="form-label">End Date</label>
+                  <input type="month" id="endDate" formControlName="endDate" class="form-input"
+                    [disabled]="educationForm.get('isCurrentlyStudying')?.value">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="isCurrentlyStudying" class="form-checkbox">
+                  <span class="checkbox-text">I am currently studying here</span>
+                </label>
+              </div>
+              <div class="form-group">
+                <label for="description" class="form-label">Description</label>
+                <textarea id="description" formControlName="description" class="form-textarea" rows="3"
+                  placeholder="Additional details about your education..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions-card">
+            <button type="button" (click)="toggleEditEducation()" class="btn-secondary">Cancel</button>
+            <button type="submit" class="btn-primary" [disabled]="isLoading">
+              <span *ngIf="isLoading" class="loading-spinner"></span>
+              {{ isLoading ? 'Saving...' : (editingEducationIndex >= 0 ? 'Update' : 'Add') + ' Education' }}
+            </button>
+          </div>
+        </form>
+
+        <!-- Education List -->
+        <div *ngIf="!isEditingEducation" class="education-list">
+          <div *ngFor="let education of userProfile?.education; let i = index" class="education-item">
+            <div class="education-header">
+              <div class="education-details">
+                <h3 class="education-title">{{ education.degree }} in {{ education.field }}</h3>
+                <p class="education-institution">{{ education.institution }}</p>
+                <p class="education-dates">
+                  {{ formatDate(education.startDate) }} -
+                  {{ education.endDate ? formatDate(education.endDate) : 'Present' }}
+                </p>
+              </div>
+              <div class="education-actions">
+                <button (click)="editEducation(i)" class="btn-icon" title="Edit">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
+                      stroke-width="2" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                      stroke-width="2" />
+                  </svg>
+                </button>
+                <button (click)="deleteEducation(i)" class="btn-icon btn-danger" title="Delete">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                      stroke="currentColor" stroke-width="2" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="education-content" *ngIf="education.description || education.gpa">
+              <p *ngIf="education.gpa" class="education-gpa">GPA: {{ education.gpa }}</p>
+              <p *ngIf="education.description" class="education-description">{{ education.description }}</p>
+            </div>
+          </div>
+
+          <div *ngIf="!userProfile?.education?.length" class="empty-state">
+            <div class="empty-state-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="2" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="currentColor"
+                  stroke-width="2" />
+              </svg>
+            </div>
+            <h3 class="empty-state-title">No Education Added</h3>
+            <p class="empty-state-description">Add your educational background to showcase your qualifications.</p>
+            <button (click)="toggleEditEducation()" class="btn-primary">Add Education</button>
+          </div>
+        </div>
       </div>
 
       <!-- Experience Section -->
@@ -291,7 +638,134 @@
           </button>
         </div>
 
-        <!-- Experience content will be added in the next part -->
+        <!-- Experience Form -->
+        <form *ngIf="isEditingExperience" [formGroup]="experienceForm" (ngSubmit)="onExperienceSubmit()"
+          class="profile-edit-form">
+          <div class="form-card">
+            <div class="form-card-header">
+              <div class="form-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" stroke="currentColor" stroke-width="2" />
+                </svg>
+              </div>
+              <div class="form-card-title">
+                <h3>{{ editingExperienceIndex >= 0 ? 'Edit' : 'Add' }} Work Experience</h3>
+                <p>Professional work history and achievements</p>
+              </div>
+            </div>
+            <div class="form-card-content">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="company" class="form-label">Company *</label>
+                  <input type="text" id="company" formControlName="company" class="form-input"
+                    placeholder="e.g. Google Inc." [class.error]="getFieldError('company', experienceForm)">
+                  <div *ngIf="getFieldError('company', experienceForm)" class="field-error">
+                    {{ getFieldError('company', experienceForm) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="position" class="form-label">Position *</label>
+                  <input type="text" id="position" formControlName="position" class="form-input"
+                    placeholder="e.g. Senior Software Engineer"
+                    [class.error]="getFieldError('position', experienceForm)">
+                  <div *ngIf="getFieldError('position', experienceForm)" class="field-error">
+                    {{ getFieldError('position', experienceForm) }}
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" id="location" formControlName="location" class="form-input"
+                  placeholder="e.g. San Francisco, CA">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="startDate" class="form-label">Start Date *</label>
+                  <input type="month" id="startDate" formControlName="startDate" class="form-input"
+                    [class.error]="getFieldError('startDate', experienceForm)">
+                  <div *ngIf="getFieldError('startDate', experienceForm)" class="field-error">
+                    {{ getFieldError('startDate', experienceForm) }}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="endDate" class="form-label">End Date</label>
+                  <input type="month" id="endDate" formControlName="endDate" class="form-input"
+                    [disabled]="experienceForm.get('isCurrentPosition')?.value">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" formControlName="isCurrentPosition" class="form-checkbox">
+                  <span class="checkbox-text">I currently work here</span>
+                </label>
+              </div>
+              <div class="form-group">
+                <label for="description" class="form-label">Description</label>
+                <textarea id="description" formControlName="description" class="form-textarea" rows="4"
+                  placeholder="Describe your role, responsibilities, and achievements..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions-card">
+            <button type="button" (click)="toggleEditExperience()" class="btn-secondary">Cancel</button>
+            <button type="submit" class="btn-primary" [disabled]="isLoading">
+              <span *ngIf="isLoading" class="loading-spinner"></span>
+              {{ isLoading ? 'Saving...' : (editingExperienceIndex >= 0 ? 'Update' : 'Add') + ' Experience' }}
+            </button>
+          </div>
+        </form>
+
+        <!-- Experience List -->
+        <div *ngIf="!isEditingExperience" class="experience-list">
+          <div *ngFor="let experience of userProfile?.experience; let i = index" class="experience-item">
+            <div class="experience-header">
+              <div class="experience-details">
+                <h3 class="experience-title">{{ experience.position }}</h3>
+                <p class="experience-company">{{ experience.company }}</p>
+                <p class="experience-location" *ngIf="experience.location">{{ experience.location }}</p>
+                <p class="experience-dates">
+                  {{ formatDate(experience.startDate) }} -
+                  {{ experience.current ? 'Present' : formatDate(experience.endDate || '') }}
+                </p>
+              </div>
+              <div class="experience-actions">
+                <button (click)="editExperience(i)" class="btn-icon" title="Edit">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
+                      stroke-width="2" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                      stroke-width="2" />
+                  </svg>
+                </button>
+                <button (click)="deleteExperience(i)" class="btn-icon btn-danger" title="Delete">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                      stroke="currentColor" stroke-width="2" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="experience-content" *ngIf="experience.description">
+              <p class="experience-description">{{ experience.description }}</p>
+            </div>
+          </div>
+
+          <div *ngIf="!userProfile?.experience?.length" class="empty-state">
+            <div class="empty-state-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" stroke="currentColor" stroke-width="2" />
+              </svg>
+            </div>
+            <h3 class="empty-state-title">No Experience Added</h3>
+            <p class="empty-state-description">Add your work experience to showcase your professional background.</p>
+            <button (click)="toggleEditExperience()" class="btn-primary">Add Experience</button>
+          </div>
+        </div>
       </div>
 
       <!-- Resume Section -->
@@ -300,16 +774,142 @@
           <h2 class="section-title">Resume</h2>
         </div>
 
-        <!-- Resume content will be added in the next part -->
+        <div class="resume-section">
+          <div *ngIf="userProfile?.resume" class="resume-display">
+            <div class="resume-item">
+              <div class="resume-header">
+                <div class="resume-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor"
+                      stroke-width="2" />
+                    <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                </div>
+                <div class="resume-details">
+                  <h3 class="resume-filename">{{ userProfile?.resume?.fileName }}</h3>
+                  <p class="resume-meta">
+                    Uploaded {{ formatDate(userProfile?.resume?.uploadedAt) }} •
+                    {{ formatFileSize(userProfile?.resume?.fileSize || 0) }}
+                  </p>
+                </div>
+                <div class="resume-actions">
+                  <a [href]="userProfile?.resume?.fileUrl" target="_blank" class="btn-icon" title="View Resume">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" />
+                      <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                  </a>
+                  <button (click)="replaceResume()" class="btn-icon" title="Replace Resume">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
+                        stroke-width="2" />
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                        stroke-width="2" />
+                    </svg>
+                  </button>
+                  <button (click)="deleteResume()" class="btn-icon btn-danger" title="Delete Resume">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                        stroke="currentColor" stroke-width="2" />
+                    </svg>
+                  </button>
+                  <input type="file" (change)="onResumeUpload($event)" accept=".pdf,.doc,.docx" class="file-input"
+                    id="resumeReplace">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="!userProfile?.resume" class="resume-upload">
+            <div class="upload-area">
+              <div class="upload-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor"
+                    stroke-width="2" />
+                  <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" />
+                  <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2" />
+                  <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2" />
+                  <polyline points="10,9 9,9 8,9" stroke="currentColor" stroke-width="2" />
+                </svg>
+              </div>
+              <h3 class="upload-title">Upload Your Resume</h3>
+              <p class="upload-description">Upload your resume to make it easier for employers to find you.</p>
+              <input type="file" (change)="onResumeUpload($event)" accept=".pdf,.doc,.docx" class="file-input"
+                id="resumeUpload">
+              <label for="resumeUpload" class="btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" />
+                  <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2" />
+                  <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" />
+                </svg>
+                Choose File
+              </label>
+              <p class="upload-note">Supported formats: PDF, DOC, DOCX (Max 5MB)</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Preferences Section -->
       <div *ngIf="activeSection === 'preferences'" class="profile-section">
         <div class="section-header">
           <h2 class="section-title">Preferences</h2>
+          <button *ngIf="!isEditingPreferences" (click)="toggleEditPreferences()" class="btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
+                stroke-width="2" />
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
+                stroke-width="2" />
+            </svg>
+            Edit Preferences
+          </button>
         </div>
 
-        <!-- Preferences content will be added in the next part -->
+        <div class="preferences-content">
+          <div class="preference-card">
+            <div class="preference-header">
+              <h3 class="preference-title">Job Alert Settings</h3>
+              <p class="preference-description">Configure how often you receive job notifications</p>
+            </div>
+            <div class="preference-body">
+              <div class="preference-item">
+                <span class="preference-label">Alert Frequency</span>
+                <span class="preference-value">{{ userProfile?.professionalInfo?.jobAlertFrequency || 'Weekly' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="preference-card">
+            <div class="preference-header">
+              <h3 class="preference-title">Profile Visibility</h3>
+              <p class="preference-description">Control who can see your profile</p>
+            </div>
+            <div class="preference-body">
+              <div class="preference-item">
+                <span class="preference-label">Profile Status</span>
+                <span class="preference-value">{{ currentUser?.isActive ? 'Active' : 'Inactive' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="preference-card">
+            <div class="preference-header">
+              <h3 class="preference-title">Account Information</h3>
+              <p class="preference-description">Basic account details</p>
+            </div>
+            <div class="preference-body">
+              <div class="preference-item">
+                <span class="preference-label">Member Since</span>
+                <span class="preference-value">{{ formatDate(currentUser?.createdAt) }}</span>
+              </div>
+              <div class="preference-item">
+                <span class="preference-label">Profile Completion</span>
+                <span class="preference-value">{{ getProfileCompletionPercentage() }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

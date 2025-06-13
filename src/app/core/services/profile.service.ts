@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, throwError, of } from 'rxjs';
+import { map, catchError, tap, switchMap } from 'rxjs/operators';
 
 export interface UserProfile {
   id: string;
@@ -101,20 +101,83 @@ export class ProfileService {
     return this.http
       .get<UserProfile[]>(`${this.apiUrl}/userProfiles?userId=${userId}`)
       .pipe(
-        map((profiles) => {
+        switchMap((profiles) => {
           if (profiles.length > 0) {
-            this.userProfileSubject.next(profiles[0]);
-            return profiles[0];
+            const profile = profiles[0];
+            // Validate and potentially sync profile with user data
+            return this.validateAndSyncProfile(profile);
           } else {
             // Create default profile if none exists
-            return this.createDefaultUserProfile(userId);
+            return this.createDefaultUserProfileAsync(userId);
           }
         }),
+        tap((profile) => this.userProfileSubject.next(profile)),
         catchError((error) => {
           console.error('Error fetching user profile:', error);
           return throwError(() => error);
         })
       );
+  }
+
+  private validateAndSyncProfile(
+    profile: UserProfile
+  ): Observable<UserProfile> {
+    // Check if profile needs to be synced with user data
+    return this.http.get<any>(`${this.apiUrl}/users/${profile.userId}`).pipe(
+      map((user) => {
+        let needsUpdate = false;
+        const updatedProfile = { ...profile };
+
+        // Sync basic personal info if it's missing or outdated
+        if (
+          !profile.personalInfo.firstName ||
+          !profile.personalInfo.lastName ||
+          !profile.personalInfo.email
+        ) {
+          updatedProfile.personalInfo = {
+            ...profile.personalInfo,
+            firstName: user.firstName || profile.personalInfo.firstName,
+            lastName: user.lastName || profile.personalInfo.lastName,
+            email: user.email || profile.personalInfo.email,
+            phone: user.phone || profile.personalInfo.phone,
+          };
+          needsUpdate = true;
+        }
+
+        if (needsUpdate) {
+          // Update profile in background
+          this.updateUserProfile(updatedProfile).subscribe();
+        }
+
+        return updatedProfile;
+      }),
+      catchError(() => {
+        // If user fetch fails, return profile as-is
+        return of(profile);
+      })
+    );
+  }
+
+  private createDefaultUserProfileAsync(
+    userId: string
+  ): Observable<UserProfile> {
+    return this.http.get<any>(`${this.apiUrl}/users/${userId}`).pipe(
+      switchMap((user) => {
+        const profileWithUserData = this.createProfileFromUserData(user);
+        return this.http.post<UserProfile>(
+          `${this.apiUrl}/userProfiles`,
+          profileWithUserData
+        );
+      }),
+      catchError(() => {
+        // If user fetch fails, create with empty data
+        const defaultProfile = this.createEmptyProfile(userId);
+        return this.http.post<UserProfile>(
+          `${this.apiUrl}/userProfiles`,
+          defaultProfile
+        );
+      })
+    );
   }
 
   updateUserProfile(profile: Partial<UserProfile>): Observable<UserProfile> {
@@ -135,7 +198,11 @@ export class ProfileService {
         updatedProfile
       )
       .pipe(
-        tap((updated) => this.userProfileSubject.next(updated)),
+        tap((updated) => {
+          this.userProfileSubject.next(updated);
+          // Sync personal info changes back to users table
+          this.syncPersonalInfoToUser(updated);
+        }),
         catchError((error) => {
           console.error('Error updating user profile:', error);
           return throwError(() => error);
@@ -143,9 +210,100 @@ export class ProfileService {
       );
   }
 
+  // Sync personal info changes back to the users table
+  private syncPersonalInfoToUser(profile: UserProfile): void {
+    if (profile.personalInfo) {
+      const userUpdates = {
+        firstName: profile.personalInfo.firstName,
+        lastName: profile.personalInfo.lastName,
+        email: profile.personalInfo.email,
+        phone: profile.personalInfo.phone,
+        updatedAt: new Date().toISOString(),
+      };
+
+      this.http
+        .patch(`${this.apiUrl}/users/${profile.userId}`, userUpdates)
+        .subscribe({
+          next: () => {
+            console.log('User table synced with profile changes');
+          },
+          error: (error) => {
+            console.error('Error syncing user table:', error);
+          },
+        });
+    }
+  }
+
   private createDefaultUserProfile(userId: string): UserProfile {
-    const defaultProfile: UserProfile = {
-      id: `profile-${userId}`,
+    // First, try to get user data to populate personal info
+    this.http.get<any>(`${this.apiUrl}/users/${userId}`).subscribe({
+      next: (user) => {
+        const profileWithUserData = this.createProfileFromUserData(user);
+        this.http
+          .post<UserProfile>(`${this.apiUrl}/userProfiles`, profileWithUserData)
+          .subscribe((created) => this.userProfileSubject.next(created));
+      },
+      error: () => {
+        // If user fetch fails, create with empty data
+        const defaultProfile = this.createEmptyProfile(userId);
+        this.http
+          .post<UserProfile>(`${this.apiUrl}/userProfiles`, defaultProfile)
+          .subscribe((created) => this.userProfileSubject.next(created));
+      },
+    });
+
+    // Return empty profile immediately for synchronous return
+    return this.createEmptyProfile(userId);
+  }
+
+  private createProfileFromUserData(user: any): UserProfile {
+    return {
+      id:
+        user.id === 'demo-job-seeker'
+          ? 'demo-job-seeker'
+          : `profile-${user.id}`,
+      userId: user.id,
+      personalInfo: {
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          country: 'United States',
+        },
+        linkedinUrl: user.linkedin || '',
+        portfolioUrl: user.website || '',
+        githubUrl: user.github || '',
+      },
+      professionalInfo: {
+        currentTitle: '',
+        yearsOfExperience: 0,
+        summary: '',
+        skills: [],
+        preferredJobTypes: [],
+        preferredLocations: [],
+        expectedSalary: {
+          min: 0,
+          max: 0,
+          currency: 'USD',
+        },
+        jobAlertFrequency: 'weekly',
+      },
+      education: [],
+      experience: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+  }
+
+  private createEmptyProfile(userId: string): UserProfile {
+    return {
+      id:
+        userId === 'demo-job-seeker' ? 'demo-job-seeker' : `profile-${userId}`,
       userId: userId,
       personalInfo: {
         firstName: '',
@@ -157,7 +315,7 @@ export class ProfileService {
           city: '',
           state: '',
           zipCode: '',
-          country: '',
+          country: 'United States',
         },
       },
       professionalInfo: {
@@ -179,13 +337,6 @@ export class ProfileService {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-
-    // Create profile in database
-    this.http
-      .post<UserProfile>(`${this.apiUrl}/userProfiles`, defaultProfile)
-      .subscribe((created) => this.userProfileSubject.next(created));
-
-    return defaultProfile;
   }
 
   // Dashboard Stats Methods

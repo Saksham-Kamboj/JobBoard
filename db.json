@@ -9,7 +9,8 @@
       "password": "password123",
       "createdAt": "2024-01-01T00:00:00.000Z",
       "isActive": true,
-      "updatedAt": "2025-06-10T07:12:46.222Z"
+      "updatedAt": "2025-06-13T10:59:10.276Z",
+      "phone": "+1 (555) 123-45672345"
     },
     {
       "id": "demo-admin",
@@ -75,17 +76,17 @@
         "firstName": "John",
         "lastName": "Doe",
         "email": "jobseeker@demo.com",
-        "phone": "+1 (555) 123-4567",
+        "phone": "+1 (555) 123-45672345",
+        "linkedinUrl": "https://linkedin.com/in/johndoe",
+        "portfolioUrl": "https://johndoe.dev",
+        "githubUrl": "https://github.com/johndoe",
         "address": {
           "street": "123 Main Street",
           "city": "San Francisco",
           "state": "CA",
           "zipCode": "94105",
           "country": "United States"
-        },
-        "linkedinUrl": "https://linkedin.com/in/johndoe",
-        "portfolioUrl": "https://johndoe.dev",
-        "githubUrl": "https://github.com/johndoe"
+        }
       },
       "professionalInfo": {
         "currentTitle": "Frontend Developer",
@@ -105,12 +106,15 @@
         ],
         "preferredJobTypes": [
           "full-time",
-          "remote"
+          "remote",
+          "Contract"
         ],
         "preferredLocations": [
           "Bangalore, Karnataka",
           "Mumbai, Maharashtra",
-          "Remote"
+          "Remote",
+          "Miami, FL",
+          "Seattle, WA"
         ],
         "expectedSalary": {
           "min": 1200000,
@@ -121,12 +125,12 @@
       },
       "education": [
         {
-          "id": "edu1",
           "institution": "Indian Institute of Technology, Bangalore",
           "degree": "Bachelor of Technology",
-          "field": "Computer Science and Engineering",
+          "fieldOfStudy": "Compute Science",
           "startDate": "2012-08",
           "endDate": "2016-05",
+          "isCurrentlyStudying": false,
           "gpa": "8.5",
           "description": "Focused on software engineering and web development with specialization in modern web technologies"
         }
@@ -148,14 +152,14 @@
           ]
         }
       ],
-      "resume": {
-        "fileName": "Component_Based_Design[1].docx",
-        "fileUrl": "/uploads/resumes/Component_Based_Design[1].docx",
-        "uploadedAt": "2025-06-10T05:21:52.262Z",
-        "fileSize": 365434
-      },
       "createdAt": "2024-12-01T10:00:00.000Z",
-      "updatedAt": "2025-06-10T06:24:51.030Z"
+      "updatedAt": "2025-06-13T10:59:10.229Z",
+      "resume": {
+        "fileName": "02 A B Testing.docx",
+        "fileUrl": "blob:http://localhost:4200/3f449c56-7ba1-44f2-b39f-3f32811e618b",
+        "uploadedAt": "2025-06-13T10:21:06.167Z",
+        "fileSize": 354756
+      }
     },
     {
       "userId": "demo-company",

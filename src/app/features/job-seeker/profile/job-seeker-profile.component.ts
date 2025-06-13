@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
+  FormsModule,
   FormBuilder,
   FormGroup,
   Validators,
@@ -18,7 +19,7 @@ import {
   templateUrl: './job-seeker-profile.component.html',
   styleUrls: ['./job-seeker-profile.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
 })
 export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
@@ -36,8 +37,8 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   isEditingProfessional = false;
   isEditingEducation = false;
   isEditingExperience = false;
+  isEditingPreferences = false;
   isLoading = false;
-  profileUpdateSuccess = false;
   errorMessage = '';
   successMessage = '';
 
@@ -257,6 +258,7 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   loadUserProfile() {
     if (this.currentUser) {
       this.isLoading = true;
+      this.clearMessages();
       this.authSubscription.add(
         this.profileService.getUserProfile(this.currentUser.id).subscribe({
           next: (profile) => {
@@ -264,10 +266,14 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
             this.populateProfileForm();
             this.populateProfessionalForm();
             this.isLoading = false;
+            console.log('Profile loaded successfully:', profile);
           },
           error: (error) => {
             console.error('Error loading user profile:', error);
             this.isLoading = false;
+            this.errorMessage =
+              'Failed to load profile. Please refresh the page.';
+            // Still populate forms with current user data as fallback
             this.populateProfileForm();
             this.populateProfessionalForm();
           },
@@ -289,7 +295,8 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
           '',
         email:
           this.userProfile?.personalInfo?.email || this.currentUser.email || '',
-        phone: this.userProfile?.personalInfo?.phone || '',
+        phone:
+          this.userProfile?.personalInfo?.phone || this.currentUser.phone || '',
         linkedinUrl: this.userProfile?.personalInfo?.linkedinUrl || '',
         portfolioUrl: this.userProfile?.personalInfo?.portfolioUrl || '',
         githubUrl: this.userProfile?.personalInfo?.githubUrl || '',
@@ -332,10 +339,11 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
 
   toggleEditProfessional() {
     this.isEditingProfessional = !this.isEditingProfessional;
-    if (!this.isEditingProfessional) {
+    this.clearMessages();
+    if (this.isEditingProfessional) {
+      // Populate form when entering edit mode
       this.populateProfessionalForm();
     }
-    this.clearMessages();
   }
 
   onProfileSubmit() {
@@ -384,6 +392,17 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   }
 
   onProfessionalSubmit() {
+    // This method is called when the reactive form is submitted (not used anymore)
+    this.saveProfessionalInfo();
+  }
+
+  saveProfessionalInfo() {
+    console.log('saveProfessionalInfo called');
+    console.log('Form valid:', this.professionalForm.valid);
+    console.log('Form value:', this.professionalForm.value);
+    console.log('Form errors:', this.professionalForm.errors);
+    console.log('Current user:', this.currentUser);
+
     if (this.professionalForm.valid && this.currentUser) {
       this.isLoading = true;
       this.clearMessages();
@@ -427,71 +446,78 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
         resume: this.userProfile?.resume,
       };
 
+      console.log('Saving profile data:', profileData);
       this.saveProfile(profileData);
     } else {
+      console.log('Form is invalid or no current user');
+      if (!this.professionalForm.valid) {
+        console.log('Form validation errors:');
+        Object.keys(this.professionalForm.controls).forEach((key) => {
+          const control = this.professionalForm.get(key);
+          if (control && control.errors) {
+            console.log(`${key}:`, control.errors);
+          }
+        });
+      }
       this.markFormGroupTouched(this.professionalForm);
     }
   }
 
   private saveProfile(profileData: any) {
-    if (this.userProfile) {
-      this.authSubscription.add(
-        this.profileService.updateUserProfile(profileData).subscribe({
-          next: (updatedProfile) => {
-            this.userProfile = updatedProfile;
-            this.isLoading = false;
-            this.isEditingProfile = false;
-            this.isEditingProfessional = false;
-            this.profileUpdateSuccess = true;
-            setTimeout(() => {
-              this.profileUpdateSuccess = false;
-            }, 3000);
-          },
-          error: (error) => {
-            console.error('Error updating profile:', error);
-            this.isLoading = false;
-            this.errorMessage = 'Failed to update profile. Please try again.';
-            setTimeout(() => {
-              this.errorMessage = '';
-            }, 5000);
-          },
-        })
-      );
-    } else {
-      this.authSubscription.add(
-        this.profileService.createUserProfile(profileData).subscribe({
-          next: (newProfile) => {
-            this.userProfile = newProfile;
-            this.isLoading = false;
-            this.isEditingProfile = false;
-            this.isEditingProfessional = false;
-            this.profileUpdateSuccess = true;
-            setTimeout(() => {
-              this.profileUpdateSuccess = false;
-            }, 3000);
-          },
-          error: (error) => {
-            console.error('Error creating profile:', error);
-            this.isLoading = false;
-            this.errorMessage = 'Failed to create profile. Please try again.';
-            setTimeout(() => {
-              this.errorMessage = '';
-            }, 5000);
-          },
-        })
-      );
-    }
+    const isUpdate = !!this.userProfile;
+    const operation = isUpdate ? 'update' : 'create';
+
+    const serviceCall = isUpdate
+      ? this.profileService.updateUserProfile(profileData)
+      : this.profileService.createUserProfile(profileData);
+
+    this.authSubscription.add(
+      serviceCall.subscribe({
+        next: (profile) => {
+          this.userProfile = profile;
+          this.isLoading = false;
+          this.isEditingProfile = false;
+          this.isEditingProfessional = false;
+          this.successMessage = `Profile ${operation}d successfully!`;
+
+          // Auto-hide success message
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 3000);
+
+          console.log(`Profile ${operation}d successfully:`, profile);
+        },
+        error: (error) => {
+          console.error(`Error ${operation}ing profile:`, error);
+          this.isLoading = false;
+          this.errorMessage = `Failed to ${operation} profile. Please try again.`;
+
+          // Auto-hide error message
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 5000);
+        },
+      })
+    );
   }
 
   // Skills management
   addSkill() {
-    if (this.newSkill.trim() && this.userProfile?.professionalInfo) {
-      if (
-        !this.userProfile.professionalInfo.skills.includes(this.newSkill.trim())
-      ) {
-        this.userProfile.professionalInfo.skills.push(this.newSkill.trim());
-        this.newSkill = '';
-        this.updateProfessionalInfo();
+    if (this.newSkill.trim()) {
+      this.ensureProfessionalInfoExists();
+      if (this.userProfile?.professionalInfo) {
+        if (!this.userProfile.professionalInfo.skills) {
+          this.userProfile.professionalInfo.skills = [];
+        }
+        if (
+          !this.userProfile.professionalInfo.skills.includes(
+            this.newSkill.trim()
+          )
+        ) {
+          this.userProfile.professionalInfo.skills.push(this.newSkill.trim());
+          this.newSkill = '';
+          // Don't save immediately - only save when form is submitted
+        }
       }
     }
   }
@@ -502,22 +528,29 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
         this.userProfile.professionalInfo.skills.filter(
           (s: string) => s !== skill
         );
-      this.updateProfessionalInfo();
+      // Don't save immediately - only save when form is submitted
     }
   }
 
+  // Job Type management
   addJobType() {
-    if (this.newJobType.trim() && this.userProfile?.professionalInfo) {
-      if (
-        !this.userProfile.professionalInfo.preferredJobTypes.includes(
-          this.newJobType.trim()
-        )
-      ) {
-        this.userProfile.professionalInfo.preferredJobTypes.push(
-          this.newJobType.trim()
-        );
-        this.newJobType = '';
-        this.updateProfessionalInfo();
+    if (this.newJobType.trim()) {
+      this.ensureProfessionalInfoExists();
+      if (this.userProfile?.professionalInfo) {
+        if (!this.userProfile.professionalInfo.preferredJobTypes) {
+          this.userProfile.professionalInfo.preferredJobTypes = [];
+        }
+        if (
+          !this.userProfile.professionalInfo.preferredJobTypes.includes(
+            this.newJobType.trim()
+          )
+        ) {
+          this.userProfile.professionalInfo.preferredJobTypes.push(
+            this.newJobType.trim()
+          );
+          this.newJobType = '';
+          // Don't save immediately - only save when form is submitted
+        }
       }
     }
   }
@@ -526,24 +559,31 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
     if (this.userProfile?.professionalInfo) {
       this.userProfile.professionalInfo.preferredJobTypes =
         this.userProfile.professionalInfo.preferredJobTypes.filter(
-          (jt: string) => jt !== jobType
+          (type: string) => type !== jobType
         );
-      this.updateProfessionalInfo();
+      // Don't save immediately - only save when form is submitted
     }
   }
 
+  // Location management
   addLocation() {
-    if (this.newLocation.trim() && this.userProfile?.professionalInfo) {
-      if (
-        !this.userProfile.professionalInfo.preferredLocations.includes(
-          this.newLocation.trim()
-        )
-      ) {
-        this.userProfile.professionalInfo.preferredLocations.push(
-          this.newLocation.trim()
-        );
-        this.newLocation = '';
-        this.updateProfessionalInfo();
+    if (this.newLocation.trim()) {
+      this.ensureProfessionalInfoExists();
+      if (this.userProfile?.professionalInfo) {
+        if (!this.userProfile.professionalInfo.preferredLocations) {
+          this.userProfile.professionalInfo.preferredLocations = [];
+        }
+        if (
+          !this.userProfile.professionalInfo.preferredLocations.includes(
+            this.newLocation.trim()
+          )
+        ) {
+          this.userProfile.professionalInfo.preferredLocations.push(
+            this.newLocation.trim()
+          );
+          this.newLocation = '';
+          // Don't save immediately - only save when form is submitted
+        }
       }
     }
   }
@@ -552,24 +592,9 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
     if (this.userProfile?.professionalInfo) {
       this.userProfile.professionalInfo.preferredLocations =
         this.userProfile.professionalInfo.preferredLocations.filter(
-          (l: string) => l !== location
+          (loc: string) => loc !== location
         );
-      this.updateProfessionalInfo();
-    }
-  }
-
-  private updateProfessionalInfo() {
-    if (this.userProfile && this.currentUser) {
-      this.authSubscription.add(
-        this.profileService.updateUserProfile(this.userProfile).subscribe({
-          next: (updatedProfile) => {
-            this.userProfile = updatedProfile;
-          },
-          error: (error) => {
-            console.error('Error updating professional info:', error);
-          },
-        })
-      );
+      // Don't save immediately - only save when form is submitted
     }
   }
 
@@ -813,7 +838,57 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
     }
   }
 
+  replaceResume() {
+    const fileInput = document.getElementById(
+      'resumeReplace'
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  // Preferences management
+  toggleEditPreferences() {
+    this.isEditingPreferences = !this.isEditingPreferences;
+    this.clearMessages();
+  }
+
   // Utility methods
+  private ensureProfessionalInfoExists() {
+    if (!this.userProfile) {
+      console.error('No user profile found');
+      return;
+    }
+
+    if (!this.userProfile.professionalInfo) {
+      this.userProfile.professionalInfo = {
+        currentTitle: '',
+        yearsOfExperience: 0,
+        summary: '',
+        skills: [],
+        preferredJobTypes: [],
+        preferredLocations: [],
+        expectedSalary: {
+          min: 0,
+          max: 0,
+          currency: 'USD',
+        },
+        jobAlertFrequency: 'weekly',
+      };
+    }
+
+    // Ensure arrays exist
+    if (!this.userProfile.professionalInfo.skills) {
+      this.userProfile.professionalInfo.skills = [];
+    }
+    if (!this.userProfile.professionalInfo.preferredJobTypes) {
+      this.userProfile.professionalInfo.preferredJobTypes = [];
+    }
+    if (!this.userProfile.professionalInfo.preferredLocations) {
+      this.userProfile.professionalInfo.preferredLocations = [];
+    }
+  }
+
   private markFormGroupTouched(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);
@@ -865,7 +940,69 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   clearMessages() {
     this.errorMessage = '';
     this.successMessage = '';
-    this.profileUpdateSuccess = false;
+  }
+
+  // Refresh profile data from server
+  refreshProfile() {
+    if (this.currentUser) {
+      this.loadUserProfile();
+    }
+  }
+
+  // Check if profile has required data
+  isProfileComplete(): boolean {
+    if (!this.userProfile?.personalInfo) return false;
+
+    const personal = this.userProfile.personalInfo;
+    return !!(
+      personal.firstName &&
+      personal.lastName &&
+      personal.email &&
+      personal.phone
+    );
+  }
+
+  // Get completion percentage
+  getProfileCompletionPercentage(): number {
+    if (!this.userProfile) return 0;
+
+    let completed = 0;
+    let total = 0;
+
+    // Personal info (40% weight)
+    const personalFields = ['firstName', 'lastName', 'email', 'phone'];
+    personalFields.forEach((field) => {
+      total++;
+      if (
+        this.userProfile?.personalInfo?.[
+          field as keyof typeof this.userProfile.personalInfo
+        ]
+      ) {
+        completed++;
+      }
+    });
+
+    // Professional info (30% weight)
+    const professionalFields = ['currentTitle', 'summary'];
+    professionalFields.forEach((field) => {
+      total++;
+      if (
+        this.userProfile?.professionalInfo?.[
+          field as keyof typeof this.userProfile.professionalInfo
+        ]
+      ) {
+        completed++;
+      }
+    });
+
+    // Education and Experience (30% weight)
+    total += 2;
+    if (this.userProfile?.education && this.userProfile.education.length > 0)
+      completed++;
+    if (this.userProfile?.experience && this.userProfile.experience.length > 0)
+      completed++;
+
+    return Math.round((completed / total) * 100);
   }
 
   formatDate(dateString: string | undefined): string {
