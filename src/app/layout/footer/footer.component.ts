@@ -15,26 +15,23 @@ export class FooterComponent {
   // Footer navigation links
   jobSeekerLinks = [
     { title: 'Browse Jobs', route: '/jobs' },
-    { title: 'Job Alerts', route: '/job-alerts' },
-    { title: 'Career Advice', route: '/career-advice' },
-    { title: 'Resume Builder', route: '/resume-builder' },
-    { title: 'Salary Guide', route: '/salary-guide' },
+    { title: 'Applied Jobs', route: '/jobseeker/applied' },
+    { title: 'Saved Jobs', route: '/jobseeker/saved' },
+    { title: 'Profile', route: '/jobseeker/profile' },
   ];
 
   employerLinks = [
-    { title: 'Post a Job', route: '/post-job' },
-    { title: 'Browse Resumes', route: '/browse-resumes' },
-    { title: 'Employer Dashboard', route: '/employer-dashboard' },
-    { title: 'Pricing', route: '/pricing' },
-    { title: 'Recruitment Solutions', route: '/recruitment-solutions' },
+    { title: 'Post a Job', route: '/company/post-job' },
+    { title: 'My Jobs', route: '/company/my-jobs' },
+    { title: 'Company Dashboard', route: '/company/dashboard' },
+    { title: 'Company Profile', route: '/company/profile' },
   ];
 
   companyLinks = [
     { title: 'About Us', route: '/about' },
     { title: 'Contact', route: '/contact' },
-    { title: 'Careers', route: '/careers' },
-    { title: 'Press', route: '/press' },
-    { title: 'Blog', route: '/blog' },
+    { title: 'Find Jobs', route: '/jobs' },
+    { title: 'Home', route: '/' },
   ];
 
   supportLinks = [

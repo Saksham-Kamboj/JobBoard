@@ -1,0 +1,38 @@
+<div class="saved-jobs-page">
+  <div class="container">
+    <div class="header">
+      <h1>Saved Jobs</h1>
+      <p>Jobs you've saved for later review</p>
+    </div>
+
+    <div class="jobs-list" *ngIf="savedJobs.length > 0; else noJobs">
+      <div class="job-card" *ngFor="let job of savedJobs">
+        <div class="job-info">
+          <h3>
+            <a [routerLink]="['/jobs', job.id]">{{ job.title }}</a>
+          </h3>
+          <p class="company">{{ job.company }}</p>
+          <p class="location">{{ job.location }}</p>
+          <p class="salary">{{ job.salary }}</p>
+          <p class="saved-date">Saved on: {{ job.savedDate | date }}</p>
+        </div>
+        <div class="job-actions">
+          <button class="apply-btn" [routerLink]="['/jobs', job.id, 'apply']">
+            Apply Now
+          </button>
+          <button class="remove-btn" (click)="removeSavedJob(job.id)">
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noJobs>
+      <div class="no-jobs">
+        <h2>No Saved Jobs</h2>
+        <p>You haven't saved any jobs yet. Browse jobs and save the ones that interest you!</p>
+        <a routerLink="/jobs" class="browse-btn">Browse Jobs</a>
+      </div>
+    </ng-template>
+  </div>
+</div>

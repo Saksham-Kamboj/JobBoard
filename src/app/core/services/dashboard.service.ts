@@ -76,12 +76,43 @@ export interface RecentJobPosting {
   id: string;
   title: string;
   company: string;
+  location: string;
   postedDate: string;
   applications: number;
   status: string;
 }
 
 export interface RecentApplicationForAdmin {
+  id: string;
+  applicantName: string;
+  jobTitle: string;
+  appliedDate: string;
+  status: string;
+  jobId: string;
+  userId: string;
+}
+
+export interface JobSeekerDashboardStats {
+  id: string;
+  userId: string;
+  totalApplications: number;
+  pendingApplications: number;
+  interviewsScheduled: number;
+  savedJobs: number;
+  lastUpdated: string;
+}
+
+export interface CompanyDashboardStats {
+  id: string;
+  userId: string;
+  totalJobs: number;
+  activeJobs: number;
+  totalApplications: number;
+  newApplications: number;
+  lastUpdated: string;
+}
+
+export interface RecentApplicationForCompany {
   id: string;
   applicantName: string;
   jobTitle: string;
@@ -328,6 +359,7 @@ export class DashboardService {
             id: job.id,
             title: job.title,
             company: job.company,
+            location: job.location,
             postedDate: job.postedDate,
             applications: job.applicationCount || 0,
             status: job.isActive ? 'active' : 'inactive',
@@ -390,6 +422,186 @@ export class DashboardService {
         }),
         catchError(() => of([]))
       );
+  }
+
+  // Job Seeker Dashboard Methods
+  getJobSeekerDashboardStats(
+    userId: string
+  ): Observable<JobSeekerDashboardStats> {
+    return forkJoin({
+      applications: this.jobApplicationService
+        .getUserApplications(userId)
+        .pipe(catchError(() => of([]))),
+      savedJobs: this.getSavedJobs(userId).pipe(catchError(() => of([]))),
+    }).pipe(
+      map(({ applications, savedJobs }) => {
+        const pendingApplications = applications.filter(
+          (app) => app.status === 'submitted' || app.status === 'under-review'
+        ).length;
+
+        const interviewsScheduled = applications.filter(
+          (app) => app.status === 'interview'
+        ).length;
+
+        return {
+          id: `jobseeker-stats-${userId}`,
+          userId,
+          totalApplications: applications.length,
+          pendingApplications,
+          interviewsScheduled,
+          savedJobs: savedJobs.length,
+          lastUpdated: new Date().toISOString(),
+        };
+      }),
+      catchError(() => of(this.getDefaultJobSeekerStats(userId)))
+    );
+  }
+
+  getUserRecentApplications(
+    userId: string,
+    limit: number = 3
+  ): Observable<RecentApplication[]> {
+    return this.getRecentApplications(userId, limit);
+  }
+
+  // Company Dashboard Methods
+  getCompanyDashboardStats(userId: string): Observable<CompanyDashboardStats> {
+    return forkJoin({
+      jobs: this.jobService.getAllJobs().pipe(catchError(() => of([]))),
+      applications: this.http
+        .get<JobApplication[]>(`${this.apiUrl}/jobApplications`)
+        .pipe(catchError(() => of([]))),
+    }).pipe(
+      map(({ jobs, applications }) => {
+        // Filter jobs posted by this company user
+        const companyJobs = jobs.filter(
+          (job) => job.postedBy === userId || job.companyId === userId
+        );
+        const activeJobs = companyJobs.filter((job) => job.isActive).length;
+
+        // Filter applications for this company's jobs
+        const companyJobIds = companyJobs.map((job) => job.id);
+        const companyApplications = applications.filter((app) =>
+          companyJobIds.includes(app.jobId)
+        );
+
+        const recentApplications = companyApplications.filter((app) => {
+          const submittedDate = new Date(app.submittedAt);
+          const weekAgo = new Date();
+          weekAgo.setDate(weekAgo.getDate() - 7);
+          return submittedDate >= weekAgo;
+        }).length;
+
+        return {
+          id: `company-stats-${userId}`,
+          userId,
+          totalJobs: companyJobs.length,
+          activeJobs,
+          totalApplications: companyApplications.length,
+          newApplications: recentApplications,
+          lastUpdated: new Date().toISOString(),
+        };
+      }),
+      catchError(() => of(this.getDefaultCompanyStats(userId)))
+    );
+  }
+
+  getCompanyRecentJobPostings(
+    userId: string,
+    limit: number = 3
+  ): Observable<RecentJobPosting[]> {
+    return this.jobService.getAllJobs().pipe(
+      map((jobs) => {
+        return jobs
+          .filter((job) => job.postedBy === userId || job.companyId === userId)
+          .sort(
+            (a, b) =>
+              new Date(b.postedDate).getTime() -
+              new Date(a.postedDate).getTime()
+          )
+          .slice(0, limit)
+          .map((job) => ({
+            id: job.id,
+            title: job.title,
+            company: job.company,
+            location: job.location,
+            postedDate: job.postedDate,
+            applications: job.applicationCount || 0,
+            status: job.isActive ? 'active' : 'inactive',
+          }));
+      }),
+      catchError(() => of([]))
+    );
+  }
+
+  getCompanyRecentApplications(
+    userId: string,
+    limit: number = 3
+  ): Observable<RecentApplicationForCompany[]> {
+    return forkJoin({
+      jobs: this.jobService.getAllJobs(),
+      applications: this.http.get<JobApplication[]>(
+        `${this.apiUrl}/jobApplications`
+      ),
+    }).pipe(
+      switchMap(({ jobs, applications }) => {
+        // Get company's job IDs
+        const companyJobIds = jobs
+          .filter((job) => job.postedBy === userId || job.companyId === userId)
+          .map((job) => job.id);
+
+        if (companyJobIds.length === 0) {
+          return of([]);
+        }
+
+        // Filter applications for company's jobs
+        const companyApplications = applications
+          .filter((app) => companyJobIds.includes(app.jobId))
+          .sort(
+            (a, b) =>
+              new Date(b.submittedAt).getTime() -
+              new Date(a.submittedAt).getTime()
+          )
+          .slice(0, limit);
+
+        if (companyApplications.length === 0) {
+          return of([]);
+        }
+
+        const requests = companyApplications.map((app) =>
+          forkJoin({
+            job: this.jobService.getJobById(app.jobId),
+            user: this.http.get<any>(`${this.apiUrl}/users/${app.userId}`),
+          }).pipe(
+            map(({ job, user }) => ({
+              id: app.id,
+              applicantName: `${user?.firstName || 'Unknown'} ${
+                user?.lastName || 'User'
+              }`,
+              jobTitle: job?.title || 'Unknown Job',
+              appliedDate: this.formatDate(app.submittedAt),
+              status: app.status,
+              jobId: app.jobId,
+              userId: app.userId,
+            })),
+            catchError(() =>
+              of({
+                id: app.id,
+                applicantName: 'Unknown User',
+                jobTitle: 'Unknown Job',
+                appliedDate: this.formatDate(app.submittedAt),
+                status: app.status,
+                jobId: app.jobId,
+                userId: app.userId,
+              })
+            )
+          )
+        );
+
+        return forkJoin(requests);
+      }),
+      catchError(() => of([]))
+    );
   }
 
   // Helper Methods
@@ -465,6 +677,30 @@ export class DashboardService {
   private getDefaultAdminStats(userId: string): AdminDashboardStats {
     return {
       id: `admin-stats-${userId}`,
+      userId,
+      totalJobs: 0,
+      activeJobs: 0,
+      totalApplications: 0,
+      newApplications: 0,
+      lastUpdated: new Date().toISOString(),
+    };
+  }
+
+  private getDefaultJobSeekerStats(userId: string): JobSeekerDashboardStats {
+    return {
+      id: `jobseeker-stats-${userId}`,
+      userId,
+      totalApplications: 0,
+      pendingApplications: 0,
+      interviewsScheduled: 0,
+      savedJobs: 0,
+      lastUpdated: new Date().toISOString(),
+    };
+  }
+
+  private getDefaultCompanyStats(userId: string): CompanyDashboardStats {
+    return {
+      id: `company-stats-${userId}`,
       userId,
       totalJobs: 0,
       activeJobs: 0,

@@ -1,0 +1,32 @@
+<div class="applied-jobs-page">
+  <div class="container">
+    <div class="header">
+      <h1>Applied Jobs</h1>
+      <p>Track your job applications and their status</p>
+    </div>
+
+    <div class="jobs-list" *ngIf="appliedJobs.length > 0; else noJobs">
+      <div class="job-card" *ngFor="let job of appliedJobs">
+        <div class="job-info">
+          <h3>{{ job.title }}</h3>
+          <p class="company">{{ job.company }}</p>
+          <p class="location">{{ job.location }}</p>
+          <p class="applied-date">Applied on: {{ job.appliedDate | date }}</p>
+        </div>
+        <div class="job-status">
+          <span class="status-badge" [class]="'status-' + job.status.toLowerCase().replace(' ', '-')">
+            {{ job.status }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noJobs>
+      <div class="no-jobs">
+        <h2>No Applied Jobs</h2>
+        <p>You haven't applied to any jobs yet. Start browsing and apply to jobs that interest you!</p>
+        <a routerLink="/jobs" class="browse-btn">Browse Jobs</a>
+      </div>
+    </ng-template>
+  </div>
+</div>
