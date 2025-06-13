@@ -30,6 +30,7 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   professionalForm: FormGroup;
   educationForm: FormGroup;
   experienceForm: FormGroup;
+  preferencesForm: FormGroup;
 
   // UI state
   activeSection = 'personal';
@@ -123,7 +124,6 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
       expectedSalaryMin: [0, [Validators.min(0)]],
       expectedSalaryMax: [0, [Validators.min(0)]],
       expectedSalaryCurrency: ['USD'],
-      jobAlertFrequency: ['weekly'],
     });
 
     this.educationForm = this.fb.group({
@@ -145,6 +145,13 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
       isCurrentPosition: [false],
       description: [''],
       location: [''],
+    });
+
+    this.preferencesForm = this.fb.group({
+      jobAlertFrequency: ['weekly'],
+      profileVisibility: ['public'],
+      emailNotifications: [true],
+      smsNotifications: [false],
     });
 
     // Add form listeners for checkbox functionality
@@ -453,7 +460,8 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
           max: formValue.expectedSalaryMax,
           currency: formValue.expectedSalaryCurrency,
         },
-        jobAlertFrequency: formValue.jobAlertFrequency,
+        jobAlertFrequency:
+          this.userProfile?.professionalInfo?.jobAlertFrequency || 'weekly',
       };
 
       const profileData = {
@@ -926,7 +934,77 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   // Preferences management
   toggleEditPreferences() {
     this.isEditingPreferences = !this.isEditingPreferences;
+    if (this.isEditingPreferences) {
+      this.populatePreferencesForm();
+    } else {
+      this.preferencesForm.reset();
+    }
     this.clearMessages();
+  }
+
+  populatePreferencesForm() {
+    if (this.userProfile?.professionalInfo) {
+      this.preferencesForm.patchValue({
+        jobAlertFrequency:
+          this.userProfile.professionalInfo.jobAlertFrequency || 'weekly',
+        profileVisibility:
+          this.userProfile.professionalInfo.profileVisibility || 'public',
+        emailNotifications:
+          this.userProfile.professionalInfo.emailNotifications !== false,
+        smsNotifications:
+          this.userProfile.professionalInfo.smsNotifications || false,
+      });
+    }
+  }
+
+  onPreferencesSubmit() {
+    if (this.preferencesForm.valid && this.userProfile && this.currentUser) {
+      this.isLoading = true;
+      this.clearMessages();
+
+      const formValue = this.preferencesForm.value;
+
+      // Update professional info with preferences
+      const updatedProfessionalInfo = {
+        ...this.userProfile.professionalInfo,
+        jobAlertFrequency: formValue.jobAlertFrequency,
+        profileVisibility: formValue.profileVisibility,
+        emailNotifications: formValue.emailNotifications,
+        smsNotifications: formValue.smsNotifications,
+      };
+
+      const profileData = {
+        ...this.userProfile,
+        professionalInfo: updatedProfessionalInfo,
+      };
+
+      this.authSubscription.add(
+        this.profileService.updateUserProfile(profileData).subscribe({
+          next: (updatedProfile) => {
+            this.userProfile = updatedProfile;
+            this.isLoading = false;
+            this.isEditingPreferences = false;
+            this.successMessage = 'Preferences updated successfully!';
+
+            // Auto-hide success message
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 3000);
+          },
+          error: (error) => {
+            console.error('Error updating preferences:', error);
+            this.isLoading = false;
+            this.errorMessage =
+              'Failed to update preferences. Please try again.';
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 5000);
+          },
+        })
+      );
+    } else {
+      this.markFormGroupTouched(this.preferencesForm);
+    }
   }
 
   // Utility methods

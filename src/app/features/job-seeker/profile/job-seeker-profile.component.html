@@ -306,14 +306,6 @@
                     </select>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label for="jobAlertFrequency" class="form-label">Job Alert Frequency</label>
-                  <select id="jobAlertFrequency" formControlName="jobAlertFrequency" class="form-select">
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                  </select>
-                </div>
               </div>
             </div>
 
@@ -877,7 +869,108 @@
           </button>
         </div>
 
-        <div class="preferences-content">
+        <!-- Preferences Edit Form -->
+        <form *ngIf="isEditingPreferences" [formGroup]="preferencesForm" (ngSubmit)="onPreferencesSubmit()"
+          class="profile-edit-form">
+          <div class="form-card">
+            <div class="form-card-header">
+              <div class="form-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 1l3.09 6.26L22 8.27l-5 4.87 1.18 6.88L12 16.77l-6.18 3.25L7 13.14 2 8.27l6.91-1.01L12 1z"
+                    stroke="currentColor" stroke-width="2" />
+                </svg>
+              </div>
+              <div class="form-card-title">
+                <h3>Job Alert Settings</h3>
+                <p>Configure your job notification preferences</p>
+              </div>
+            </div>
+            <div class="form-card-content">
+              <div class="form-group">
+                <label for="jobAlertFrequency" class="form-label">Job Alert Frequency</label>
+                <select id="jobAlertFrequency" formControlName="jobAlertFrequency" class="form-select">
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="never">Never</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-header">
+              <div class="form-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" />
+                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
+                </svg>
+              </div>
+              <div class="form-card-title">
+                <h3>Profile Visibility</h3>
+                <p>Control who can see your profile</p>
+              </div>
+            </div>
+            <div class="form-card-content">
+              <div class="form-group">
+                <label for="profileVisibility" class="form-label">Profile Visibility</label>
+                <select id="profileVisibility" formControlName="profileVisibility" class="form-select">
+                  <option value="public">Public - Visible to all employers</option>
+                  <option value="private">Private - Only visible to you</option>
+                  <option value="limited">Limited - Visible to selected employers</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-header">
+              <div class="form-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                    stroke="currentColor" stroke-width="2" />
+                  <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" />
+                </svg>
+              </div>
+              <div class="form-card-title">
+                <h3>Notification Settings</h3>
+                <p>Choose how you want to receive notifications</p>
+              </div>
+            </div>
+            <div class="form-card-content">
+              <div class="form-group">
+                <div class="checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="emailNotifications" class="checkbox-input">
+                    <span class="checkbox-text">Email Notifications</span>
+                  </label>
+                  <p class="checkbox-description">Receive job alerts and updates via email</p>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" formControlName="smsNotifications" class="checkbox-input">
+                    <span class="checkbox-text">SMS Notifications</span>
+                  </label>
+                  <p class="checkbox-description">Receive urgent job alerts via SMS</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions-card">
+            <button type="button" (click)="toggleEditPreferences()" class="btn-secondary">Cancel</button>
+            <button type="submit" class="btn-primary" [disabled]="isLoading">
+              <span *ngIf="isLoading" class="loading-spinner"></span>
+              {{ isLoading ? 'Saving...' : 'Save Preferences' }}
+            </button>
+          </div>
+        </form>
+
+        <!-- Preferences Display -->
+        <div *ngIf="!isEditingPreferences" class="preferences-content">
           <div class="preference-card">
             <div class="preference-header">
               <h3 class="preference-title">Job Alert Settings</h3>
@@ -898,8 +991,27 @@
             </div>
             <div class="preference-body">
               <div class="preference-item">
-                <span class="preference-label">Profile Status</span>
-                <span class="preference-value">{{ currentUser?.isActive ? 'Active' : 'Inactive' }}</span>
+                <span class="preference-label">Profile Visibility</span>
+                <span class="preference-value">{{ userProfile?.professionalInfo?.profileVisibility || 'Public' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="preference-card">
+            <div class="preference-header">
+              <h3 class="preference-title">Notification Settings</h3>
+              <p class="preference-description">Your current notification preferences</p>
+            </div>
+            <div class="preference-body">
+              <div class="preference-item">
+                <span class="preference-label">Email Notifications</span>
+                <span class="preference-value">{{ userProfile?.professionalInfo?.emailNotifications !== false ?
+                  'Enabled' : 'Disabled' }}</span>
+              </div>
+              <div class="preference-item">
+                <span class="preference-label">SMS Notifications</span>
+                <span class="preference-value">{{ userProfile?.professionalInfo?.smsNotifications ? 'Enabled' :
+                  'Disabled' }}</span>
               </div>
             </div>
           </div>

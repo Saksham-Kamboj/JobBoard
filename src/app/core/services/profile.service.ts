@@ -35,6 +35,9 @@ export interface UserProfile {
       currency: string;
     };
     jobAlertFrequency: string;
+    profileVisibility?: string;
+    emailNotifications?: boolean;
+    smsNotifications?: boolean;
   };
   education: Array<{
     id?: string;
@@ -295,6 +298,9 @@ export class ProfileService {
           currency: 'USD',
         },
         jobAlertFrequency: 'weekly',
+        profileVisibility: 'public',
+        emailNotifications: true,
+        smsNotifications: false,
       },
       education: [],
       experience: [],
@@ -334,6 +340,9 @@ export class ProfileService {
           currency: 'USD',
         },
         jobAlertFrequency: 'weekly',
+        profileVisibility: 'public',
+        emailNotifications: true,
+        smsNotifications: false,
       },
       education: [],
       experience: [],
