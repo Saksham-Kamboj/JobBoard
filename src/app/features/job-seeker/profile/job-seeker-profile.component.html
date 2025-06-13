@@ -538,16 +538,20 @@
               <div class="form-row">
                 <div class="form-group">
                   <label for="startDate" class="form-label">Start Date *</label>
-                  <input type="month" id="startDate" formControlName="startDate" class="form-input"
+                  <input type="date" id="startDate" formControlName="startDate" class="form-input"
                     [class.error]="getFieldError('startDate', educationForm)">
                   <div *ngIf="getFieldError('startDate', educationForm)" class="field-error">
                     {{ getFieldError('startDate', educationForm) }}
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="endDate" class="form-label">End Date</label>
-                  <input type="month" id="endDate" formControlName="endDate" class="form-input"
-                    [disabled]="educationForm.get('isCurrentlyStudying')?.value">
+                  <label for="endDate" class="form-label">End Date *</label>
+                  <input type="date" id="endDate" formControlName="endDate" class="form-input"
+                    [disabled]="educationForm.get('isCurrentlyStudying')?.value"
+                    [class.error]="getFieldError('endDate', educationForm)">
+                  <div *ngIf="getFieldError('endDate', educationForm)" class="field-error">
+                    {{ getFieldError('endDate', educationForm) }}
+                  </div>
                 </div>
               </div>
               <div class="form-group">
@@ -579,11 +583,12 @@
           <div *ngFor="let education of userProfile?.education; let i = index" class="education-item">
             <div class="education-header">
               <div class="education-details">
-                <h3 class="education-title">{{ education.degree }} in {{ education.field }}</h3>
+                <h3 class="education-title">{{ education.degree }} in {{ education.fieldOfStudy }}</h3>
                 <p class="education-institution">{{ education.institution }}</p>
                 <p class="education-dates">
                   {{ formatDate(education.startDate) }} -
-                  {{ education.endDate ? formatDate(education.endDate) : 'Present' }}
+                  {{ education.isCurrentlyStudying || education.endDate === null || !education.endDate ? 'Present' :
+                  formatDate(education.endDate) }}
                 </p>
               </div>
               <div class="education-actions">
@@ -682,16 +687,20 @@
               <div class="form-row">
                 <div class="form-group">
                   <label for="startDate" class="form-label">Start Date *</label>
-                  <input type="month" id="startDate" formControlName="startDate" class="form-input"
+                  <input type="date" id="startDate" formControlName="startDate" class="form-input"
                     [class.error]="getFieldError('startDate', experienceForm)">
                   <div *ngIf="getFieldError('startDate', experienceForm)" class="field-error">
                     {{ getFieldError('startDate', experienceForm) }}
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="endDate" class="form-label">End Date</label>
-                  <input type="month" id="endDate" formControlName="endDate" class="form-input"
-                    [disabled]="experienceForm.get('isCurrentPosition')?.value">
+                  <label for="endDate" class="form-label">End Date *</label>
+                  <input type="date" id="endDate" formControlName="endDate" class="form-input"
+                    [disabled]="experienceForm.get('isCurrentPosition')?.value"
+                    [class.error]="getFieldError('endDate', experienceForm)">
+                  <div *ngIf="getFieldError('endDate', experienceForm)" class="field-error">
+                    {{ getFieldError('endDate', experienceForm) }}
+                  </div>
                 </div>
               </div>
               <div class="form-group">
@@ -728,7 +737,9 @@
                 <p class="experience-location" *ngIf="experience.location">{{ experience.location }}</p>
                 <p class="experience-dates">
                   {{ formatDate(experience.startDate) }} -
-                  {{ experience.current ? 'Present' : formatDate(experience.endDate || '') }}
+                  {{ experience.isCurrentPosition || experience.current || experience.endDate === null ||
+                  !experience.endDate ? 'Present' :
+                  formatDate(experience.endDate || '') }}
                 </p>
               </div>
               <div class="experience-actions">

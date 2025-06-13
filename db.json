@@ -9,7 +9,7 @@
       "password": "password123",
       "createdAt": "2024-01-01T00:00:00.000Z",
       "isActive": true,
-      "updatedAt": "2025-06-13T10:59:10.276Z",
+      "updatedAt": "2025-06-13T11:25:01.149Z",
       "phone": "+1 (555) 123-45672345"
     },
     {
@@ -128,8 +128,8 @@
           "institution": "Indian Institute of Technology, Bangalore",
           "degree": "Bachelor of Technology",
           "fieldOfStudy": "Compute Science",
-          "startDate": "2012-08",
-          "endDate": "2016-05",
+          "startDate": "2012-08-01",
+          "endDate": "2016-05-01",
           "isCurrentlyStudying": false,
           "gpa": "8.5",
           "description": "Focused on software engineering and web development with specialization in modern web technologies"
@@ -137,23 +137,18 @@
       ],
       "experience": [
         {
-          "id": "exp1",
           "company": "Wipro Technologies",
           "position": "Frontend Developer",
-          "startDate": "2020-01",
-          "endDate": null,
-          "current": true,
-          "location": "Bangalore, Karnataka",
+          "startDate": "2020-01-01",
+          "endDate": "2025-01-01",
+          "isCurrentPosition": false,
           "description": "Develop and maintain React-based web applications serving 100k+ users. Collaborate with design and backend teams to deliver high-quality user experiences.",
-          "achievements": [
-            "Improved application performance by 40% through code optimization",
-            "Led migration from JavaScript to TypeScript",
-            "Mentored 3 junior developers"
-          ]
+          "location": "Bangalore, Karnataka",
+          "current": false
         }
       ],
       "createdAt": "2024-12-01T10:00:00.000Z",
-      "updatedAt": "2025-06-13T10:59:10.229Z",
+      "updatedAt": "2025-06-13T11:25:01.108Z",
       "resume": {
         "fileName": "02 A B Testing.docx",
         "fileUrl": "blob:http://localhost:4200/3f449c56-7ba1-44f2-b39f-3f32811e618b",

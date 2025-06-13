@@ -37,24 +37,27 @@ export interface UserProfile {
     jobAlertFrequency: string;
   };
   education: Array<{
-    id: string;
+    id?: string;
     institution: string;
     degree: string;
-    field: string;
+    field?: string; // Legacy field name
+    fieldOfStudy: string; // New field name
     startDate: string;
-    endDate: string;
+    endDate?: string;
+    isCurrentlyStudying?: boolean;
     gpa?: string;
     description?: string;
   }>;
   experience: Array<{
-    id: string;
+    id?: string;
     company: string;
     position: string;
     startDate: string;
-    endDate: string | null;
-    current: boolean;
-    location: string;
-    description: string;
+    endDate?: string | null;
+    current?: boolean; // Legacy field name
+    isCurrentPosition?: boolean; // New field name
+    location?: string;
+    description?: string;
     achievements?: string[];
   }>;
   resume?: {

@@ -131,7 +131,7 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
       degree: ['', Validators.required],
       fieldOfStudy: ['', Validators.required],
       startDate: ['', Validators.required],
-      endDate: [''],
+      endDate: ['', Validators.required], // Initially required
       isCurrentlyStudying: [false],
       gpa: [''],
       description: [''],
@@ -141,11 +141,14 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
       company: ['', Validators.required],
       position: ['', Validators.required],
       startDate: ['', Validators.required],
-      endDate: [''],
+      endDate: ['', Validators.required], // Initially required
       isCurrentPosition: [false],
       description: [''],
       location: [''],
     });
+
+    // Add form listeners for checkbox functionality
+    this.setupFormListeners();
 
     // Initialize available options
     this.availableSkills = [
@@ -217,6 +220,40 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
         }
       })
     );
+  }
+
+  setupFormListeners() {
+    // Education form: When "currently studying" is checked, clear and disable end date
+    this.educationForm
+      .get('isCurrentlyStudying')
+      ?.valueChanges.subscribe((isCurrentlyStudying) => {
+        const endDateControl = this.educationForm.get('endDate');
+        if (isCurrentlyStudying) {
+          endDateControl?.setValue('');
+          endDateControl?.disable();
+          endDateControl?.clearValidators();
+        } else {
+          endDateControl?.enable();
+          endDateControl?.setValidators([Validators.required]);
+        }
+        endDateControl?.updateValueAndValidity();
+      });
+
+    // Experience form: When "current position" is checked, clear and disable end date
+    this.experienceForm
+      .get('isCurrentPosition')
+      ?.valueChanges.subscribe((isCurrentPosition) => {
+        const endDateControl = this.experienceForm.get('endDate');
+        if (isCurrentPosition) {
+          endDateControl?.setValue('');
+          endDateControl?.disable();
+          endDateControl?.clearValidators();
+        } else {
+          endDateControl?.enable();
+          endDateControl?.setValidators([Validators.required]);
+        }
+        endDateControl?.updateValueAndValidity();
+      });
   }
 
   ngOnDestroy() {
@@ -397,12 +434,6 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   }
 
   saveProfessionalInfo() {
-    console.log('saveProfessionalInfo called');
-    console.log('Form valid:', this.professionalForm.valid);
-    console.log('Form value:', this.professionalForm.value);
-    console.log('Form errors:', this.professionalForm.errors);
-    console.log('Current user:', this.currentUser);
-
     if (this.professionalForm.valid && this.currentUser) {
       this.isLoading = true;
       this.clearMessages();
@@ -446,19 +477,8 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
         resume: this.userProfile?.resume,
       };
 
-      console.log('Saving profile data:', profileData);
       this.saveProfile(profileData);
     } else {
-      console.log('Form is invalid or no current user');
-      if (!this.professionalForm.valid) {
-        console.log('Form validation errors:');
-        Object.keys(this.professionalForm.controls).forEach((key) => {
-          const control = this.professionalForm.get(key);
-          if (control && control.errors) {
-            console.log(`${key}:`, control.errors);
-          }
-        });
-      }
       this.markFormGroupTouched(this.professionalForm);
     }
   }
@@ -611,9 +631,28 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   editEducation(index: number) {
     if (this.userProfile?.education && this.userProfile.education[index]) {
       const education = this.userProfile.education[index];
-      this.educationForm.patchValue(education);
+
+      // Convert dates to proper format for form inputs
+      const formData = {
+        ...education,
+        startDate: this.formatDateForInput(education.startDate),
+        endDate: this.formatDateForInput(education.endDate),
+      };
+
+      this.educationForm.patchValue(formData);
       this.editingEducationIndex = index;
       this.isEditingEducation = true;
+
+      // Set up validation based on current checkbox state
+      const endDateControl = this.educationForm.get('endDate');
+      if (education.isCurrentlyStudying) {
+        endDateControl?.clearValidators();
+        endDateControl?.disable();
+      } else {
+        endDateControl?.setValidators([Validators.required]);
+        endDateControl?.enable();
+      }
+      endDateControl?.updateValueAndValidity();
     }
   }
 
@@ -621,15 +660,22 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
     if (this.educationForm.valid && this.userProfile && this.currentUser) {
       const formValue = this.educationForm.value;
 
+      // Handle checkbox logic: if currently studying, set endDate to null
+      const educationData = {
+        ...formValue,
+        endDate: formValue.isCurrentlyStudying ? null : formValue.endDate,
+        isCurrentlyStudying: formValue.isCurrentlyStudying,
+      };
+
       if (this.editingEducationIndex >= 0) {
         // Update existing education
-        this.userProfile.education[this.editingEducationIndex] = formValue;
+        this.userProfile.education[this.editingEducationIndex] = educationData;
       } else {
         // Add new education
         if (!this.userProfile.education) {
           this.userProfile.education = [];
         }
-        this.userProfile.education.push(formValue);
+        this.userProfile.education.push(educationData);
       }
 
       this.authSubscription.add(
@@ -698,9 +744,30 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   editExperience(index: number) {
     if (this.userProfile?.experience && this.userProfile.experience[index]) {
       const experience = this.userProfile.experience[index];
-      this.experienceForm.patchValue(experience);
+
+      // Handle both old and new field names for current position and convert dates
+      const formData = {
+        ...experience,
+        isCurrentPosition:
+          experience.isCurrentPosition || experience.current || false,
+        startDate: this.formatDateForInput(experience.startDate),
+        endDate: this.formatDateForInput(experience.endDate),
+      };
+
+      this.experienceForm.patchValue(formData);
       this.editingExperienceIndex = index;
       this.isEditingExperience = true;
+
+      // Set up validation based on current checkbox state
+      const endDateControl = this.experienceForm.get('endDate');
+      if (formData.isCurrentPosition) {
+        endDateControl?.clearValidators();
+        endDateControl?.disable();
+      } else {
+        endDateControl?.setValidators([Validators.required]);
+        endDateControl?.enable();
+      }
+      endDateControl?.updateValueAndValidity();
     }
   }
 
@@ -708,15 +775,24 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
     if (this.experienceForm.valid && this.userProfile && this.currentUser) {
       const formValue = this.experienceForm.value;
 
+      // Handle checkbox logic: if current position, set endDate to null
+      const experienceData = {
+        ...formValue,
+        endDate: formValue.isCurrentPosition ? null : formValue.endDate,
+        current: formValue.isCurrentPosition, // Add for backward compatibility
+        isCurrentPosition: formValue.isCurrentPosition, // Keep new field name
+      };
+
       if (this.editingExperienceIndex >= 0) {
         // Update existing experience
-        this.userProfile.experience[this.editingExperienceIndex] = formValue;
+        this.userProfile.experience[this.editingExperienceIndex] =
+          experienceData;
       } else {
         // Add new experience
         if (!this.userProfile.experience) {
           this.userProfile.experience = [];
         }
-        this.userProfile.experience.push(formValue);
+        this.userProfile.experience.push(experienceData);
       }
 
       this.authSubscription.add(
@@ -931,6 +1007,7 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
       degree: 'Degree',
       fieldOfStudy: 'Field of study',
       startDate: 'Start date',
+      endDate: 'End date',
       company: 'Company',
       position: 'Position',
     };
@@ -1008,9 +1085,34 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   formatDate(dateString: string | undefined): string {
     if (!dateString) return 'Present';
     try {
-      return new Date(dateString).toLocaleDateString();
+      const date = new Date(dateString);
+      // Format as DD-MM-YYYY
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
     } catch {
       return 'Unknown';
+    }
+  }
+
+  // Helper function to convert date for form input (YYYY-MM-DD format)
+  formatDateForInput(dateString: string | null | undefined): string {
+    if (!dateString) return '';
+    try {
+      // If it's already in YYYY-MM-DD format, return as is
+      if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        return dateString;
+      }
+      // If it's in YYYY-MM format, convert to YYYY-MM-01
+      if (dateString.match(/^\d{4}-\d{2}$/)) {
+        return `${dateString}-01`;
+      }
+      // Try to parse and format
+      const date = new Date(dateString);
+      return date.toISOString().split('T')[0];
+    } catch {
+      return '';
     }
   }
 
