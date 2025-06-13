@@ -9,7 +9,7 @@
       "password": "password123",
       "createdAt": "2024-01-01T00:00:00.000Z",
       "isActive": true,
-      "updatedAt": "2025-06-13T12:05:52.726Z",
+      "updatedAt": "2025-06-13T12:15:56.750Z",
       "phone": "+1 (555) 123-45672345"
     },
     {
@@ -121,10 +121,7 @@
           "max": 2000000,
           "currency": "INR"
         },
-        "jobAlertFrequency": "monthly",
-        "profileVisibility": "limited",
-        "emailNotifications": true,
-        "smsNotifications": true
+        "jobAlertFrequency": "monthly"
       },
       "education": [
         {
@@ -151,7 +148,7 @@
         }
       ],
       "createdAt": "2024-12-01T10:00:00.000Z",
-      "updatedAt": "2025-06-13T12:05:52.695Z",
+      "updatedAt": "2025-06-13T12:15:56.725Z",
       "resume": {
         "fileName": "02 A B Testing.docx",
         "fileUrl": "blob:http://localhost:4200/3f449c56-7ba1-44f2-b39f-3f32811e618b",
