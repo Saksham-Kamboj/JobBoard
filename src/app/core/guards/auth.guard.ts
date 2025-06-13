@@ -129,7 +129,7 @@ export class RoleGuard implements CanActivate {
     } else if (userRole === 'company') {
       this.router.navigate(['/company/dashboard']);
     } else {
-      this.router.navigate(['/jobseeker/home']);
+      this.router.navigate(['/dashboard']);
     }
   }
 }
@@ -151,7 +151,7 @@ export class GuestGuard implements CanActivate {
           } else if (user?.role === 'company') {
             this.router.navigate(['/company/dashboard']);
           } else {
-            this.router.navigate(['/jobseeker/home']);
+            this.router.navigate(['/dashboard']);
           }
           return false;
         }

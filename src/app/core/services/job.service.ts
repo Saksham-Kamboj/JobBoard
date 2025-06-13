@@ -24,6 +24,7 @@ export interface Job {
   applicationCount: number;
   featured?: boolean;
   companyId?: string;
+  postedBy?: string;
 }
 
 @Injectable({

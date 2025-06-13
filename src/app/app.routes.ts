@@ -6,7 +6,7 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./features/home/home.component').then((m) => m.HomeComponent),
+      import('./public/home/home.component').then((m) => m.HomeComponent),
   },
 
   // Job posting route (for admin and company roles) - MUST come before jobs/:id
@@ -15,7 +15,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['admin', 'company'] },
     loadComponent: () =>
-      import('./features/jobs/job-post/job-post.component').then(
+      import('./features/company/jobs/job-post/job-post.component').then(
         (m) => m.JobPostComponent
       ),
   },
@@ -24,7 +24,7 @@ export const routes: Routes = [
   {
     path: 'jobs',
     loadComponent: () =>
-      import('./features/jobs/job-list/job-list.component').then(
+      import('./public/jobs/job-list/job-list.component').then(
         (m) => m.JobListComponent
       ),
   },
@@ -48,14 +48,14 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['job-seeker'] },
     loadComponent: () =>
-      import('./features/jobs/job-apply/job-apply.component').then(
+      import('./features/job-seeker/jobs/job-apply/job-apply.component').then(
         (m) => m.JobApplyComponent
       ),
   },
   {
     path: 'jobs/:id',
     loadComponent: () =>
-      import('./features/jobs/job-detail/job-detail.component').then(
+      import('./public/jobs/job-detail/job-detail.component').then(
         (m) => m.JobDetailComponent
       ),
   },
@@ -64,12 +64,12 @@ export const routes: Routes = [
   {
     path: 'about',
     loadComponent: () =>
-      import('./features/about/about.component').then((m) => m.AboutComponent),
+      import('./public/about/about.component').then((m) => m.AboutComponent),
   },
   {
     path: 'contact',
     loadComponent: () =>
-      import('./features/contact/contact.component').then(
+      import('./public/contact/contact.component').then(
         (m) => m.ContactComponent
       ),
   },
@@ -123,35 +123,28 @@ export const routes: Routes = [
       {
         path: 'home',
         loadComponent: () =>
-          import('./features/home/home.component').then((m) => m.HomeComponent),
+          import('./public/home/home.component').then((m) => m.HomeComponent),
       },
       {
         path: 'jobs',
         loadComponent: () =>
-          import('./features/jobs/job-list/job-list.component').then(
+          import('./public/jobs/job-list/job-list.component').then(
             (m) => m.JobListComponent
           ),
       },
       {
         path: 'applied',
         loadComponent: () =>
-          import('./features/jobs/applied-jobs/applied-jobs.component').then(
-            (m) => m.AppliedJobsComponent
-          ),
+          import(
+            './features/job-seeker/jobs/applied-jobs/applied-jobs.component'
+          ).then((m) => m.AppliedJobsComponent),
       },
       {
         path: 'saved',
         loadComponent: () =>
-          import('./features/jobs/saved-jobs/saved-jobs.component').then(
-            (m) => m.SavedJobsComponent
-          ),
-      },
-      {
-        path: 'profile',
-        loadComponent: () =>
-          import('./features/profile/profile.component').then(
-            (m) => m.ProfileComponent
-          ),
+          import(
+            './features/job-seeker/jobs/saved-jobs/saved-jobs.component'
+          ).then((m) => m.SavedJobsComponent),
       },
       {
         path: '',
@@ -171,13 +164,13 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import(
-            './features/dashboard/job-seeker-dashboard/job-seeker-dashboard.component'
-          ).then((m) => m.JobSeekerDashboardComponent),
+            './features/company/dashboard/company-dashboard.component'
+          ).then((m) => m.CompanyDashboardComponent),
       },
       {
         path: 'post-job',
         loadComponent: () =>
-          import('./features/jobs/job-post/job-post.component').then(
+          import('./features/company/jobs/job-post/job-post.component').then(
             (m) => m.JobPostComponent
           ),
       },
@@ -198,8 +191,15 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadComponent: () =>
-          import('./features/profile/profile.component').then(
-            (m) => m.ProfileComponent
+          import('./features/company/profile/company-profile.component').then(
+            (m) => m.CompanyProfileComponent
+          ),
+      },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./features/company/settings/company-settings.component').then(
+            (m) => m.CompanySettingsComponent
           ),
       },
       {
@@ -210,41 +210,37 @@ export const routes: Routes = [
     ],
   },
 
-  // Keep old dashboard route for backward compatibility
+  // Job-Seeker Dashboard route (exclusive to job-seekers)
   {
     path: 'dashboard',
-    canActivate: [AuthGuard],
-    children: [
-      {
-        path: '',
-        canActivate: [RoleGuard],
-        data: { roles: ['job-seeker', 'company'] },
-        loadComponent: () =>
-          import(
-            './features/dashboard/job-seeker-dashboard/job-seeker-dashboard.component'
-          ).then((m) => m.JobSeekerDashboardComponent),
-      },
-    ],
-  },
-
-  // Settings page (accessible to all authenticated users)
-  {
-    path: 'settings',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['job-seeker'] },
     loadComponent: () =>
-      import('./features/settings/settings.component').then(
-        (m) => m.SettingsComponent
-      ),
+      import(
+        './features/job-seeker/dashboard/job-seeker-dashboard.component'
+      ).then((m) => m.JobSeekerDashboardComponent),
   },
 
-  // Profile page (accessible to all authenticated users)
+  // Job-seeker Settings route (exclusive to job-seekers)
   {
     path: 'profile',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['job-seeker'] },
     loadComponent: () =>
-      import('./features/profile/profile.component').then(
-        (m) => m.ProfileComponent
+      import('./features/job-seeker/profile/job-seeker-profile.component').then(
+        (m) => m.JobSeekerProfileComponent
       ),
+  },
+
+  // Job-seeker Settings route (exclusive to job-seekers)
+  {
+    path: 'settings',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['job-seeker'] },
+    loadComponent: () =>
+      import(
+        './features/job-seeker/settings/job-seeker-settings.component'
+      ).then((m) => m.JobSeekerSettingsComponent),
   },
 
   // Admin Routes
@@ -256,9 +252,9 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import(
-            './features/dashboard/admin-dashboard/admin-dashboard.component'
-          ).then((m) => m.AdminDashboardComponent),
+          import('./features/admin/dashboard/admin-dashboard.component').then(
+            (m) => m.AdminDashboardComponent
+          ),
       },
       {
         path: 'manage-users',
@@ -282,10 +278,17 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/admin/profile/admin-profile.component').then(
+            (m) => m.AdminProfileComponent
+          ),
+      },
+      {
         path: 'settings',
         loadComponent: () =>
-          import('./features/settings/settings.component').then(
-            (m) => m.SettingsComponent
+          import('./features/admin/settings/admin-settings.component').then(
+            (m) => m.AdminSettingsComponent
           ),
       },
       // Keep old routes for backward compatibility
