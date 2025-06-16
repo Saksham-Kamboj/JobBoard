@@ -5,24 +5,41 @@
       <p>Track your job applications and their status</p>
     </div>
 
-    <div class="jobs-list" *ngIf="appliedJobs.length > 0; else noJobs">
+    <!-- Loading State -->
+    <div class="loading" *ngIf="isLoading">
+      <div class="loading-spinner"></div>
+      <p>Loading your applied jobs...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error" *ngIf="error && !isLoading">
+      <h2>Error Loading Applied Jobs</h2>
+      <p>{{ error }}</p>
+      <button class="retry-btn" (click)="ngOnInit()">Try Again</button>
+    </div>
+
+    <!-- Jobs List -->
+    <div class="jobs-list" *ngIf="!isLoading && !error && appliedJobs.length > 0; else noJobs">
       <div class="job-card" *ngFor="let job of appliedJobs">
         <div class="job-info">
-          <h3>{{ job.title }}</h3>
+          <h3>
+            <a [routerLink]="['/jobs', job.jobId]">{{ job.title }}</a>
+          </h3>
           <p class="company">{{ job.company }}</p>
           <p class="location">{{ job.location }}</p>
-          <p class="applied-date">Applied on: {{ job.appliedDate | date }}</p>
+          <p class="applied-date">Applied on: {{ job.appliedDate | date:'dd-MM-yyyy' }}</p>
         </div>
         <div class="job-status">
-          <span class="status-badge" [class]="'status-' + job.status.toLowerCase().replace(' ', '-')">
-            {{ job.status }}
+          <span class="status-badge" [class]="getStatusClass(job.status)">
+            {{ getStatusDisplayText(job.status) }}
           </span>
         </div>
       </div>
     </div>
 
+    <!-- No Jobs Template -->
     <ng-template #noJobs>
-      <div class="no-jobs">
+      <div class="no-jobs" *ngIf="!isLoading && !error">
         <h2>No Applied Jobs</h2>
         <p>You haven't applied to any jobs yet. Start browsing and apply to jobs that interest you!</p>
         <a routerLink="/jobs" class="browse-btn">Browse Jobs</a>

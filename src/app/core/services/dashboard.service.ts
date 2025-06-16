@@ -135,41 +135,19 @@ export class DashboardService {
     private userProfileService: UserProfileService
   ) {}
 
-  // Job Seeker Dashboard Methods
+  // Job Seeker Dashboard Methods (DEPRECATED - Use getJobSeekerDashboardStats instead)
   getDashboardStats(userId: string): Observable<DashboardStats> {
-    // Calculate stats dynamically from actual data
-    return forkJoin({
-      staticStats: this.http
-        .get<DashboardStats[]>(`${this.apiUrl}/dashboardStats?userId=${userId}`)
-        .pipe(
-          map((stats) =>
-            stats.length > 0 ? stats[0] : this.getDefaultStats(userId)
-          ),
-          catchError(() => of(this.getDefaultStats(userId)))
-        ),
-      applications: this.jobApplicationService
-        .getUserApplications(userId)
-        .pipe(catchError(() => of([]))),
-      savedJobs: this.getSavedJobs(userId).pipe(catchError(() => of([]))),
-    }).pipe(
-      map(({ staticStats, applications, savedJobs }) => {
-        // Calculate interview count from applications
-        const interviewsScheduled = applications.filter(
-          (app) =>
-            app.status === 'interview' ||
-            (app.applicationStatus &&
-              app.applicationStatus.current === 'interview')
-        ).length;
-
-        return {
-          ...staticStats,
-          appliedJobs: applications.length,
-          savedJobs: savedJobs.length,
-          interviewsScheduled: interviewsScheduled,
-          lastUpdated: new Date().toISOString(),
-        };
-      }),
-      catchError(() => of(this.getDefaultStats(userId)))
+    // This method is deprecated, use getJobSeekerDashboardStats for new implementations
+    return this.getJobSeekerDashboardStats(userId).pipe(
+      map((stats) => ({
+        id: stats.id,
+        userId: stats.userId,
+        appliedJobs: stats.totalApplications,
+        savedJobs: stats.savedJobs,
+        profileViews: 0, // Not tracked in new system
+        interviewsScheduled: stats.interviewsScheduled,
+        lastUpdated: stats.lastUpdated,
+      }))
     );
   }
 
@@ -272,9 +250,25 @@ export class DashboardService {
   }
 
   getSavedJobs(userId: string): Observable<SavedJob[]> {
-    return this.http
-      .get<SavedJob[]>(`${this.apiUrl}/savedJobs?userId=${userId}`)
-      .pipe(catchError(() => of([])));
+    // Get saved jobs from userProfile.dashboardData
+    return this.userProfileService.getUserProfile(userId).pipe(
+      map((profile) => {
+        if (
+          profile &&
+          profile.dashboardData &&
+          profile.dashboardData.savedJobs
+        ) {
+          return profile.dashboardData.savedJobs.map((savedJob) => ({
+            id: `saved-${savedJob.jobId}`,
+            userId: userId,
+            jobId: savedJob.jobId,
+            savedAt: savedJob.savedDate,
+          }));
+        }
+        return [];
+      }),
+      catchError(() => of([]))
+    );
   }
 
   saveJob(userId: string, jobId: string): Observable<SavedJob> {
@@ -308,22 +302,12 @@ export class DashboardService {
   getAdminDashboardStats(userId: string): Observable<AdminDashboardStats> {
     // Calculate admin stats dynamically from actual data
     return forkJoin({
-      staticStats: this.http
-        .get<AdminDashboardStats[]>(
-          `${this.apiUrl}/dashboardStats?userId=${userId}`
-        )
-        .pipe(
-          map((stats) =>
-            stats.length > 0 ? stats[0] : this.getDefaultAdminStats(userId)
-          ),
-          catchError(() => of(this.getDefaultAdminStats(userId)))
-        ),
       jobs: this.jobService.getAllJobs().pipe(catchError(() => of([]))),
       applications: this.http
         .get<JobApplication[]>(`${this.apiUrl}/jobApplications`)
         .pipe(catchError(() => of([]))),
     }).pipe(
-      map(({ staticStats, jobs, applications }) => {
+      map(({ jobs, applications }) => {
         const activeJobs = jobs.filter((job) => job.isActive).length;
         const recentApplications = applications.filter((app) => {
           const submittedDate = new Date(app.submittedAt);
@@ -333,7 +317,8 @@ export class DashboardService {
         }).length;
 
         return {
-          ...staticStats,
+          id: `admin-stats-${userId}`,
+          userId,
           totalJobs: jobs.length,
           activeJobs: activeJobs,
           totalApplications: applications.length,
@@ -345,25 +330,101 @@ export class DashboardService {
     );
   }
 
-  getRecentJobPostings(limit: number = 3): Observable<RecentJobPosting[]> {
+  getRecentJobPostings(
+    limit: number = 3,
+    userId?: string
+  ): Observable<RecentJobPosting[]> {
     return this.jobService.getAllJobs().pipe(
-      map((jobs) => {
-        return jobs
-          .sort(
-            (a, b) =>
-              new Date(b.postedDate).getTime() -
-              new Date(a.postedDate).getTime()
-          )
-          .slice(0, limit)
-          .map((job) => ({
-            id: job.id,
-            title: job.title,
-            company: job.company,
-            location: job.location,
-            postedDate: job.postedDate,
-            applications: job.applicationCount || 0,
-            status: job.isActive ? 'active' : 'inactive',
-          }));
+      switchMap((jobs) => {
+        if (userId) {
+          // Get user's applied jobs from both userProfile and jobApplications collection
+          return forkJoin({
+            profile: this.userProfileService
+              .getUserProfile(userId)
+              .pipe(catchError(() => of(null))),
+            applications: this.jobApplicationService
+              .getUserApplications(userId)
+              .pipe(catchError(() => of([]))),
+          }).pipe(
+            map(({ profile, applications }) => {
+              // Get applied job IDs from userProfile.dashboardData
+              const profileAppliedJobIds =
+                profile?.dashboardData?.appliedJobs?.map((app) => app.jobId) ||
+                [];
+
+              // Get applied job IDs from jobApplications collection
+              const applicationJobIds = applications.map((app) => app.jobId);
+
+              // Combine both sources to get all applied job IDs
+              const allAppliedJobIds = [
+                ...new Set([...profileAppliedJobIds, ...applicationJobIds]),
+              ];
+
+              // Filter out jobs the user has already applied to
+              const availableJobs = jobs.filter(
+                (job) => !allAppliedJobIds.includes(job.id)
+              );
+
+              return availableJobs
+                .sort(
+                  (a, b) =>
+                    new Date(b.postedDate).getTime() -
+                    new Date(a.postedDate).getTime()
+                )
+                .slice(0, limit)
+                .map((job) => ({
+                  id: job.id,
+                  title: job.title,
+                  company: job.company,
+                  location: job.location,
+                  postedDate: job.postedDate,
+                  applications: job.applicationCount || 0,
+                  status: job.isActive ? 'active' : 'inactive',
+                }));
+            }),
+            catchError(() => {
+              // Fallback: return all jobs if both fetches fail
+              return of(
+                jobs
+                  .sort(
+                    (a, b) =>
+                      new Date(b.postedDate).getTime() -
+                      new Date(a.postedDate).getTime()
+                  )
+                  .slice(0, limit)
+                  .map((job) => ({
+                    id: job.id,
+                    title: job.title,
+                    company: job.company,
+                    location: job.location,
+                    postedDate: job.postedDate,
+                    applications: job.applicationCount || 0,
+                    status: job.isActive ? 'active' : 'inactive',
+                  }))
+              );
+            })
+          );
+        } else {
+          // If no userId provided, return all jobs (for admin/company dashboards)
+          return of(
+            jobs
+              .sort(
+                (a, b) =>
+                  new Date(b.postedDate).getTime() -
+                  new Date(a.postedDate).getTime()
+              )
+              .slice(0, limit)
+              .map((job) => ({
+                id: job.id,
+                title: job.title,
+                company: job.company,
+                location: job.location,
+                postedDate: job.postedDate,
+                applications: job.applicationCount || 0,
+                status: job.isActive ? 'active' : 'inactive',
+              }))
+          );
+        }
       }),
       catchError(() => of([]))
     );
@@ -428,32 +489,83 @@ export class DashboardService {
   getJobSeekerDashboardStats(
     userId: string
   ): Observable<JobSeekerDashboardStats> {
-    return forkJoin({
-      applications: this.jobApplicationService
-        .getUserApplications(userId)
-        .pipe(catchError(() => of([]))),
-      savedJobs: this.getSavedJobs(userId).pipe(catchError(() => of([]))),
-    }).pipe(
-      map(({ applications, savedJobs }) => {
-        const pendingApplications = applications.filter(
-          (app) => app.status === 'submitted' || app.status === 'under-review'
-        ).length;
+    // Get data from userProfile dashboardData and calculate stats dynamically
+    return this.userProfileService.getUserProfile(userId).pipe(
+      map((profile) => {
+        if (profile && profile.dashboardData) {
+          const dashboardData = profile.dashboardData as any;
 
-        const interviewsScheduled = applications.filter(
-          (app) => app.status === 'interview'
-        ).length;
+          // Calculate stats from actual data arrays
+          const appliedJobs = dashboardData.appliedJobs || [];
+          const savedJobs = dashboardData.savedJobs || [];
+          const interviews = dashboardData.interviews || [];
 
-        return {
-          id: `jobseeker-stats-${userId}`,
-          userId,
-          totalApplications: applications.length,
-          pendingApplications,
-          interviewsScheduled,
-          savedJobs: savedJobs.length,
-          lastUpdated: new Date().toISOString(),
-        };
+          // Calculate pending applications (submitted, pending, under-review)
+          const pendingApplications = appliedJobs.filter(
+            (app: any) =>
+              app.status === 'pending' ||
+              app.status === 'submitted' ||
+              app.status === 'under-review'
+          ).length;
+
+          // Calculate interviews scheduled (only count actual interviews, not just shortlisted)
+          // Count actual interviews from interviews array + applications with 'interview' status that don't have interviews yet
+          const interviewJobIds = interviews.map(
+            (interview: any) => interview.jobId
+          );
+          const additionalInterviewApps = appliedJobs.filter(
+            (app: any) =>
+              app.status === 'interview' && !interviewJobIds.includes(app.jobId)
+          ).length;
+          const interviewsScheduled =
+            interviews.length + additionalInterviewApps;
+
+          return {
+            id: `jobseeker-stats-${userId}`,
+            userId,
+            totalApplications: appliedJobs.length,
+            pendingApplications,
+            interviewsScheduled,
+            savedJobs: savedJobs.length,
+            lastUpdated: new Date().toISOString(),
+          };
+        }
+        // Fallback to old method if no dashboardData in profile
+        throw new Error('No dashboard data in profile');
       }),
-      catchError(() => of(this.getDefaultJobSeekerStats(userId)))
+      catchError(() => {
+        // Fallback to calculating from separate collections
+        return forkJoin({
+          applications: this.jobApplicationService
+            .getUserApplications(userId)
+            .pipe(catchError(() => of([]))),
+          savedJobs: this.getSavedJobs(userId).pipe(catchError(() => of([]))),
+        }).pipe(
+          map(({ applications, savedJobs }) => {
+            const pendingApplications = applications.filter(
+              (app) =>
+                app.status === 'submitted' ||
+                app.status === 'under-review' ||
+                app.status === 'pending'
+            ).length;
+
+            const interviewsScheduled = applications.filter(
+              (app) => app.status === 'interview'
+            ).length;
+
+            return {
+              id: `jobseeker-stats-${userId}`,
+              userId,
+              totalApplications: applications.length,
+              pendingApplications,
+              interviewsScheduled,
+              savedJobs: savedJobs.length,
+              lastUpdated: new Date().toISOString(),
+            };
+          }),
+          catchError(() => of(this.getDefaultJobSeekerStats(userId)))
+        );
+      })
     );
   }
 
@@ -461,7 +573,41 @@ export class DashboardService {
     userId: string,
     limit: number = 3
   ): Observable<RecentApplication[]> {
-    return this.getRecentApplications(userId, limit);
+    // First try to get data from userProfile dashboardData
+    return this.userProfileService.getUserProfile(userId).pipe(
+      map((profile) => {
+        if (profile && profile.dashboardData) {
+          const dashboardData = profile.dashboardData as any;
+          if (
+            dashboardData.appliedJobs &&
+            dashboardData.appliedJobs.length > 0
+          ) {
+            return dashboardData.appliedJobs
+              .sort(
+                (a: any, b: any) =>
+                  new Date(b.appliedDate).getTime() -
+                  new Date(a.appliedDate).getTime()
+              )
+              .slice(0, limit)
+              .map((app: any) => ({
+                id: app.applicationId,
+                jobId: app.jobId,
+                jobTitle: app.jobTitle,
+                company: app.company,
+                location: app.location,
+                appliedDate: this.formatDate(app.appliedDate),
+                status: app.status,
+              }));
+          }
+        }
+        // Fallback to old method if no dashboardData in profile
+        throw new Error('No dashboard data in profile');
+      }),
+      catchError(() => {
+        // Fallback to calculating from jobApplications collection
+        return this.getRecentApplications(userId, limit);
+      })
+    );
   }
 
   // Company Dashboard Methods

@@ -21,7 +21,10 @@ export interface JobApplication {
     | 'draft'
     | 'submitted'
     | 'under-review'
+    | 'pending'
     | 'interview'
+    | 'shortlisted'
+    | 'reviewed'
     | 'rejected'
     | 'accepted';
   submittedAt: string;

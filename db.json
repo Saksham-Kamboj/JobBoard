@@ -66,6 +66,18 @@
       "isActive": true,
       "password": "saksham",
       "updatedAt": "2025-06-10T07:48:18.367Z"
+    },
+    {
+      "id": "mbz1u4ql1ysm29o6gy6i",
+      "email": "john@gmail.com",
+      "firstName": "John",
+      "lastName": "Doe",
+      "role": "job-seeker",
+      "createdAt": "2025-06-16T12:06:57.405Z",
+      "isActive": true,
+      "password": "John123",
+      "phone": "+1 (555) 123-4567",
+      "updatedAt": "2025-06-16T12:09:56.375Z"
     }
   ],
   "userProfiles": [
@@ -104,11 +116,7 @@
           "Next.js",
           "Angular.js"
         ],
-        "preferredJobTypes": [
-          "full-time",
-          "remote",
-          "Contract"
-        ],
+        "preferredJobTypes": ["full-time", "remote", "Contract"],
         "preferredLocations": [
           "Bangalore, Karnataka",
           "Mumbai, Maharashtra",
@@ -147,6 +155,103 @@
           "current": false
         }
       ],
+      "dashboardData": {
+        "appliedJobs": [
+          {
+            "jobId": "2",
+            "applicationId": "app2",
+            "appliedDate": "2024-12-08T15:45:00.000Z",
+            "status": "submitted",
+            "jobTitle": "UX/UI Designer",
+            "company": "Flipkart",
+            "location": "Bangalore, Karnataka"
+          },
+          {
+            "jobId": "3",
+            "applicationId": "simkt5xwh",
+            "appliedDate": "2025-06-05T10:17:36.561Z",
+            "status": "shortlisted",
+            "jobTitle": "Full Stack Developer",
+            "company": "Zomato",
+            "location": "Gurgaon, Haryana"
+          },
+          {
+            "jobId": "4",
+            "applicationId": "qu3wruc2t",
+            "appliedDate": "2025-06-05T10:25:12.037Z",
+            "status": "pending",
+            "jobTitle": "Product Manager",
+            "company": "Paytm",
+            "location": "Noida, Uttar Pradesh"
+          },
+          {
+            "jobId": "5",
+            "applicationId": "demo-app-1",
+            "appliedDate": "2025-06-09T10:30:00.000Z",
+            "status": "pending",
+            "jobTitle": "DevOps Engineer",
+            "company": "Infosys",
+            "location": "Pune, Maharashtra"
+          },
+          {
+            "jobId": "7",
+            "applicationId": "demo-app-3",
+            "appliedDate": "2025-06-07T11:45:00.000Z",
+            "status": "shortlisted",
+            "jobTitle": "Sales Manager",
+            "company": "SalesForce Pro",
+            "location": "Chicago, IL"
+          },
+          {
+            "jobId": "NasKN54",
+            "applicationId": "8xw809nnj",
+            "appliedDate": "2025-06-10T05:04:25.103Z",
+            "status": "reviewed",
+            "jobTitle": "IT Support Specialist",
+            "company": "Ekvayu Tech Pvt Ltd",
+            "location": "Noida, Uttar Pradesh"
+          },
+          {
+            "jobId": "23",
+            "applicationId": "demo-app-cloud",
+            "appliedDate": "2025-06-16T14:30:00.000Z",
+            "status": "submitted",
+            "jobTitle": "Cloud Solutions Architect",
+            "company": "CloudTech Solutions",
+            "location": "Pune, Maharashtra"
+          }
+        ],
+        "savedJobs": [
+          {
+            "jobId": "4",
+            "savedDate": "2024-12-07T15:20:00.000Z",
+            "jobTitle": "Product Manager",
+            "company": "Paytm",
+            "location": "Noida, Uttar Pradesh"
+          },
+          {
+            "jobId": "6",
+            "savedDate": "2024-12-06T09:45:00.000Z",
+            "jobTitle": "Data Scientist",
+            "company": "Swiggy",
+            "location": "Bangalore, Karnataka"
+          }
+        ],
+        "interviews": [
+          {
+            "jobId": "7",
+            "applicationId": "demo-app-3",
+            "interviewDate": "2025-06-20T10:00:00.000Z",
+            "interviewType": "technical",
+            "status": "scheduled",
+            "jobTitle": "Sales Manager",
+            "company": "SalesForce Pro",
+            "location": "Chicago, IL",
+            "interviewMode": "video",
+            "notes": "Technical round with the engineering team"
+          }
+        ]
+      },
       "createdAt": "2024-12-01T10:00:00.000Z",
       "updatedAt": "2025-06-16T11:16:39.129Z",
       "resume": {
@@ -305,40 +410,65 @@
       "experience": [],
       "createdAt": "2025-06-10T07:48:03.123Z",
       "updatedAt": "2025-06-10T07:48:03.123Z"
-    }
-  ],
-  "savedJobs": [
-    {
-      "id": "saved2",
-      "userId": "demo-job-seeker",
-      "jobId": "4",
-      "savedAt": "2024-12-07T15:20:00.000Z"
     },
     {
-      "id": "saved3",
-      "userId": "demo-job-seeker",
-      "jobId": "6",
-      "savedAt": "2024-12-06T09:45:00.000Z"
-    }
-  ],
-  "dashboardStats": [
-    {
-      "id": "stats-demo-job-seeker",
-      "userId": "demo-job-seeker",
-      "appliedJobs": 3,
-      "savedJobs": 3,
-      "profileViews": 45,
-      "interviewsScheduled": 1,
-      "lastUpdated": "2024-12-15T10:00:00.000Z"
-    },
-    {
-      "id": "admin-stats-demo-admin",
-      "userId": "demo-admin",
-      "totalJobs": 10,
-      "activeJobs": 8,
-      "totalApplications": 89,
-      "newApplications": 5,
-      "lastUpdated": "2024-12-15T10:00:00.000Z"
+      "id": "profile-mbz1u4ql1ysm29o6gy6i",
+      "userId": "mbz1u4ql1ysm29o6gy6i",
+      "personalInfo": {
+        "firstName": "John",
+        "lastName": "Doe",
+        "email": "john@gmail.com",
+        "phone": "+1 (555) 123-4567",
+        "linkedinUrl": "https://linkedin.com/in/johndoe",
+        "portfolioUrl": "https://johndoe.devwer",
+        "githubUrl": "",
+        "address": {
+          "street": "",
+          "city": "",
+          "state": "",
+          "zipCode": "",
+          "country": "United States"
+        }
+      },
+      "professionalInfo": {
+        "currentTitle": "",
+        "yearsOfExperience": 0,
+        "summary": "",
+        "skills": ["React.js", "Next.js"],
+        "preferredJobTypes": ["Full-time"],
+        "preferredLocations": ["New York, NY"],
+        "expectedSalary": {
+          "min": 0,
+          "max": 0,
+          "currency": "USD"
+        },
+        "jobAlertFrequency": "weekly"
+      },
+      "education": [
+        {
+          "institution": "Indian Institute of Technology, Bangalore",
+          "degree": "Bachelor of Technology",
+          "fieldOfStudy": "Compute Science",
+          "startDate": "2020-06-20",
+          "isCurrentlyStudying": true,
+          "gpa": "8.5",
+          "description": "",
+          "endDate": null
+        }
+      ],
+      "experience": [],
+      "createdAt": "2025-06-16T12:07:36.276Z",
+      "updatedAt": "2025-06-16T12:09:56.345Z",
+      "resume": {
+        "fileName": "01 A B Testing.docx",
+        "fileUrl": "blob:http://localhost:4200/b3804785-02da-4799-95a9-d00711ddad2d",
+        "uploadedAt": "2025-06-16T12:08:48.752Z",
+        "fileSize": 179183
+      },
+      "coverLetter": {
+        "content": "Dear Hiring Manager,\n\nI am writing to express my strong interest in the [Position Title] role at [Company Name]. As a [Your Current Title] with [X years] of experience, I am excited about the opportunity to contribute to your team.\n\nIn my current role, I have successfully [mention 2-3 key achievements or responsibilities that align with the job requirements]. My experience in [relevant skills/technologies] has prepared me well for this position, and I am particularly drawn to [specific aspect of the company/role].\n\nKey highlights of my qualifications include:\n• [Achievement or skill #1]\n• [Achievement or skill #2]\n• [Achievement or skill #3]\n\nI am impressed by [Company Name]'s [mention something specific about the company - values, products, mission, etc.] and would welcome the opportunity to discuss how my background and enthusiasm can contribute to your continued success.\n\nThank you for considering my application. I look forward to hearing from you.\n\nBest regards,\nJohn",
+        "lastUpdated": "2025-06-16T12:08:53.121Z"
+      }
     }
   ],
   "jobApplications": [
@@ -565,6 +695,37 @@
       "id": "8xw809nnj",
       "submittedAt": "2025-06-10T05:04:25.103Z",
       "updatedAt": "2025-06-10T05:05:19.075Z"
+    },
+    {
+      "id": "demo-app-cloud",
+      "jobId": "23",
+      "userId": "demo-job-seeker",
+      "applicationData": {
+        "personalInfo": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "jobseeker@demo.com",
+          "phone": "+1 (555) 123-4567",
+          "address": {
+            "street": "123 Main Street",
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94105",
+            "country": "United States"
+          }
+        },
+        "coverLetter": "I am excited to apply for the Cloud Solutions Architect position at CloudTech Solutions. My experience with cloud technologies and infrastructure makes me a strong candidate for this role.",
+        "resume": {
+          "fileName": "john_doe_resume.pdf",
+          "fileUrl": "/uploads/resumes/john_doe_resume.pdf",
+          "fileSize": 245760
+        },
+        "additionalDocuments": []
+      },
+      "status": "submitted",
+      "submittedAt": "2025-06-16T14:30:00.000Z",
+      "updatedAt": "2025-06-16T14:30:00.000Z",
+      "notes": ""
     }
   ],
   "jobs": [
@@ -1326,12 +1487,8 @@
       "type": "full-time",
       "salary": "₹30000-₹50000",
       "description": "Job Description\nWe're looking for a versatile Full Stack Developer to join our growing startup. You'll work on both frontend and backend technologies, helping us build scalable web applications that serve thousands of users.\n\nKey Responsibilities:\n• Develop and maintain full-stack web applications\n• Work with modern JavaScript frameworks and backend technologies\n• Design and implement RESTful APIs\n• Collaborate with cross-functional teams\n• Participate in code reviews and technical discussions\n• Help scale our infrastructure as we grow\n\nStartup Environment:\n• Fast-paced, dynamic work environment\n• Direct impact on product development\n• Opportunity to wear multiple hats\n• Work directly with founders and leadership team",
-      "requirements": [
-        "1 year of experience"
-      ],
-      "benefits": [
-        "Work From Home"
-      ],
+      "requirements": ["1 year of experience"],
+      "benefits": ["Work From Home"],
       "skills": [
         "HTML",
         "CSS",
@@ -1396,6 +1553,140 @@
       "applicationCount": 0,
       "companyId": "profile-mbq1ii1eot0g9knrfej",
       "id": "NasKN54"
+    },
+    {
+      "id": "21",
+      "title": "React Native Developer",
+      "company": "MobileFirst Tech",
+      "location": "Remote",
+      "type": "remote",
+      "salary": "₹15,00,000 - ₹25,00,000",
+      "description": "Build cross-platform mobile applications using React Native. Join our team to create innovative mobile solutions that reach millions of users worldwide.",
+      "requirements": [
+        "3+ years of React Native development experience",
+        "Strong JavaScript and TypeScript skills",
+        "Experience with mobile app deployment",
+        "Knowledge of native iOS/Android development",
+        "API integration experience",
+        "State management (Redux, Context API)",
+        "Mobile UI/UX best practices"
+      ],
+      "benefits": [
+        "Fully remote position",
+        "Competitive salary",
+        "Health insurance",
+        "Flexible working hours",
+        "Latest mobile devices for testing",
+        "Professional development budget",
+        "Team collaboration tools"
+      ],
+      "postedDate": "2025-06-15",
+      "applicationDeadline": "2025-08-15",
+      "companyDescription": "MobileFirst Tech specializes in creating cutting-edge mobile applications for startups and enterprises, focusing on user experience and performance.",
+      "contactEmail": "mobile-careers@mobilefirst.com",
+      "experienceLevel": "mid",
+      "skills": [
+        "React Native",
+        "JavaScript",
+        "TypeScript",
+        "Mobile Development",
+        "Redux",
+        "API Integration"
+      ],
+      "isActive": true,
+      "applicationCount": 8,
+      "featured": true,
+      "updatedAt": "2025-06-15T10:30:00.000Z"
+    },
+    {
+      "id": "22",
+      "title": "AI/ML Engineer",
+      "company": "InnovateTech AI",
+      "location": "Bangalore, Karnataka",
+      "type": "full-time",
+      "salary": "₹25,00,000 - ₹40,00,000",
+      "description": "Work on cutting-edge AI and machine learning projects. Develop and deploy ML models that solve real-world problems and drive business value.",
+      "requirements": [
+        "Master's degree in AI, ML, or Computer Science",
+        "4+ years of ML engineering experience",
+        "Proficiency in Python, TensorFlow, PyTorch",
+        "Experience with cloud ML platforms",
+        "Deep learning and neural networks",
+        "MLOps and model deployment",
+        "Strong mathematical background"
+      ],
+      "benefits": [
+        "Competitive salary and equity",
+        "Health and wellness benefits",
+        "Research publication opportunities",
+        "Conference attendance support",
+        "Cutting-edge technology access",
+        "Flexible work arrangements",
+        "Innovation time allocation"
+      ],
+      "postedDate": "2025-06-14",
+      "applicationDeadline": "2025-08-14",
+      "companyDescription": "InnovateTech AI is at the forefront of artificial intelligence research and development, creating AI solutions that transform industries.",
+      "contactEmail": "ai-careers@innovatetech.ai",
+      "experienceLevel": "senior",
+      "skills": [
+        "Machine Learning",
+        "Python",
+        "TensorFlow",
+        "PyTorch",
+        "Deep Learning",
+        "MLOps",
+        "AI Research"
+      ],
+      "isActive": true,
+      "applicationCount": 12,
+      "featured": true,
+      "updatedAt": "2025-06-14T14:20:00.000Z"
+    },
+    {
+      "id": "23",
+      "title": "Cloud Solutions Architect",
+      "company": "CloudTech Solutions",
+      "location": "Pune, Maharashtra",
+      "type": "full-time",
+      "salary": "₹30,00,000 - ₹45,00,000",
+      "description": "Design and implement scalable cloud architectures. Lead cloud migration projects and help organizations optimize their cloud infrastructure.",
+      "requirements": [
+        "Bachelor's degree in Computer Science or Engineering",
+        "6+ years of cloud architecture experience",
+        "AWS/Azure/GCP certifications",
+        "Experience with microservices architecture",
+        "Infrastructure as Code (Terraform, CloudFormation)",
+        "Container orchestration (Kubernetes, Docker)",
+        "Strong leadership and communication skills"
+      ],
+      "benefits": [
+        "Executive-level compensation",
+        "Comprehensive benefits package",
+        "Cloud certification support",
+        "Leadership development programs",
+        "Flexible work arrangements",
+        "Innovation projects",
+        "Global client exposure"
+      ],
+      "postedDate": "2025-06-16",
+      "applicationDeadline": "2025-08-16",
+      "companyDescription": "CloudTech Solutions helps enterprises modernize their infrastructure through cloud adoption and digital transformation initiatives.",
+      "contactEmail": "cloud-careers@cloudtech.com",
+      "experienceLevel": "senior",
+      "skills": [
+        "Cloud Architecture",
+        "AWS",
+        "Azure",
+        "Kubernetes",
+        "Terraform",
+        "Microservices",
+        "DevOps"
+      ],
+      "isActive": true,
+      "applicationCount": 5,
+      "featured": true,
+      "updatedAt": "2025-06-16T09:15:00.000Z"
     }
   ],
   "userSettings": [
@@ -1433,20 +1724,13 @@
         "enableProfileAnalytics": true
       },
       "jobPreferences": {
-        "preferredJobTypes": [
-          "full-time",
-          "remote"
-        ],
+        "preferredJobTypes": ["full-time", "remote"],
         "salaryRange": {
           "min": 800000,
           "max": 1200000,
           "currency": "INR"
         },
-        "preferredLocations": [
-          "San Francisco, CA",
-          "Remote",
-          "New York, NY"
-        ],
+        "preferredLocations": ["San Francisco, CA", "Remote", "New York, NY"],
         "jobAlertFrequency": "weekly",
         "autoApplyEnabled": false,
         "remoteWork": true,
@@ -1454,10 +1738,7 @@
         "experienceLevel": "mid-level",
         "availabilityDate": "2024-02-01",
         "willingToRelocate": false,
-        "preferredIndustries": [
-          "Technology",
-          "Software"
-        ]
+        "preferredIndustries": ["Technology", "Software"]
       },
       "applications": {
         "autoFillApplications": true,
@@ -1581,6 +1862,23 @@
       },
       "createdAt": "2025-06-10T07:40:03.763Z",
       "updatedAt": "2025-06-10T07:49:35.304Z"
+    },
+    {
+      "id": "settings-mbz1u4ql1ysm29o6gy6i",
+      "userId": "mbz1u4ql1ysm29o6gy6i",
+      "appearance": {
+        "theme": "dark",
+        "language": "en",
+        "fontSize": "medium",
+        "compactMode": false
+      },
+      "notifications": {
+        "emailNotifications": true,
+        "pushNotifications": false,
+        "marketingEmails": false
+      },
+      "createdAt": "2025-06-16T12:06:57.645Z",
+      "updatedAt": "2025-06-16T12:07:02.237Z"
     }
   ],
   "systemSettings": [
