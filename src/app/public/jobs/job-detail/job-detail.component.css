@@ -348,6 +348,51 @@
   margin-bottom: 1rem;
 }
 
+.save-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.save-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.btn-outline:hover {
+  background: var(--muted);
+  border-color: var(--primary);
+}
+
+.btn-saved {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: 1px solid var(--primary);
+}
+
+.btn-saved:hover {
+  background: var(--primary)/90;
+}
+
+.btn-saved svg {
+  color: var(--primary-foreground);
+}
+
 .apply-note {
   display: flex;
   align-items: center;

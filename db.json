@@ -116,7 +116,11 @@
           "Next.js",
           "Angular.js"
         ],
-        "preferredJobTypes": ["full-time", "remote", "Contract"],
+        "preferredJobTypes": [
+          "full-time",
+          "remote",
+          "Contract"
+        ],
         "preferredLocations": [
           "Bangalore, Karnataka",
           "Mumbai, Maharashtra",
@@ -434,9 +438,16 @@
         "currentTitle": "",
         "yearsOfExperience": 0,
         "summary": "",
-        "skills": ["React.js", "Next.js"],
-        "preferredJobTypes": ["Full-time"],
-        "preferredLocations": ["New York, NY"],
+        "skills": [
+          "React.js",
+          "Next.js"
+        ],
+        "preferredJobTypes": [
+          "Full-time"
+        ],
+        "preferredLocations": [
+          "New York, NY"
+        ],
         "expectedSalary": {
           "min": 0,
           "max": 0,
@@ -1487,8 +1498,12 @@
       "type": "full-time",
       "salary": "₹30000-₹50000",
       "description": "Job Description\nWe're looking for a versatile Full Stack Developer to join our growing startup. You'll work on both frontend and backend technologies, helping us build scalable web applications that serve thousands of users.\n\nKey Responsibilities:\n• Develop and maintain full-stack web applications\n• Work with modern JavaScript frameworks and backend technologies\n• Design and implement RESTful APIs\n• Collaborate with cross-functional teams\n• Participate in code reviews and technical discussions\n• Help scale our infrastructure as we grow\n\nStartup Environment:\n• Fast-paced, dynamic work environment\n• Direct impact on product development\n• Opportunity to wear multiple hats\n• Work directly with founders and leadership team",
-      "requirements": ["1 year of experience"],
-      "benefits": ["Work From Home"],
+      "requirements": [
+        "1 year of experience"
+      ],
+      "benefits": [
+        "Work From Home"
+      ],
       "skills": [
         "HTML",
         "CSS",
@@ -1724,13 +1739,20 @@
         "enableProfileAnalytics": true
       },
       "jobPreferences": {
-        "preferredJobTypes": ["full-time", "remote"],
+        "preferredJobTypes": [
+          "full-time",
+          "remote"
+        ],
         "salaryRange": {
           "min": 800000,
           "max": 1200000,
           "currency": "INR"
         },
-        "preferredLocations": ["San Francisco, CA", "Remote", "New York, NY"],
+        "preferredLocations": [
+          "San Francisco, CA",
+          "Remote",
+          "New York, NY"
+        ],
         "jobAlertFrequency": "weekly",
         "autoApplyEnabled": false,
         "remoteWork": true,
@@ -1738,7 +1760,10 @@
         "experienceLevel": "mid-level",
         "availabilityDate": "2024-02-01",
         "willingToRelocate": false,
-        "preferredIndustries": ["Technology", "Software"]
+        "preferredIndustries": [
+          "Technology",
+          "Software"
+        ]
       },
       "applications": {
         "autoFillApplications": true,
@@ -2044,6 +2069,26 @@
       "rating": 5,
       "location": "Gurgaon, Haryana",
       "joinedDate": "2024-05-12"
+    }
+  ],
+  "savedJobs": [
+    {
+      "id": "luqckvs5b",
+      "userId": "demo-job-seeker",
+      "jobId": "23",
+      "savedAt": "2025-06-16T13:23:23.222Z"
+    },
+    {
+      "id": "ynimf8fpn",
+      "userId": "demo-job-seeker",
+      "jobId": "21",
+      "savedAt": "2025-06-16T13:23:23.916Z"
+    },
+    {
+      "id": "8ih5ukuw7",
+      "userId": "demo-job-seeker",
+      "jobId": "22",
+      "savedAt": "2025-06-16T13:23:24.666Z"
     }
   ]
 }

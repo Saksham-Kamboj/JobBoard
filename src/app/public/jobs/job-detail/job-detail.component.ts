@@ -5,6 +5,7 @@ import { AuthService, User } from '../../../core/services/auth.service';
 import { JobService, Job } from '../../../core/services/job.service';
 import { JobApplicationService } from '../../../core/services/job-application.service';
 import { NavigationService } from '../../../core/services/navigation.service';
+import { SavedJobsService } from '../../../core/services/saved-jobs.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -19,6 +20,7 @@ export class JobDetailComponent implements OnInit, OnDestroy {
   isLoading = true;
   hasApplied = false;
   isApplying = false;
+  isSaved = false;
   errorMessage = '';
   successMessage = '';
 
@@ -31,7 +33,8 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private jobService: JobService,
     private jobApplicationService: JobApplicationService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private savedJobsService: SavedJobsService
   ) {}
 
   ngOnInit(): void {
@@ -48,6 +51,7 @@ export class JobDetailComponent implements OnInit, OnDestroy {
       this.currentUser = user;
       if (this.job && user) {
         this.checkApplicationStatus();
+        this.checkSavedStatus();
       }
     });
   }
@@ -70,6 +74,7 @@ export class JobDetailComponent implements OnInit, OnDestroy {
           this.errorMessage = 'Job not found';
         } else if (this.currentUser) {
           this.checkApplicationStatus();
+          this.checkSavedStatus();
         }
       },
       error: (error) => {
@@ -92,6 +97,26 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         },
         error: (error: any) => {
           console.error('Error checking application status:', error);
+        },
+      });
+  }
+
+  private checkSavedStatus() {
+    if (
+      !this.job ||
+      !this.currentUser ||
+      this.currentUser.role !== 'job-seeker'
+    )
+      return;
+
+    this.savedJobsService
+      .isJobSaved(this.currentUser.id, this.job.id)
+      .subscribe({
+        next: (isSaved: boolean) => {
+          this.isSaved = isSaved;
+        },
+        error: (error: any) => {
+          console.error('Error checking saved status:', error);
         },
       });
   }
@@ -221,8 +246,43 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     return 'Apply Now';
   }
 
-  saveJob() {
-    // TODO: Implement save job functionality
-    console.log('Save job functionality to be implemented');
+  canSave(): boolean {
+    return !!(
+      this.currentUser &&
+      this.currentUser.role === 'job-seeker' &&
+      this.job
+    );
+  }
+
+  getSaveButtonText(): string {
+    return this.isSaved ? 'Saved' : 'Save Job';
+  }
+
+  toggleSaveJob() {
+    if (!this.canSave()) {
+      this.router.navigate(['/auth/signin'], {
+        queryParams: { returnUrl: this.router.url },
+      });
+      return;
+    }
+
+    this.savedJobsService
+      .toggleSaveJob(this.currentUser!.id, this.job!.id)
+      .subscribe({
+        next: (result) => {
+          this.isSaved = result.saved;
+          this.successMessage = result.message;
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 3000);
+        },
+        error: (error) => {
+          console.error('Error toggling save status:', error);
+          this.errorMessage = 'Failed to save job. Please try again.';
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 3000);
+        },
+      });
   }
 }

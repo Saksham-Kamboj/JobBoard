@@ -613,6 +613,50 @@ select:autofill {
   color: var(--primary);
 }
 
+/* Save Button Styles */
+.btn-outline {
+  background: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
+  background: var(--muted);
+  border-color: var(--primary);
+}
+
+.btn-saved {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: 1px solid var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-saved:hover {
+  background: var(--primary)/90;
+}
+
+.btn-saved svg {
+  color: var(--primary-foreground);
+}
+
 /* Responsive Design */
 @media (min-width: 768px) {
   .job-grid {

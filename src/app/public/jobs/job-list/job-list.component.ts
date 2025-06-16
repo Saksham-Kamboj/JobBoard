@@ -13,6 +13,7 @@ import {
 import { NavigationService } from '../../../core/services/navigation.service';
 import { AuthService, User } from '../../../core/services/auth.service';
 import { JobApplicationService } from '../../../core/services/job-application.service';
+import { SavedJobsService } from '../../../core/services/saved-jobs.service';
 
 @Component({
   selector: 'app-job-list',
@@ -26,6 +27,7 @@ export class JobListComponent implements OnInit, OnDestroy {
   errorMessage = '';
   currentUser: User | null = null;
   appliedJobIds: Set<string> = new Set(); // Track which jobs the user has applied to
+  savedJobIds: Set<string> = new Set(); // Track which jobs the user has saved
   searchResults: SearchResults = {
     jobs: [],
     totalCount: 0,
@@ -83,7 +85,8 @@ export class JobListComponent implements OnInit, OnDestroy {
     private router: Router,
     private navigationService: NavigationService,
     private authService: AuthService,
-    private jobApplicationService: JobApplicationService
+    private jobApplicationService: JobApplicationService,
+    private savedJobsService: SavedJobsService
   ) {}
 
   ngOnInit(): void {
@@ -104,8 +107,9 @@ export class JobListComponent implements OnInit, OnDestroy {
         this.searchResults = results;
         this.jobs = this.sortJobs(results.jobs);
         this.isLoading = false;
-        // Check application status after jobs are loaded
+        // Check application and saved status after jobs are loaded
         this.checkApplicationStatus();
+        this.checkSavedStatus();
       },
       error: (error) => {
         console.error('Error in search results:', error);
@@ -348,8 +352,9 @@ export class JobListComponent implements OnInit, OnDestroy {
   private loadCurrentUser(): void {
     const userSub = this.authService.currentUser$.subscribe((user) => {
       this.currentUser = user;
-      // Check application status when user changes
+      // Check application and saved status when user changes
       this.checkApplicationStatus();
+      this.checkSavedStatus();
     });
     this.subscriptions.add(userSub);
   }
@@ -412,6 +417,95 @@ export class JobListComponent implements OnInit, OnDestroy {
    */
   isApplyButtonDisabled(jobId: string): boolean {
     return this.hasAppliedToJob(jobId);
+  }
+
+  /**
+   * Check saved status for all displayed jobs
+   */
+  private checkSavedStatus(): void {
+    if (
+      !this.currentUser ||
+      this.currentUser.role !== 'job-seeker' ||
+      this.jobs.length === 0
+    ) {
+      this.savedJobIds.clear();
+      return;
+    }
+
+    const savedSub = this.savedJobsService
+      .getSavedJobIds(this.currentUser.id)
+      .subscribe({
+        next: (savedIds) => {
+          this.savedJobIds = savedIds;
+        },
+        error: (error) => {
+          console.error('Error checking saved status:', error);
+          // Don't clear the set on error, keep existing state
+        },
+      });
+
+    this.subscriptions.add(savedSub);
+  }
+
+  /**
+   * Check if a job is saved by the current user
+   */
+  isJobSaved(jobId: string): boolean {
+    return this.savedJobIds.has(jobId);
+  }
+
+  /**
+   * Get the appropriate text for the save button
+   */
+  getSaveButtonText(jobId: string): string {
+    return this.isJobSaved(jobId) ? 'Saved' : 'Save Job';
+  }
+
+  /**
+   * Toggle save status of a job
+   */
+  toggleSaveJob(jobId: string): void {
+    console.log('toggleSaveJob called with jobId:', jobId);
+    console.log('currentUser:', this.currentUser);
+
+    if (!this.currentUser || this.currentUser.role !== 'job-seeker') {
+      console.log(
+        'User not authenticated or not a job seeker, redirecting to signin'
+      );
+      this.router.navigate(['/auth/signin'], {
+        queryParams: { returnUrl: this.router.url },
+      });
+      return;
+    }
+
+    console.log(
+      'Calling savedJobsService.toggleSaveJob with userId:',
+      this.currentUser.id,
+      'jobId:',
+      jobId
+    );
+
+    const toggleSub = this.savedJobsService
+      .toggleSaveJob(this.currentUser.id, jobId)
+      .subscribe({
+        next: (result) => {
+          console.log('toggleSaveJob success:', result);
+          if (result.saved) {
+            this.savedJobIds.add(jobId);
+            console.log('Job saved, added to savedJobIds');
+          } else {
+            this.savedJobIds.delete(jobId);
+            console.log('Job unsaved, removed from savedJobIds');
+          }
+          console.log('Current savedJobIds:', this.savedJobIds);
+        },
+        error: (error) => {
+          console.error('Error toggling save status:', error);
+          console.error('Error details:', error.message, error.status);
+        },
+      });
+
+    this.subscriptions.add(toggleSub);
   }
 
   applyForJob(jobId: string): void {

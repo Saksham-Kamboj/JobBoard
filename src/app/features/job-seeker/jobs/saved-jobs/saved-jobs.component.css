@@ -143,13 +143,77 @@
   background: var(--primary-hover);
 }
 
+/* Loading and Error States */
+.loading,
+.error {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--border);
+  border-top: 2px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading p,
+.error p {
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+.error h2 {
+  color: var(--destructive);
+  margin-bottom: 0.5rem;
+}
+
+.retry-btn {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+}
+
+.retry-btn:hover {
+  background: var(--primary);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.job-type {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  margin: 0.25rem 0;
+  text-transform: capitalize;
+}
+
 @media (max-width: 768px) {
   .job-card {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .job-actions {
     align-self: flex-end;
   }
