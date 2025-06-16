@@ -86,8 +86,26 @@
                 </ng-container>
 
                 <ng-container *ngIf="(isAuthenticated$ | async)">
-                    <!-- Authenticated user links -->
-                    <a routerLink="/dashboard" class="help-link">
+                    <!-- Role-based Dashboard Links -->
+                    <a *ngIf="isAdmin" routerLink="/admin/dashboard" class="help-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="7" height="7" stroke="currentColor" stroke-width="2" />
+                            <rect x="14" y="3" width="7" height="7" stroke="currentColor" stroke-width="2" />
+                            <rect x="14" y="14" width="7" height="7" stroke="currentColor" stroke-width="2" />
+                            <rect x="3" y="14" width="7" height="7" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        Admin Dashboard
+                    </a>
+                    <a *ngIf="isCompany" routerLink="/company/dashboard" class="help-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="7" height="7" stroke="currentColor" stroke-width="2" />
+                            <rect x="14" y="3" width="7" height="7" stroke="currentColor" stroke-width="2" />
+                            <rect x="14" y="14" width="7" height="7" stroke="currentColor" stroke-width="2" />
+                            <rect x="3" y="14" width="7" height="7" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        Company Dashboard
+                    </a>
+                    <a *ngIf="isJobSeeker" routerLink="/jobseeker/dashboard" class="help-link">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="3" y="3" width="7" height="7" stroke="currentColor" stroke-width="2" />
                             <rect x="14" y="3" width="7" height="7" stroke="currentColor" stroke-width="2" />
@@ -97,7 +115,24 @@
                         Dashboard
                     </a>
 
-                    <a routerLink="/profile" class="help-link">
+                    <!-- Role-based Profile Links -->
+                    <a *ngIf="isAdmin" routerLink="/admin/profile" class="help-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor"
+                                stroke-width="2" />
+                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        Admin Profile
+                    </a>
+                    <a *ngIf="isCompany" routerLink="/company/profile" class="help-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor"
+                                stroke-width="2" />
+                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        Company Profile
+                    </a>
+                    <a *ngIf="isJobSeeker" routerLink="/jobseeker/profile" class="help-link">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor"
                                 stroke-width="2" />
@@ -152,7 +187,7 @@
                         </svg>
                         Company Settings
                     </a>
-                    <a *ngIf="user.role === 'job-seeker'" routerLink="/settings" class="help-link">
+                    <a *ngIf="user.role === 'job-seeker'" routerLink="/jobseeker/settings" class="help-link">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" />
                             <path
