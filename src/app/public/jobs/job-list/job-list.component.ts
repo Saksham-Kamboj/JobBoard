@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { JobService, Job } from '../../../core/services/job.service';
 import {
   SearchService,
@@ -11,6 +12,7 @@ import {
 } from '../../../core/services/search.service';
 import { NavigationService } from '../../../core/services/navigation.service';
 import { AuthService, User } from '../../../core/services/auth.service';
+import { JobApplicationService } from '../../../core/services/job-application.service';
 
 @Component({
   selector: 'app-job-list',
@@ -23,6 +25,7 @@ export class JobListComponent implements OnInit, OnDestroy {
   isLoading = true;
   errorMessage = '';
   currentUser: User | null = null;
+  appliedJobIds: Set<string> = new Set(); // Track which jobs the user has applied to
   searchResults: SearchResults = {
     jobs: [],
     totalCount: 0,
@@ -79,7 +82,8 @@ export class JobListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private navigationService: NavigationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private jobApplicationService: JobApplicationService
   ) {}
 
   ngOnInit(): void {
@@ -100,6 +104,8 @@ export class JobListComponent implements OnInit, OnDestroy {
         this.searchResults = results;
         this.jobs = this.sortJobs(results.jobs);
         this.isLoading = false;
+        // Check application status after jobs are loaded
+        this.checkApplicationStatus();
       },
       error: (error) => {
         console.error('Error in search results:', error);
@@ -342,11 +348,78 @@ export class JobListComponent implements OnInit, OnDestroy {
   private loadCurrentUser(): void {
     const userSub = this.authService.currentUser$.subscribe((user) => {
       this.currentUser = user;
+      // Check application status when user changes
+      this.checkApplicationStatus();
     });
     this.subscriptions.add(userSub);
   }
 
+  /**
+   * Check if the current user has applied to any of the displayed jobs
+   */
+  private checkApplicationStatus(): void {
+    if (
+      !this.currentUser ||
+      this.currentUser.role !== 'job-seeker' ||
+      this.jobs.length === 0
+    ) {
+      this.appliedJobIds.clear();
+      return;
+    }
+
+    // Create array of observables to check each job
+    const applicationChecks = this.jobs.map((job) =>
+      this.jobApplicationService
+        .checkIfUserApplied(this.currentUser!.id, job.id)
+        .pipe(map((hasApplied) => ({ jobId: job.id, hasApplied })))
+    );
+
+    // Execute all checks in parallel
+    const checkSub = forkJoin(applicationChecks).subscribe({
+      next: (results) => {
+        this.appliedJobIds.clear();
+        results.forEach((result) => {
+          if (result.hasApplied) {
+            this.appliedJobIds.add(result.jobId);
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error checking application status:', error);
+        // Don't clear the set on error, keep existing state
+      },
+    });
+
+    this.subscriptions.add(checkSub);
+  }
+
+  /**
+   * Check if the current user has applied to a specific job
+   */
+  hasAppliedToJob(jobId: string): boolean {
+    return this.appliedJobIds.has(jobId);
+  }
+
+  /**
+   * Get the appropriate button text for the apply button
+   */
+  getApplyButtonText(jobId: string): string {
+    return this.hasAppliedToJob(jobId) ? 'Applied' : 'Apply Now';
+  }
+
+  /**
+   * Check if the apply button should be disabled
+   */
+  isApplyButtonDisabled(jobId: string): boolean {
+    return this.hasAppliedToJob(jobId);
+  }
+
   applyForJob(jobId: string): void {
+    // Don't allow applying if already applied
+    if (this.hasAppliedToJob(jobId)) {
+      return;
+    }
+
     // Check if user is authenticated
     if (!this.currentUser) {
       this.router.navigate(['/auth/signin'], {

@@ -588,6 +588,31 @@ select:autofill {
   margin: 0 0 1rem 0;
 }
 
+/* Applied Button Styles */
+.btn-applied {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: not-allowed;
+  transition: all 0.2s ease;
+}
+
+.btn-applied:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-applied svg {
+  color: var(--primary);
+}
+
 /* Responsive Design */
 @media (min-width: 768px) {
   .job-grid {
