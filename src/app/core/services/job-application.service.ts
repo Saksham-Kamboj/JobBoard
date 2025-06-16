@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, forkJoin } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { PersonalInfo, Resume } from './user-profile.service';
 import { ApplicationStatus } from './dashboard.service';
+import { AppliedJobsService } from './applied-jobs.service';
 
 export interface JobApplicationData {
   personalInfo: PersonalInfo;
@@ -39,7 +40,10 @@ export interface JobApplication {
 export class JobApplicationService {
   private apiUrl = 'http://localhost:3000/jobApplications';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private appliedJobsService: AppliedJobsService
+  ) {}
 
   submitJobApplication(
     application: Omit<JobApplication, 'id' | 'submittedAt' | 'updatedAt'>
@@ -51,7 +55,21 @@ export class JobApplicationService {
       updatedAt: new Date().toISOString(),
     };
 
-    return this.http.post<JobApplication>(this.apiUrl, newApplication);
+    // Submit the job application and also add to appliedJobs collection
+    return this.http.post<JobApplication>(this.apiUrl, newApplication).pipe(
+      switchMap((submittedApplication) => {
+        // Add entry to appliedJobs collection
+        return this.appliedJobsService
+          .addAppliedJob(
+            application.userId,
+            application.jobId,
+            submittedApplication.id
+          )
+          .pipe(
+            map(() => submittedApplication) // Return the original application
+          );
+      })
+    );
   }
 
   getUserApplications(userId: string): Observable<JobApplication[]> {

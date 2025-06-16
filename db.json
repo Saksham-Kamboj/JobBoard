@@ -159,103 +159,6 @@
           "current": false
         }
       ],
-      "dashboardData": {
-        "appliedJobs": [
-          {
-            "jobId": "2",
-            "applicationId": "app2",
-            "appliedDate": "2024-12-08T15:45:00.000Z",
-            "status": "submitted",
-            "jobTitle": "UX/UI Designer",
-            "company": "Flipkart",
-            "location": "Bangalore, Karnataka"
-          },
-          {
-            "jobId": "3",
-            "applicationId": "simkt5xwh",
-            "appliedDate": "2025-06-05T10:17:36.561Z",
-            "status": "shortlisted",
-            "jobTitle": "Full Stack Developer",
-            "company": "Zomato",
-            "location": "Gurgaon, Haryana"
-          },
-          {
-            "jobId": "4",
-            "applicationId": "qu3wruc2t",
-            "appliedDate": "2025-06-05T10:25:12.037Z",
-            "status": "pending",
-            "jobTitle": "Product Manager",
-            "company": "Paytm",
-            "location": "Noida, Uttar Pradesh"
-          },
-          {
-            "jobId": "5",
-            "applicationId": "demo-app-1",
-            "appliedDate": "2025-06-09T10:30:00.000Z",
-            "status": "pending",
-            "jobTitle": "DevOps Engineer",
-            "company": "Infosys",
-            "location": "Pune, Maharashtra"
-          },
-          {
-            "jobId": "7",
-            "applicationId": "demo-app-3",
-            "appliedDate": "2025-06-07T11:45:00.000Z",
-            "status": "shortlisted",
-            "jobTitle": "Sales Manager",
-            "company": "SalesForce Pro",
-            "location": "Chicago, IL"
-          },
-          {
-            "jobId": "NasKN54",
-            "applicationId": "8xw809nnj",
-            "appliedDate": "2025-06-10T05:04:25.103Z",
-            "status": "reviewed",
-            "jobTitle": "IT Support Specialist",
-            "company": "Ekvayu Tech Pvt Ltd",
-            "location": "Noida, Uttar Pradesh"
-          },
-          {
-            "jobId": "23",
-            "applicationId": "demo-app-cloud",
-            "appliedDate": "2025-06-16T14:30:00.000Z",
-            "status": "submitted",
-            "jobTitle": "Cloud Solutions Architect",
-            "company": "CloudTech Solutions",
-            "location": "Pune, Maharashtra"
-          }
-        ],
-        "savedJobs": [
-          {
-            "jobId": "4",
-            "savedDate": "2024-12-07T15:20:00.000Z",
-            "jobTitle": "Product Manager",
-            "company": "Paytm",
-            "location": "Noida, Uttar Pradesh"
-          },
-          {
-            "jobId": "6",
-            "savedDate": "2024-12-06T09:45:00.000Z",
-            "jobTitle": "Data Scientist",
-            "company": "Swiggy",
-            "location": "Bangalore, Karnataka"
-          }
-        ],
-        "interviews": [
-          {
-            "jobId": "7",
-            "applicationId": "demo-app-3",
-            "interviewDate": "2025-06-20T10:00:00.000Z",
-            "interviewType": "technical",
-            "status": "scheduled",
-            "jobTitle": "Sales Manager",
-            "company": "SalesForce Pro",
-            "location": "Chicago, IL",
-            "interviewMode": "video",
-            "notes": "Technical round with the engineering team"
-          }
-        ]
-      },
       "createdAt": "2024-12-01T10:00:00.000Z",
       "updatedAt": "2025-06-16T11:16:39.129Z",
       "resume": {
@@ -2073,22 +1976,87 @@
   ],
   "savedJobs": [
     {
-      "id": "luqckvs5b",
+      "id": "dc1bp2nq2",
       "userId": "demo-job-seeker",
       "jobId": "23",
-      "savedAt": "2025-06-16T13:23:23.222Z"
+      "savedAt": "2025-06-16T13:39:52.445Z"
     },
     {
-      "id": "ynimf8fpn",
-      "userId": "demo-job-seeker",
-      "jobId": "21",
-      "savedAt": "2025-06-16T13:23:23.916Z"
-    },
-    {
-      "id": "8ih5ukuw7",
+      "id": "twxxleo93",
       "userId": "demo-job-seeker",
       "jobId": "22",
-      "savedAt": "2025-06-16T13:23:24.666Z"
+      "savedAt": "2025-06-16T13:39:54.031Z"
+    }
+  ],
+  "appliedJobs": [
+    {
+      "id": "applied-1",
+      "userId": "demo-job-seeker",
+      "jobId": "2",
+      "applicationId": "app2",
+      "appliedDate": "2024-12-08T15:45:00.000Z",
+      "status": "submitted"
+    },
+    {
+      "id": "applied-2",
+      "userId": "demo-job-seeker",
+      "jobId": "3",
+      "applicationId": "simkt5xwh",
+      "appliedDate": "2025-06-05T10:17:36.561Z",
+      "status": "shortlisted"
+    },
+    {
+      "id": "applied-3",
+      "userId": "demo-job-seeker",
+      "jobId": "4",
+      "applicationId": "qu3wruc2t",
+      "appliedDate": "2025-06-05T10:25:12.037Z",
+      "status": "pending"
+    },
+    {
+      "id": "applied-4",
+      "userId": "demo-job-seeker",
+      "jobId": "5",
+      "applicationId": "demo-app-1",
+      "appliedDate": "2025-06-09T10:30:00.000Z",
+      "status": "pending"
+    },
+    {
+      "id": "applied-5",
+      "userId": "demo-job-seeker",
+      "jobId": "7",
+      "applicationId": "demo-app-3",
+      "appliedDate": "2025-06-07T11:45:00.000Z",
+      "status": "shortlisted"
+    },
+    {
+      "id": "applied-6",
+      "userId": "demo-job-seeker",
+      "jobId": "NasKN54",
+      "applicationId": "8xw809nnj",
+      "appliedDate": "2025-06-10T05:04:25.103Z",
+      "status": "reviewed"
+    },
+    {
+      "id": "applied-7",
+      "userId": "demo-job-seeker",
+      "jobId": "23",
+      "applicationId": "demo-app-cloud",
+      "appliedDate": "2025-06-16T14:30:00.000Z",
+      "status": "submitted"
+    }
+  ],
+  "interviews": [
+    {
+      "id": "interview-1",
+      "userId": "demo-job-seeker",
+      "jobId": "7",
+      "applicationId": "demo-app-3",
+      "interviewDate": "2025-06-20T10:00:00.000Z",
+      "interviewType": "technical",
+      "status": "scheduled",
+      "interviewMode": "video",
+      "notes": "Technical round with the engineering team"
     }
   ]
 }
