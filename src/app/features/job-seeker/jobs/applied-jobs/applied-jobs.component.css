@@ -290,6 +290,8 @@
   justify-content: space-between;
   align-items: flex-start;
   position: relative;
+  padding: 0 16px;
+  /* Add padding to create space for proper line positioning */
 }
 
 /* Static background line */
@@ -299,9 +301,9 @@
   top: 16px;
   /* Half of step-indicator height (32px / 2) */
   left: 16px;
-  /* Half of step-indicator width to start from center of first step */
+  /* Start from center of first step */
   right: 16px;
-  /* Half of step-indicator width to end at center of last step */
+  /* End at center of last step */
   height: 2px;
   background: var(--border);
   z-index: 1;
@@ -312,12 +314,16 @@
   position: absolute;
   top: 16px;
   left: 16px;
+  /* Start from center of first step */
   height: 2px;
   background: linear-gradient(90deg, var(--primary) 0%, var(--primary) 100%);
   z-index: 2;
   transition: width 0.8s ease-in-out;
   border-radius: 1px;
   box-shadow: 0 0 4px oklch(from var(--primary) l c h / 0.3);
+  transform-origin: left center;
+  max-width: calc(100% - 32px);
+  /* Ensure line doesn't exceed the available space between step centers */
 }
 
 .progress-step {
@@ -409,6 +415,24 @@
 .progress-step.completed .step-label {
   color: var(--success);
   font-weight: 600;
+}
+
+/* Rejected application styling */
+.progress-step.rejected .step-label {
+  color: var(--destructive);
+  font-weight: 600;
+}
+
+.progress-step.rejected .step-indicator {
+  background: var(--destructive);
+  border-color: var(--destructive);
+  color: white;
+  box-shadow: 0 0 0 2px oklch(from var(--destructive) l c h / 0.2);
+}
+
+/* Progress line for rejected applications */
+.application-progress.rejected .progress-line {
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary) 75%, var(--destructive) 75%, var(--destructive) 100%);
 }
 
 /* Job Card Footer */

@@ -140,7 +140,7 @@
           </div>
 
           <!-- Enhanced Application Progress -->
-          <div class="application-progress">
+          <div class="application-progress" [class.rejected]="job.status.toLowerCase() === 'rejected'">
             <div class="progress-label">Application Progress</div>
             <div class="progress-steps" [attr.data-progress]="getProgressPercentage(job.status)">
               <!-- Dynamic Progress Line -->
@@ -174,7 +174,8 @@
               </div>
               <div class="progress-step" [class.active]="isStepActive('decision', job.status)"
                 [class.completed]="isStepCompleted('decision', job.status)"
-                [class.current]="isCurrentStep('accepted', job.status) || isCurrentStep('rejected', job.status)">
+                [class.current]="isCurrentStep('accepted', job.status) || isCurrentStep('rejected', job.status)"
+                [class.rejected]="job.status.toLowerCase() === 'rejected'">
                 <div class="step-indicator">
                   <svg
                     *ngIf="isStepCompleted('decision', job.status) || isCurrentStep('accepted', job.status) || isCurrentStep('rejected', job.status)"
@@ -188,7 +189,8 @@
                 <span class="step-label">{{ job.status === 'accepted' ? 'Accepted' : job.status === 'rejected' ?
                   'Rejected' : 'Decision' }}</span>
               </div>
-              <div class="progress-step" [class.active]="isStepActive('scheduled', job.status)"
+              <div class="progress-step" *ngIf="job.status.toLowerCase() !== 'rejected'"
+                [class.active]="isStepActive('scheduled', job.status)"
                 [class.completed]="isStepCompleted('scheduled', job.status)"
                 [class.current]="isCurrentStep('scheduled', job.status)">
                 <div class="step-indicator">
@@ -199,7 +201,7 @@
                   <span *ngIf="!isStepCompleted('scheduled', job.status) && !isCurrentStep('scheduled', job.status)"
                     class="step-number">4</span>
                 </div>
-                <span class="step-label">Scheduled</span>
+                <span class="step-label">Interview</span>
               </div>
             </div>
           </div>

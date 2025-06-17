@@ -250,6 +250,10 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
   // Next step shows animation
   isStepActive(step: string, currentStatus: string): boolean {
     const nextStep = this.getNextStep(currentStatus);
+    // Don't show animation for rejected applications beyond decision step
+    if (currentStatus.toLowerCase() === 'rejected' && step === 'scheduled') {
+      return false;
+    }
     return step === nextStep;
   }
 
@@ -258,6 +262,11 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
     const stepOrder = ['submitted', 'reviewed', 'decision', 'scheduled'];
     const stepIndex = stepOrder.indexOf(step);
     const currentStepIndex = this.getCurrentStepIndex(currentStatus);
+
+    // For rejected applications, don't mark scheduled as completed
+    if (currentStatus.toLowerCase() === 'rejected' && step === 'scheduled') {
+      return false;
+    }
 
     return stepIndex < currentStepIndex;
   }
@@ -269,8 +278,9 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
       case 'reviewed':
         return 2;
       case 'accepted':
-      case 'rejected':
         return 3;
+      case 'rejected':
+        return 3; // Rejected ends at decision step
       case 'scheduled':
         return 4;
       default:
@@ -285,8 +295,9 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
       case 'reviewed':
         return 'decision';
       case 'accepted':
+        return 'scheduled'; // Only accepted applications can proceed to scheduled
       case 'rejected':
-        return 'scheduled';
+        return ''; // Rejected applications have no next step
       case 'scheduled':
         return ''; // No next step
       default:
@@ -297,18 +308,34 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
   // Get progress percentage - line reaches current step then moves towards next
   getProgressPercentage(currentStatus: string): number {
     const stepIndex = this.getCurrentStepIndex(currentStatus);
+    const status = currentStatus.toLowerCase();
+
+    // For rejected applications, we have 3 steps total
+    // For others, we have 4 steps total
+    const totalSteps = status === 'rejected' ? 3 : 4;
+
+    // Calculate the percentage based on step completion
+    // Each step represents a segment of the total progress
+    const basePercentage = ((stepIndex - 1) / (totalSteps - 1)) * 100;
+    const nextStepPercentage = (stepIndex / (totalSteps - 1)) * 100;
+    const animationOffset = (nextStepPercentage - basePercentage) * 0.5;
 
     switch (stepIndex) {
       case 1: // submitted - line reaches step 1, moves towards step 2
-        return 25 + 12.5; // 25% to reach step 1, +12.5% towards step 2
+        return basePercentage + animationOffset;
       case 2: // reviewed - line reaches step 2, moves towards step 3
-        return 50 + 12.5; // 50% to reach step 2, +12.5% towards step 3
-      case 3: // accepted/rejected - line reaches step 3, moves towards step 4
-        return 75 + 12.5; // 75% to reach step 3, +12.5% towards step 4
+        return basePercentage + animationOffset;
+      case 3: // accepted/rejected - line reaches step 3
+        if (status === 'rejected') {
+          return 100; // Rejected process is complete (100% of available space)
+        } else if (status === 'accepted') {
+          return basePercentage + animationOffset; // Accepted moves towards step 4
+        }
+        return basePercentage; // Default for decision step
       case 4: // scheduled - line reaches final step
         return 100; // 100% complete
       default:
-        return 12.5; // Before first step
+        return animationOffset; // Before first step, show small progress
     }
   }
 
