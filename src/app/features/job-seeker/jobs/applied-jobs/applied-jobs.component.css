@@ -288,19 +288,21 @@
 .progress-steps {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
 }
 
 .progress-steps::before {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
+  top: 16px;
+  /* Half of step-indicator height (32px / 2) */
+  left: 16px;
+  /* Half of step-indicator width to start from center of first step */
+  right: 16px;
+  /* Half of step-indicator width to end at center of last step */
   height: 2px;
   background: var(--border);
-  transform: translateY(-50%);
   z-index: 1;
 }
 
