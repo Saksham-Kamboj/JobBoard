@@ -101,12 +101,7 @@ html {
     /* iOS smooth scrolling */
 }
 
-/* Optimize rendering performance */
-body {
-    contain: layout style paint;
-    transform: translateZ(0);
-    /* Force hardware acceleration */
-}
+/* Optimize rendering performance - removed containment to fix header positioning */
 
 /* Optimize scroll performance for job cards */
 .job-card {

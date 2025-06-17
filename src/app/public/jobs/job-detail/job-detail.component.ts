@@ -281,10 +281,7 @@ export class JobDetailComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (result) => {
           this.isSaved = result.saved;
-          this.successMessage = result.message;
-          setTimeout(() => {
-            this.successMessage = '';
-          }, 3000);
+          // Remove success message toast - just update the state silently
         },
         error: (error) => {
           console.error('Error toggling save status:', error);
