@@ -347,6 +347,15 @@
   z-index: 3;
 }
 
+/* Current step - shows tick, no animation */
+.progress-step.current .step-indicator {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+  box-shadow: 0 0 0 2px oklch(from var(--success) l c h / 0.2);
+}
+
+/* Next step - shows animation */
 .progress-step.active .step-indicator {
   background: var(--primary);
   border-color: var(--primary);
@@ -355,6 +364,7 @@
   animation: pulse 2s infinite;
 }
 
+/* Completed steps - shows tick */
 .progress-step.completed .step-indicator {
   background: var(--success);
   border-color: var(--success);
@@ -383,11 +393,19 @@
   font-weight: 500;
 }
 
+/* Current step label */
+.progress-step.current .step-label {
+  color: var(--success);
+  font-weight: 600;
+}
+
+/* Next step label (animated) */
 .progress-step.active .step-label {
   color: var(--primary);
   font-weight: 600;
 }
 
+/* Completed step label */
 .progress-step.completed .step-label {
   color: var(--success);
   font-weight: 600;

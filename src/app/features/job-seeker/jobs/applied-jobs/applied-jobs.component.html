@@ -44,11 +44,10 @@
             <select class="filter-select" [(ngModel)]="statusFilter" (change)="onFilterChange()">
               <option value="">All Status</option>
               <option value="submitted">Submitted</option>
-              <option value="under-review">Under Review</option>
-              <option value="interview">Interview</option>
-              <option value="shortlisted">Shortlisted</option>
-              <option value="rejected">Rejected</option>
+              <option value="reviewed">Reviewed</option>
               <option value="accepted">Accepted</option>
+              <option value="rejected">Rejected</option>
+              <option value="scheduled">Scheduled</option>
             </select>
             <select class="filter-select" [(ngModel)]="sortBy" (change)="onSortChange()">
               <option value="date-desc">Latest First</option>
@@ -148,48 +147,59 @@
               <div class="progress-line" [style.width.%]="getProgressPercentage(job.status)"></div>
 
               <div class="progress-step" [class.active]="isStepActive('submitted', job.status)"
-                [class.completed]="isStepCompleted('submitted', job.status)">
+                [class.completed]="isStepCompleted('submitted', job.status)"
+                [class.current]="isCurrentStep('submitted', job.status)">
                 <div class="step-indicator">
-                  <svg *ngIf="isStepCompleted('submitted', job.status)" width="12" height="12" viewBox="0 0 24 24"
-                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg *ngIf="isStepCompleted('submitted', job.status) || isCurrentStep('submitted', job.status)"
+                    width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <polyline points="20,6 9,17 4,12" stroke="currentColor" stroke-width="2" />
                   </svg>
-                  <span *ngIf="!isStepCompleted('submitted', job.status)" class="step-number">1</span>
+                  <span *ngIf="!isStepCompleted('submitted', job.status) && !isCurrentStep('submitted', job.status)"
+                    class="step-number">1</span>
                 </div>
                 <span class="step-label">Submitted</span>
               </div>
-              <div class="progress-step" [class.active]="isStepActive('under-review', job.status)"
-                [class.completed]="isStepCompleted('under-review', job.status)">
+              <div class="progress-step" [class.active]="isStepActive('reviewed', job.status)"
+                [class.completed]="isStepCompleted('reviewed', job.status)"
+                [class.current]="isCurrentStep('reviewed', job.status)">
                 <div class="step-indicator">
-                  <svg *ngIf="isStepCompleted('under-review', job.status)" width="12" height="12" viewBox="0 0 24 24"
-                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg *ngIf="isStepCompleted('reviewed', job.status) || isCurrentStep('reviewed', job.status)"
+                    width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <polyline points="20,6 9,17 4,12" stroke="currentColor" stroke-width="2" />
                   </svg>
-                  <span *ngIf="!isStepCompleted('under-review', job.status)" class="step-number">2</span>
+                  <span *ngIf="!isStepCompleted('reviewed', job.status) && !isCurrentStep('reviewed', job.status)"
+                    class="step-number">2</span>
                 </div>
-                <span class="step-label">Review</span>
+                <span class="step-label">Reviewed</span>
               </div>
-              <div class="progress-step" [class.active]="isStepActive('interview', job.status)"
-                [class.completed]="isStepCompleted('interview', job.status)">
+              <div class="progress-step" [class.active]="isStepActive('decision', job.status)"
+                [class.completed]="isStepCompleted('decision', job.status)"
+                [class.current]="isCurrentStep('accepted', job.status) || isCurrentStep('rejected', job.status)">
                 <div class="step-indicator">
-                  <svg *ngIf="isStepCompleted('interview', job.status)" width="12" height="12" viewBox="0 0 24 24"
-                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    *ngIf="isStepCompleted('decision', job.status) || isCurrentStep('accepted', job.status) || isCurrentStep('rejected', job.status)"
+                    width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <polyline points="20,6 9,17 4,12" stroke="currentColor" stroke-width="2" />
                   </svg>
-                  <span *ngIf="!isStepCompleted('interview', job.status)" class="step-number">3</span>
+                  <span
+                    *ngIf="!isStepCompleted('decision', job.status) && !isCurrentStep('accepted', job.status) && !isCurrentStep('rejected', job.status)"
+                    class="step-number">3</span>
                 </div>
-                <span class="step-label">Interview</span>
+                <span class="step-label">{{ job.status === 'accepted' ? 'Accepted' : job.status === 'rejected' ?
+                  'Rejected' : 'Decision' }}</span>
               </div>
-              <div class="progress-step" [class.active]="isStepActive('final', job.status)"
-                [class.completed]="isStepCompleted('final', job.status)">
+              <div class="progress-step" [class.active]="isStepActive('scheduled', job.status)"
+                [class.completed]="isStepCompleted('scheduled', job.status)"
+                [class.current]="isCurrentStep('scheduled', job.status)">
                 <div class="step-indicator">
-                  <svg *ngIf="isStepCompleted('final', job.status)" width="12" height="12" viewBox="0 0 24 24"
-                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg *ngIf="isStepCompleted('scheduled', job.status) || isCurrentStep('scheduled', job.status)"
+                    width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <polyline points="20,6 9,17 4,12" stroke="currentColor" stroke-width="2" />
                   </svg>
-                  <span *ngIf="!isStepCompleted('final', job.status)" class="step-number">4</span>
+                  <span *ngIf="!isStepCompleted('scheduled', job.status) && !isCurrentStep('scheduled', job.status)"
+                    class="step-number">4</span>
                 </div>
-                <span class="step-label">Decision</span>
+                <span class="step-label">Scheduled</span>
               </div>
             </div>
           </div>

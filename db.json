@@ -449,7 +449,7 @@
         },
         "additionalDocuments": []
       },
-      "status": "shortlisted",
+      "status": "reviewed",
       "notes": "",
       "submittedAt": "2025-06-05T10:17:36.561Z",
       "updatedAt": "2025-06-09T07:15:55.118Z",
@@ -497,7 +497,7 @@
         },
         "additionalDocuments": []
       },
-      "status": "pending",
+      "status": "accepted",
       "notes": "",
       "submittedAt": "2025-06-05T10:25:12.037Z",
       "updatedAt": "2025-06-09T07:15:34.129Z"
@@ -528,7 +528,7 @@
         },
         "additionalDocuments": []
       },
-      "status": "pending",
+      "status": "rejected",
       "submittedAt": "2025-06-09T10:30:00.000Z",
       "updatedAt": "2025-06-09T10:30:00.000Z",
       "notes": ""
@@ -559,7 +559,7 @@
         },
         "additionalDocuments": []
       },
-      "status": "interview",
+      "status": "scheduled",
       "submittedAt": "2025-06-07T11:45:00.000Z",
       "updatedAt": "2025-06-08T16:30:00.000Z",
       "notes": "Excellent QA experience - Interview scheduled"
@@ -628,6 +628,130 @@
       "status": "submitted",
       "submittedAt": "2025-06-16T14:30:00.000Z",
       "updatedAt": "2025-06-16T14:30:00.000Z",
+      "notes": ""
+    },
+    {
+      "id": "demo-app-8",
+      "jobId": "8",
+      "userId": "demo-job-seeker",
+      "applicationData": {
+        "personalInfo": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "jobseeker@demo.com",
+          "phone": "+1 (555) 123-4567",
+          "address": {
+            "street": "123 Main Street",
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94105",
+            "country": "United States"
+          }
+        },
+        "coverLetter": "I am excited to apply for this position. My experience and skills make me a strong candidate for this role.",
+        "resume": {
+          "fileName": "john_doe_resume.pdf",
+          "fileUrl": "/uploads/resumes/john_doe_resume.pdf",
+          "fileSize": 245760
+        },
+        "additionalDocuments": []
+      },
+      "status": "reviewed",
+      "submittedAt": "2025-06-15T09:30:00.000Z",
+      "updatedAt": "2025-06-15T09:30:00.000Z",
+      "notes": ""
+    },
+    {
+      "id": "demo-app-9",
+      "jobId": "9",
+      "userId": "demo-job-seeker",
+      "applicationData": {
+        "personalInfo": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "jobseeker@demo.com",
+          "phone": "+1 (555) 123-4567",
+          "address": {
+            "street": "123 Main Street",
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94105",
+            "country": "United States"
+          }
+        },
+        "coverLetter": "I am excited to apply for this position. My experience and skills make me a strong candidate for this role.",
+        "resume": {
+          "fileName": "john_doe_resume.pdf",
+          "fileUrl": "/uploads/resumes/john_doe_resume.pdf",
+          "fileSize": 245760
+        },
+        "additionalDocuments": []
+      },
+      "status": "accepted",
+      "submittedAt": "2025-06-14T14:20:00.000Z",
+      "updatedAt": "2025-06-14T14:20:00.000Z",
+      "notes": ""
+    },
+    {
+      "id": "demo-app-10",
+      "jobId": "10",
+      "userId": "demo-job-seeker",
+      "applicationData": {
+        "personalInfo": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "jobseeker@demo.com",
+          "phone": "+1 (555) 123-4567",
+          "address": {
+            "street": "123 Main Street",
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94105",
+            "country": "United States"
+          }
+        },
+        "coverLetter": "I am excited to apply for this position. My experience and skills make me a strong candidate for this role.",
+        "resume": {
+          "fileName": "john_doe_resume.pdf",
+          "fileUrl": "/uploads/resumes/john_doe_resume.pdf",
+          "fileSize": 245760
+        },
+        "additionalDocuments": []
+      },
+      "status": "rejected",
+      "submittedAt": "2025-06-13T11:15:00.000Z",
+      "updatedAt": "2025-06-13T11:15:00.000Z",
+      "notes": ""
+    },
+    {
+      "id": "demo-app-11",
+      "jobId": "11",
+      "userId": "demo-job-seeker",
+      "applicationData": {
+        "personalInfo": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "jobseeker@demo.com",
+          "phone": "+1 (555) 123-4567",
+          "address": {
+            "street": "123 Main Street",
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94105",
+            "country": "United States"
+          }
+        },
+        "coverLetter": "I am excited to apply for this position. My experience and skills make me a strong candidate for this role.",
+        "resume": {
+          "fileName": "john_doe_resume.pdf",
+          "fileUrl": "/uploads/resumes/john_doe_resume.pdf",
+          "fileSize": 245760
+        },
+        "additionalDocuments": []
+      },
+      "status": "scheduled",
+      "submittedAt": "2025-06-12T16:45:00.000Z",
+      "updatedAt": "2025-06-12T16:45:00.000Z",
       "notes": ""
     }
   ],
@@ -2002,7 +2126,7 @@
       "jobId": "3",
       "applicationId": "simkt5xwh",
       "appliedDate": "2025-06-05T10:17:36.561Z",
-      "status": "shortlisted"
+      "status": "reviewed"
     },
     {
       "id": "applied-3",
@@ -2010,7 +2134,7 @@
       "jobId": "4",
       "applicationId": "qu3wruc2t",
       "appliedDate": "2025-06-05T10:25:12.037Z",
-      "status": "pending"
+      "status": "accepted"
     },
     {
       "id": "applied-4",
@@ -2018,7 +2142,7 @@
       "jobId": "5",
       "applicationId": "demo-app-1",
       "appliedDate": "2025-06-09T10:30:00.000Z",
-      "status": "pending"
+      "status": "rejected"
     },
     {
       "id": "applied-5",
@@ -2026,7 +2150,7 @@
       "jobId": "7",
       "applicationId": "demo-app-3",
       "appliedDate": "2025-06-07T11:45:00.000Z",
-      "status": "interview"
+      "status": "scheduled"
     },
     {
       "id": "applied-6",
@@ -2058,7 +2182,7 @@
       "jobId": "9",
       "applicationId": "demo-app-9",
       "appliedDate": "2025-06-14T14:20:00.000Z",
-      "status": "shortlisted"
+      "status": "accepted"
     },
     {
       "id": "applied-10",
@@ -2074,7 +2198,7 @@
       "jobId": "11",
       "applicationId": "demo-app-11",
       "appliedDate": "2025-06-12T16:45:00.000Z",
-      "status": "accepted"
+      "status": "scheduled"
     }
   ],
   "interviews": [

@@ -181,23 +181,15 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
   getStatusDisplayText(status: string): string {
     switch (status.toLowerCase()) {
       case 'submitted':
-      case 'applied':
         return 'Submitted';
-      case 'under-review':
-        return 'Under Review';
-      case 'pending':
-        return 'Pending';
       case 'reviewed':
         return 'Reviewed';
-      case 'interview':
-      case 'interview-scheduled':
-        return 'Interview Scheduled';
-      case 'shortlisted':
-        return 'Shortlisted';
-      case 'rejected':
-        return 'Rejected';
       case 'accepted':
         return 'Accepted';
+      case 'rejected':
+        return 'Rejected';
+      case 'scheduled':
+        return 'Interview Scheduled';
       default:
         // Capitalize first letter for unknown statuses
         return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
@@ -207,23 +199,15 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
   getStatusClass(status: string): string {
     switch (status.toLowerCase()) {
       case 'submitted':
-      case 'applied':
         return 'status-submitted';
-      case 'under-review':
-        return 'status-under-review';
-      case 'pending':
-        return 'status-pending';
       case 'reviewed':
         return 'status-reviewed';
-      case 'interview':
-      case 'interview-scheduled':
-        return 'status-interview';
-      case 'shortlisted':
-        return 'status-shortlisted';
-      case 'rejected':
-        return 'status-rejected';
       case 'accepted':
         return 'status-accepted';
+      case 'rejected':
+        return 'status-rejected';
+      case 'scheduled':
+        return 'status-interview';
       default:
         return 'status-submitted';
     }
@@ -232,7 +216,10 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
   // New methods for enhanced functionality
   getActiveApplicationsCount(): number {
     return this.appliedJobs.filter(
-      (job) => !['rejected', 'accepted'].includes(job.status)
+      (job) =>
+        !['rejected', 'accepted', 'scheduled'].includes(
+          job.status.toLowerCase()
+        )
     ).length;
   }
 
@@ -262,36 +249,10 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
       );
     }
 
-    // Apply status filter with improved matching
+    // Apply status filter (exact match only for the 4 defined statuses)
     if (this.statusFilter) {
       filtered = filtered.filter((job) => {
-        const jobStatus = job.status.toLowerCase();
-        const filterStatus = this.statusFilter.toLowerCase();
-
-        // Direct match
-        if (jobStatus === filterStatus) {
-          return true;
-        }
-
-        // Handle status variations and synonyms
-        switch (filterStatus) {
-          case 'interview':
-            return (
-              jobStatus === 'interview' ||
-              jobStatus === 'interview-scheduled' ||
-              jobStatus === 'shortlisted'
-            );
-          case 'under-review':
-            return (
-              jobStatus === 'under-review' ||
-              jobStatus === 'pending' ||
-              jobStatus === 'reviewed'
-            );
-          case 'submitted':
-            return jobStatus === 'submitted' || jobStatus === 'applied';
-          default:
-            return jobStatus === filterStatus;
-        }
+        return job.status.toLowerCase() === this.statusFilter.toLowerCase();
       });
     }
 
@@ -350,73 +311,76 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Enhanced Progress step methods
+  // Correct Progress step methods
+
+  // Current step shows ✓ tick
+  isCurrentStep(step: string, currentStatus: string): boolean {
+    return step.toLowerCase() === currentStatus.toLowerCase();
+  }
+
+  // Next step shows animation
   isStepActive(step: string, currentStatus: string): boolean {
-    const currentStep = this.getCurrentProgressStep(currentStatus);
-    return step === currentStep;
+    const nextStep = this.getNextStep(currentStatus);
+    return step === nextStep;
   }
 
+  // Previous steps show ✓ tick
   isStepCompleted(step: string, currentStatus: string): boolean {
-    const stepOrder = ['submitted', 'under-review', 'interview', 'final'];
+    const stepOrder = ['submitted', 'reviewed', 'decision', 'scheduled'];
     const stepIndex = stepOrder.indexOf(step);
-    const currentIndex = this.getDetailedStatusIndex(currentStatus);
+    const currentStepIndex = this.getCurrentStepIndex(currentStatus);
 
-    // A step is completed if the current progress is beyond it
-    return currentIndex > stepIndex;
+    return stepIndex < currentStepIndex;
   }
 
-  private getCurrentProgressStep(status: string): string {
+  private getCurrentStepIndex(status: string): number {
     switch (status.toLowerCase()) {
       case 'submitted':
-      case 'applied':
-        return 'submitted';
-      case 'under-review':
-      case 'pending':
-        return 'under-review';
+        return 1;
       case 'reviewed':
-      case 'shortlisted':
-        return 'interview'; // Shortlisted means moving towards interview
-      case 'interview':
-      case 'interview-scheduled':
-        return 'interview';
+        return 2;
       case 'accepted':
       case 'rejected':
-        return 'final';
+        return 3;
+      case 'scheduled':
+        return 4;
+      default:
+        return 0;
+    }
+  }
+
+  private getNextStep(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'submitted':
+        return 'reviewed';
+      case 'reviewed':
+        return 'decision';
+      case 'accepted':
+      case 'rejected':
+        return 'scheduled';
+      case 'scheduled':
+        return ''; // No next step
       default:
         return 'submitted';
     }
   }
 
-  private getDetailedStatusIndex(status: string): number {
-    switch (status.toLowerCase()) {
-      case 'submitted':
-      case 'applied':
-        return 0.5; // Halfway through submitted step
-      case 'under-review':
-        return 1.0; // Completed submitted, at review
-      case 'pending':
-        return 1.3; // In review process
-      case 'reviewed':
-        return 1.7; // Review completed, moving to next
-      case 'shortlisted':
-        return 2.3; // Shortlisted means progressing towards interview
-      case 'interview':
-      case 'interview-scheduled':
-        return 2.7; // Interview scheduled/in progress
-      case 'accepted':
-        return 4.0; // Final step completed successfully
-      case 'rejected':
-        return 3.5; // Final step completed but rejected
-      default:
-        return 0.5;
-    }
-  }
-
-  // Get progress percentage for the progress line
+  // Get progress percentage - line reaches current step then moves towards next
   getProgressPercentage(currentStatus: string): number {
-    const index = this.getDetailedStatusIndex(currentStatus);
-    // Convert to percentage (0-100%)
-    return Math.min((index / 4.0) * 100, 100);
+    const stepIndex = this.getCurrentStepIndex(currentStatus);
+
+    switch (stepIndex) {
+      case 1: // submitted - line reaches step 1, moves towards step 2
+        return 25 + 12.5; // 25% to reach step 1, +12.5% towards step 2
+      case 2: // reviewed - line reaches step 2, moves towards step 3
+        return 50 + 12.5; // 50% to reach step 2, +12.5% towards step 3
+      case 3: // accepted/rejected - line reaches step 3, moves towards step 4
+        return 75 + 12.5; // 75% to reach step 3, +12.5% towards step 4
+      case 4: // scheduled - line reaches final step
+        return 100; // 100% complete
+      default:
+        return 12.5; // Before first step
+    }
   }
 
   // Action methods
