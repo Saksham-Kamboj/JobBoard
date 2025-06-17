@@ -101,6 +101,27 @@ html {
     /* iOS smooth scrolling */
 }
 
+/* Optimize rendering performance */
+body {
+    contain: layout style paint;
+    transform: translateZ(0);
+    /* Force hardware acceleration */
+}
+
+/* Optimize scroll performance for job cards */
+.job-card {
+    contain: layout style paint;
+    will-change: auto;
+    /* Only set when needed */
+}
+
+/* Optimize animations */
+@media (prefers-reduced-motion: no-preference) {
+    * {
+        scroll-behavior: smooth;
+    }
+}
+
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
     html {

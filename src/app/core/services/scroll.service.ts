@@ -106,23 +106,22 @@ export class ScrollService {
   }
 
   private handleScrollRestoration(url: string): void {
-    // Use requestAnimationFrame to ensure DOM is fully rendered
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        if (
-          this.scrollRestorationEnabled &&
-          this.isBackNavigation &&
-          this.hasStoredPosition(url)
-        ) {
-          // Restore previous scroll position for back navigation with smooth animation
-          this.restoreScrollPositionSmooth(url);
-        } else {
-          // Scroll to top for new navigation with better timing
-          this.scrollToTopSmooth();
-        }
+    // Optimize scroll restoration to reduce lag
+    if (
+      this.scrollRestorationEnabled &&
+      this.isBackNavigation &&
+      this.hasStoredPosition(url)
+    ) {
+      // For back navigation, restore position immediately without animation to reduce lag
+      requestAnimationFrame(() => {
+        this.restoreScrollPosition(url);
         this.isBackNavigation = false;
-      }, 100); // Increased delay for better UX
-    });
+      });
+    } else {
+      // For new navigation, scroll to top instantly to avoid lag
+      window.scrollTo(0, 0);
+      this.isBackNavigation = false;
+    }
   }
 
   private storeScrollPosition(url: string): void {

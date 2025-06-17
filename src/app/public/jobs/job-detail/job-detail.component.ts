@@ -126,6 +126,16 @@ export class JobDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Store current job ID for potential return navigation
+    const storedState = this.navigationService.getJobsPageState();
+    if (storedState) {
+      this.navigationService.storeJobsPageState(
+        storedState.route,
+        storedState.queryParams,
+        this.job.id
+      );
+    }
+
     // Navigate to application page
     this.router.navigate(['/jobs', this.job.id, 'apply']);
   }

@@ -121,7 +121,7 @@
     </div>
 
     <div class="job-grid">
-      <div *ngFor="let job of jobs" class="job-card">
+      <div *ngFor="let job of jobs" class="job-card" [id]="'job-card-' + job.id">
         <div class="">
           <div class="job-header">
             <div class="job-title-section">

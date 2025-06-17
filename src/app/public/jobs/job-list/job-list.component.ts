@@ -14,6 +14,7 @@ import { NavigationService } from '../../../core/services/navigation.service';
 import { AuthService, User } from '../../../core/services/auth.service';
 import { JobApplicationService } from '../../../core/services/job-application.service';
 import { SavedJobsService } from '../../../core/services/saved-jobs.service';
+import { ScrollService } from '../../../core/services/scroll.service';
 
 @Component({
   selector: 'app-job-list',
@@ -86,7 +87,8 @@ export class JobListComponent implements OnInit, OnDestroy {
     private navigationService: NavigationService,
     private authService: AuthService,
     private jobApplicationService: JobApplicationService,
-    private savedJobsService: SavedJobsService
+    private savedJobsService: SavedJobsService,
+    private scrollService: ScrollService
   ) {}
 
   ngOnInit(): void {
@@ -94,6 +96,9 @@ export class JobListComponent implements OnInit, OnDestroy {
     this.subscribeToSearchResults();
     this.loadQueryParams();
     this.loadCurrentUser();
+
+    // Check if we need to scroll to a specific job after navigation
+    this.checkForJobScrollTarget();
   }
 
   ngOnDestroy(): void {
@@ -207,8 +212,8 @@ export class JobListComponent implements OnInit, OnDestroy {
     // Get current query parameters
     const currentParams = this.route.snapshot.queryParams;
 
-    // Store current jobs page state before navigation
-    this.navigationService.storeJobsPageState('/jobs', currentParams);
+    // Store current jobs page state before navigation, including the job ID
+    this.navigationService.storeJobsPageState('/jobs', currentParams, jobId);
 
     // Navigate to job detail
     this.router.navigate(['/jobs', jobId]);
@@ -535,5 +540,117 @@ export class JobListComponent implements OnInit, OnDestroy {
 
     // Navigate to job application page
     this.router.navigate(['/jobs', jobId, 'apply']);
+  }
+
+  /**
+   * Check if we need to scroll to a specific job after returning from job detail
+   */
+  private checkForJobScrollTarget(): void {
+    const targetJobId = this.navigationService.getLastViewedJobId();
+    if (targetJobId) {
+      // Use a more efficient approach with single subscription
+      let hasScrolled = false;
+
+      const scrollSubscription = this.searchService.searchResults$.subscribe(
+        (results) => {
+          if (results.jobs.length > 0 && !hasScrolled) {
+            hasScrolled = true;
+
+            // Use requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+              // Additional frame to ensure DOM is fully rendered
+              requestAnimationFrame(() => {
+                this.scrollToJob(targetJobId);
+                // Clear the target job ID after scrolling
+                this.navigationService.clearLastViewedJobId();
+                // Unsubscribe to prevent memory leaks
+                scrollSubscription.unsubscribe();
+              });
+            });
+          }
+        }
+      );
+
+      // Add to subscriptions for cleanup
+      this.subscriptions.add(scrollSubscription);
+    }
+  }
+
+  /**
+   * Scroll to a specific job card in the list
+   */
+  private scrollToJob(jobId: string): void {
+    const jobElement = document.getElementById(`job-card-${jobId}`);
+    if (jobElement) {
+      // Check if user prefers reduced motion
+      const prefersReducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
+
+      // Get element position for manual smooth scroll
+      const elementRect = jobElement.getBoundingClientRect();
+      const absoluteElementTop = elementRect.top + window.scrollY;
+      const offset = 120; // Header offset
+      const targetPosition = absoluteElementTop - offset;
+
+      // Use optimized smooth scroll
+      if (prefersReducedMotion) {
+        // Instant scroll for reduced motion preference
+        window.scrollTo(0, targetPosition);
+        this.addHighlightEffect(jobElement);
+      } else {
+        // Custom smooth scroll with better performance
+        this.smoothScrollTo(targetPosition, () => {
+          this.addHighlightEffect(jobElement);
+        });
+      }
+    }
+  }
+
+  /**
+   * Custom smooth scroll implementation for better performance
+   */
+  private smoothScrollTo(targetY: number, callback?: () => void): void {
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    const duration = Math.min(800, Math.abs(distance) * 0.5); // Adaptive duration
+    let startTime: number;
+
+    const easeInOutCubic = (t: number): number => {
+      return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    };
+
+    const scroll = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+      const ease = easeInOutCubic(progress);
+
+      window.scrollTo(0, startY + distance * ease);
+
+      if (progress < 1) {
+        requestAnimationFrame(scroll);
+      } else if (callback) {
+        callback();
+      }
+    };
+
+    requestAnimationFrame(scroll);
+  }
+
+  /**
+   * Add highlight effect to job card
+   */
+  private addHighlightEffect(jobElement: HTMLElement): void {
+    // Add highlight effect with better performance
+    jobElement.classList.add('highlight-job');
+
+    // Use passive event listener for better performance
+    const removeHighlight = () => {
+      jobElement.classList.remove('highlight-job');
+    };
+
+    // Remove highlight after animation
+    setTimeout(removeHighlight, 2000);
   }
 }

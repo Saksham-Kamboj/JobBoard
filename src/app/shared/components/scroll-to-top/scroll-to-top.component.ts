@@ -4,6 +4,7 @@ import { ScrollService } from '../../../core/services/scroll.service';
 
 @Component({
   selector: 'app-scroll-to-top',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './scroll-to-top.component.html',
   styleUrl: './scroll-to-top.component.css',
@@ -14,6 +15,7 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
   scrollDirection: 'up' | 'down' = 'down'; // Made public for template access
   private scrollThreshold = 200; // Show button after scrolling 200px (reduced for better UX)
   private scrollTimer: any;
+  private scrollEventTimer: any;
   private lastScrollTop = 0;
 
   constructor(private scrollService: ScrollService) {}
@@ -26,21 +28,31 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
     if (this.scrollTimer) {
       clearTimeout(this.scrollTimer);
     }
+    if (this.scrollEventTimer) {
+      cancelAnimationFrame(this.scrollEventTimer);
+    }
   }
 
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
-    this.checkScrollPosition();
-    this.detectScrollDirection();
-    this.handleScrolling();
+    // Throttle scroll events to improve performance
+    if (this.scrollEventTimer) {
+      return;
+    }
+
+    this.scrollEventTimer = requestAnimationFrame(() => {
+      this.checkScrollPosition();
+      this.detectScrollDirection();
+      this.handleScrolling();
+      this.scrollEventTimer = null;
+    });
   }
 
   private checkScrollPosition(): void {
-    const currentScroll =
-      window.pageYOffset || document.documentElement.scrollTop;
+    const currentScroll = window.scrollY;
     const shouldShow = currentScroll > this.scrollThreshold;
 
-    // Only show if scrolling down or if we're far enough down
+    // Only show if scrolling up or if we're far enough down
     this.isVisible =
       shouldShow &&
       (this.scrollDirection === 'up' ||
@@ -48,16 +60,18 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
   }
 
   private detectScrollDirection(): void {
-    const currentScrollTop =
-      window.pageYOffset || document.documentElement.scrollTop;
+    const currentScrollTop = window.scrollY;
 
-    if (currentScrollTop > this.lastScrollTop) {
-      this.scrollDirection = 'down';
-    } else if (currentScrollTop < this.lastScrollTop) {
-      this.scrollDirection = 'up';
+    // Only update direction if there's a significant change to reduce jitter
+    const scrollDiff = Math.abs(currentScrollTop - this.lastScrollTop);
+    if (scrollDiff > 5) {
+      if (currentScrollTop > this.lastScrollTop) {
+        this.scrollDirection = 'down';
+      } else if (currentScrollTop < this.lastScrollTop) {
+        this.scrollDirection = 'up';
+      }
+      this.lastScrollTop = currentScrollTop;
     }
-
-    this.lastScrollTop = currentScrollTop;
   }
 
   private handleScrolling(): void {
@@ -75,14 +89,19 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
   }
 
   scrollToTop(): void {
-    // Add a small delay to prevent conflicts with other scroll events
+    // Immediately hide button to prevent multiple clicks
+    this.isVisible = false;
+
+    // Use direct scroll to avoid conflicts with other scroll logic
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+
+    // Reset visibility after scroll completes
     setTimeout(() => {
-      this.scrollService.scrollToTop();
-      // Hide button temporarily after clicking
-      this.isVisible = false;
-      setTimeout(() => {
-        this.checkScrollPosition();
-      }, 1000);
-    }, 50);
+      this.checkScrollPosition();
+    }, 800);
   }
 }
