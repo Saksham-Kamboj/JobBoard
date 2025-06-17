@@ -13,23 +13,9 @@
     </div>
   </div>
 
-  <!-- Success/Error Messages -->
-  <div *ngIf="successMessage" class="alert alert-success">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-    </svg>
-    {{ successMessage }}
-  </div>
-
-  <div *ngIf="errorMessage" class="alert alert-error">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-      <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" />
-      <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" />
-    </svg>
-    {{ errorMessage }}
-  </div>
+  <!-- Notification Modal -->
+  <app-notification-modal [notification]="currentNotification" [show]="showNotification" (close)="hideNotification()">
+  </app-notification-modal>
 
   <div class="profile-layout">
     <!-- Profile Navigation -->
@@ -163,6 +149,63 @@
                     placeholder="https://yourportfolio.com">
                 </div>
               </div>
+              <div class="form-group">
+                <label for="githubUrl" class="form-label">GitHub Profile</label>
+                <input type="url" id="githubUrl" formControlName="githubUrl" class="form-input"
+                  placeholder="https://github.com/yourusername">
+              </div>
+            </div>
+          </div>
+
+          <!-- Address Information Card -->
+          <div class="form-card">
+            <div class="form-card-header">
+              <div class="form-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" />
+                  <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" />
+                </svg>
+              </div>
+              <div class="form-card-title">
+                <h3>Address Information</h3>
+                <p>Your current location and address details</p>
+              </div>
+            </div>
+            <div class="form-card-content">
+              <div class="form-group">
+                <label for="street" class="form-label">Street Address</label>
+                <input type="text" id="street" formControlName="street" class="form-input"
+                  placeholder="123 Main Street">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="city" class="form-label">City</label>
+                  <input type="text" id="city" formControlName="city" class="form-input" placeholder="San Francisco">
+                </div>
+                <div class="form-group">
+                  <label for="state" class="form-label">State/Province</label>
+                  <input type="text" id="state" formControlName="state" class="form-input" placeholder="CA">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="zipCode" class="form-label">ZIP/Postal Code</label>
+                  <input type="text" id="zipCode" formControlName="zipCode" class="form-input" placeholder="94105">
+                </div>
+                <div class="form-group">
+                  <label for="country" class="form-label">Country</label>
+                  <select id="country" formControlName="country" class="form-select">
+                    <option value="United States">United States</option>
+                    <option value="India">India</option>
+                    <option value="Canada">Canada</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Germany">Germany</option>
+                    <option value="France">France</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -225,6 +268,46 @@
                   <a [href]="userProfile?.personalInfo?.portfolioUrl" target="_blank" class="personal-info-link">
                     View Portfolio
                   </a>
+                </div>
+                <div class="personal-info-value" *ngIf="userProfile?.personalInfo?.githubUrl">
+                  <span class="personal-info-label">GitHub Profile</span>
+                  <a [href]="userProfile?.personalInfo?.githubUrl" target="_blank" class="personal-info-link">
+                    View GitHub Profile
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Address Information Display -->
+          <div class="personal-info-item" *ngIf="hasAddressInfo()">
+            <div class="personal-info-header">
+              <div class="personal-info-details">
+                <h3 class="personal-info-title">Address Information</h3>
+                <p class="personal-info-description">Current location and address details</p>
+              </div>
+            </div>
+            <div class="personal-info-content">
+              <div class="personal-info-grid">
+                <div class="personal-info-value" *ngIf="userProfile?.personalInfo?.address?.street">
+                  <span class="personal-info-label">Street Address</span>
+                  <span class="personal-info-text">{{ userProfile?.personalInfo?.address?.street }}</span>
+                </div>
+                <div class="personal-info-value" *ngIf="userProfile?.personalInfo?.address?.city">
+                  <span class="personal-info-label">City</span>
+                  <span class="personal-info-text">{{ userProfile?.personalInfo?.address?.city }}</span>
+                </div>
+                <div class="personal-info-value" *ngIf="userProfile?.personalInfo?.address?.state">
+                  <span class="personal-info-label">State/Province</span>
+                  <span class="personal-info-text">{{ userProfile?.personalInfo?.address?.state }}</span>
+                </div>
+                <div class="personal-info-value" *ngIf="userProfile?.personalInfo?.address?.zipCode">
+                  <span class="personal-info-label">ZIP/Postal Code</span>
+                  <span class="personal-info-text">{{ userProfile?.personalInfo?.address?.zipCode }}</span>
+                </div>
+                <div class="personal-info-value" *ngIf="userProfile?.personalInfo?.address?.country">
+                  <span class="personal-info-label">Country</span>
+                  <span class="personal-info-text">{{ userProfile?.personalInfo?.address?.country }}</span>
                 </div>
               </div>
             </div>

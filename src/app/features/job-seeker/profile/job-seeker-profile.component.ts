@@ -13,13 +13,23 @@ import {
   ProfileService,
   UserProfile,
 } from '../../../core/services/profile.service';
+import {
+  NotificationService,
+  NotificationData,
+} from '../../../core/services/notification.service';
+import { NotificationModalComponent } from '../../../shared/components/notification-modal/notification-modal.component';
 
 @Component({
   selector: 'app-job-seeker-profile',
   templateUrl: './job-seeker-profile.component.html',
   styleUrls: ['./job-seeker-profile.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    NotificationModalComponent,
+  ],
 })
 export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
@@ -42,8 +52,10 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   isEditingPreferences = false;
   isEditingCoverLetter = false;
   isLoading = false;
-  errorMessage = '';
-  successMessage = '';
+
+  // Notification properties
+  currentNotification: NotificationData | null = null;
+  showNotification = false;
 
   // Skills and preferences
   newSkill = '';
@@ -102,7 +114,8 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    public notificationService: NotificationService
   ) {
     this.profileForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
@@ -321,8 +334,10 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
           error: (error) => {
             console.error('Error loading user profile:', error);
             this.isLoading = false;
-            this.errorMessage =
-              'Failed to load profile. Please refresh the page.';
+            this.notificationService.showError(
+              'Profile Load Failed',
+              'Failed to load profile. Please refresh the page.'
+            );
             // Still populate forms with current user data as fallback
             this.populateProfileForm();
             this.populateProfessionalForm();
@@ -512,24 +527,22 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           this.isEditingProfile = false;
           this.isEditingProfessional = false;
-          this.successMessage = `Profile ${operation}d successfully!`;
 
-          // Auto-hide success message
-          setTimeout(() => {
-            this.successMessage = '';
-          }, 3000);
+          this.showSuccess(
+            'Profile Updated!',
+            `Your profile has been ${operation}d successfully.`
+          );
 
           console.log(`Profile ${operation}d successfully:`, profile);
         },
         error: (error) => {
           console.error(`Error ${operation}ing profile:`, error);
           this.isLoading = false;
-          this.errorMessage = `Failed to ${operation} profile. Please try again.`;
 
-          // Auto-hide error message
-          setTimeout(() => {
-            this.errorMessage = '';
-          }, 5000);
+          this.showError(
+            'Profile Update Failed',
+            `Failed to ${operation} profile. Please try again.`
+          );
         },
       })
     );
@@ -699,17 +712,17 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
             this.isEditingEducation = false;
             this.educationForm.reset();
             this.editingEducationIndex = -1;
-            this.successMessage = 'Education updated successfully';
-            setTimeout(() => {
-              this.successMessage = '';
-            }, 3000);
+            this.showSuccess(
+              'Education Updated!',
+              'Your education information has been updated successfully.'
+            );
           },
           error: (error) => {
             console.error('Error updating education:', error);
-            this.errorMessage = 'Failed to update education. Please try again.';
-            setTimeout(() => {
-              this.errorMessage = '';
-            }, 5000);
+            this.showError(
+              'Education Update Failed',
+              'Failed to update education. Please try again.'
+            );
           },
         })
       );
@@ -728,17 +741,17 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
         this.profileService.updateUserProfile(this.userProfile).subscribe({
           next: (updatedProfile) => {
             this.userProfile = updatedProfile;
-            this.successMessage = 'Education deleted successfully';
-            setTimeout(() => {
-              this.successMessage = '';
-            }, 3000);
+            this.notificationService.showSuccess(
+              'Education Deleted!',
+              'Education entry has been deleted successfully.'
+            );
           },
           error: (error) => {
             console.error('Error deleting education:', error);
-            this.errorMessage = 'Failed to delete education. Please try again.';
-            setTimeout(() => {
-              this.errorMessage = '';
-            }, 5000);
+            this.notificationService.showError(
+              'Education Delete Failed',
+              'Failed to delete education. Please try again.'
+            );
           },
         })
       );
@@ -816,18 +829,17 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
             this.isEditingExperience = false;
             this.experienceForm.reset();
             this.editingExperienceIndex = -1;
-            this.successMessage = 'Experience updated successfully';
-            setTimeout(() => {
-              this.successMessage = '';
-            }, 3000);
+            this.notificationService.showSuccess(
+              'Experience Updated!',
+              'Your work experience has been updated successfully.'
+            );
           },
           error: (error) => {
             console.error('Error updating experience:', error);
-            this.errorMessage =
-              'Failed to update experience. Please try again.';
-            setTimeout(() => {
-              this.errorMessage = '';
-            }, 5000);
+            this.notificationService.showError(
+              'Experience Update Failed',
+              'Failed to update experience. Please try again.'
+            );
           },
         })
       );
@@ -846,18 +858,17 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
         this.profileService.updateUserProfile(this.userProfile).subscribe({
           next: (updatedProfile) => {
             this.userProfile = updatedProfile;
-            this.successMessage = 'Experience deleted successfully';
-            setTimeout(() => {
-              this.successMessage = '';
-            }, 3000);
+            this.notificationService.showSuccess(
+              'Experience Deleted!',
+              'Work experience has been deleted successfully.'
+            );
           },
           error: (error) => {
             console.error('Error deleting experience:', error);
-            this.errorMessage =
-              'Failed to delete experience. Please try again.';
-            setTimeout(() => {
-              this.errorMessage = '';
-            }, 5000);
+            this.notificationService.showError(
+              'Experience Delete Failed',
+              'Failed to delete experience. Please try again.'
+            );
           },
         })
       );
@@ -883,17 +894,17 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
         this.profileService.updateUserProfile(this.userProfile).subscribe({
           next: (updatedProfile) => {
             this.userProfile = updatedProfile;
-            this.successMessage = 'Resume uploaded successfully';
-            setTimeout(() => {
-              this.successMessage = '';
-            }, 3000);
+            this.notificationService.showSuccess(
+              'Resume Uploaded!',
+              'Your resume has been uploaded successfully.'
+            );
           },
           error: (error) => {
             console.error('Error uploading resume:', error);
-            this.errorMessage = 'Failed to upload resume. Please try again.';
-            setTimeout(() => {
-              this.errorMessage = '';
-            }, 5000);
+            this.notificationService.showError(
+              'Resume Upload Failed',
+              'Failed to upload resume. Please try again.'
+            );
           },
         })
       );
@@ -911,17 +922,17 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
         this.profileService.updateUserProfile(this.userProfile).subscribe({
           next: (updatedProfile) => {
             this.userProfile = updatedProfile;
-            this.successMessage = 'Resume deleted successfully';
-            setTimeout(() => {
-              this.successMessage = '';
-            }, 3000);
+            this.notificationService.showSuccess(
+              'Resume Deleted!',
+              'Your resume has been deleted successfully.'
+            );
           },
           error: (error) => {
             console.error('Error deleting resume:', error);
-            this.errorMessage = 'Failed to delete resume. Please try again.';
-            setTimeout(() => {
-              this.errorMessage = '';
-            }, 5000);
+            this.notificationService.showError(
+              'Resume Delete Failed',
+              'Failed to delete resume. Please try again.'
+            );
           },
         })
       );
@@ -1011,21 +1022,18 @@ ${firstName}`;
             this.userProfile = updatedProfile;
             this.isLoading = false;
             this.isEditingCoverLetter = false;
-            this.successMessage = 'Cover letter updated successfully!';
-
-            // Auto-hide success message
-            setTimeout(() => {
-              this.successMessage = '';
-            }, 3000);
+            this.notificationService.showSuccess(
+              'Cover Letter Updated!',
+              'Your cover letter has been updated successfully.'
+            );
           },
           error: (error) => {
             console.error('Error updating cover letter:', error);
             this.isLoading = false;
-            this.errorMessage =
-              'Failed to update cover letter. Please try again.';
-            setTimeout(() => {
-              this.errorMessage = '';
-            }, 5000);
+            this.notificationService.showError(
+              'Cover Letter Update Failed',
+              'Failed to update cover letter. Please try again.'
+            );
           },
         })
       );
@@ -1048,18 +1056,17 @@ ${firstName}`;
         this.profileService.updateUserProfile(profileData).subscribe({
           next: (updatedProfile) => {
             this.userProfile = updatedProfile;
-            this.successMessage = 'Cover letter deleted successfully';
-            setTimeout(() => {
-              this.successMessage = '';
-            }, 3000);
+            this.notificationService.showSuccess(
+              'Cover Letter Deleted!',
+              'Your cover letter has been deleted successfully.'
+            );
           },
           error: (error) => {
             console.error('Error deleting cover letter:', error);
-            this.errorMessage =
-              'Failed to delete cover letter. Please try again.';
-            setTimeout(() => {
-              this.errorMessage = '';
-            }, 5000);
+            this.notificationService.showError(
+              'Cover Letter Delete Failed',
+              'Failed to delete cover letter. Please try again.'
+            );
           },
         })
       );
@@ -1119,21 +1126,18 @@ ${firstName}`;
             this.userProfile = updatedProfile;
             this.isLoading = false;
             this.isEditingPreferences = false;
-            this.successMessage = 'Preferences updated successfully!';
-
-            // Auto-hide success message
-            setTimeout(() => {
-              this.successMessage = '';
-            }, 3000);
+            this.notificationService.showSuccess(
+              'Preferences Updated!',
+              'Your preferences have been updated successfully.'
+            );
           },
           error: (error) => {
             console.error('Error updating preferences:', error);
             this.isLoading = false;
-            this.errorMessage =
-              'Failed to update preferences. Please try again.';
-            setTimeout(() => {
-              this.errorMessage = '';
-            }, 5000);
+            this.notificationService.showError(
+              'Preferences Update Failed',
+              'Failed to update preferences. Please try again.'
+            );
           },
         })
       );
@@ -1229,8 +1233,64 @@ ${firstName}`;
   }
 
   clearMessages() {
-    this.errorMessage = '';
-    this.successMessage = '';
+    // Hide any existing notifications
+    this.hideNotification();
+  }
+
+  // Direct notification methods
+  showNotificationModal(notification: NotificationData) {
+    console.log(
+      `🎯 Component: Showing notification at`,
+      new Date().toLocaleTimeString(),
+      notification
+    );
+    this.currentNotification = notification;
+    this.showNotification = true;
+  }
+
+  hideNotification() {
+    console.log(
+      `🎯 Component: Hiding notification at`,
+      new Date().toLocaleTimeString()
+    );
+    this.showNotification = false;
+    // Clear notification after animation
+    setTimeout(() => {
+      this.currentNotification = null;
+    }, 300);
+  }
+
+  // Wrapper methods for different notification types
+  showSuccess(title: string, message: string, duration: number = 3000) {
+    this.showNotificationModal({
+      type: 'success',
+      title,
+      message,
+      autoClose: true,
+      duration,
+    });
+  }
+
+  showError(title: string, message: string, duration: number = 5000) {
+    this.showNotificationModal({
+      type: 'error',
+      title,
+      message,
+      autoClose: true,
+      duration,
+    });
+  }
+
+  // Check if user has any address information to display
+  hasAddressInfo(): boolean {
+    const address = this.userProfile?.personalInfo?.address;
+    return !!(
+      address?.street ||
+      address?.city ||
+      address?.state ||
+      address?.zipCode ||
+      address?.country
+    );
   }
 
   // Refresh profile data from server
@@ -1260,7 +1320,7 @@ ${firstName}`;
     let completed = 0;
     let total = 0;
 
-    // Personal info (40% weight)
+    // Personal info (40% weight) - Core fields
     const personalFields = ['firstName', 'lastName', 'email', 'phone'];
     personalFields.forEach((field) => {
       total++;
@@ -1272,6 +1332,25 @@ ${firstName}`;
         completed++;
       }
     });
+
+    // Additional personal info fields (optional but counted)
+    const optionalPersonalFields = ['linkedinUrl', 'portfolioUrl', 'githubUrl'];
+    optionalPersonalFields.forEach((field) => {
+      total++;
+      if (
+        this.userProfile?.personalInfo?.[
+          field as keyof typeof this.userProfile.personalInfo
+        ]
+      ) {
+        completed++;
+      }
+    });
+
+    // Address info (counted as one unit)
+    total++;
+    if (this.hasAddressInfo()) {
+      completed++;
+    }
 
     // Professional info (30% weight)
     const professionalFields = ['currentTitle', 'summary'];
@@ -1286,12 +1365,27 @@ ${firstName}`;
       }
     });
 
+    // Skills (counted as one unit)
+    total++;
+    if (
+      this.userProfile?.professionalInfo?.skills &&
+      this.userProfile.professionalInfo.skills.length > 0
+    ) {
+      completed++;
+    }
+
     // Education and Experience (30% weight)
     total += 2;
     if (this.userProfile?.education && this.userProfile.education.length > 0)
       completed++;
     if (this.userProfile?.experience && this.userProfile.experience.length > 0)
       completed++;
+
+    // Resume
+    total++;
+    if (this.userProfile?.resume) {
+      completed++;
+    }
 
     return Math.round((completed / total) * 100);
   }
