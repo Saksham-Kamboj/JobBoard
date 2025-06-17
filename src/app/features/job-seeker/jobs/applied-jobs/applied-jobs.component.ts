@@ -73,101 +73,30 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.error = null;
 
-    // First try to get data from userProfile.dashboardData
-    this.userProfileService
-      .getUserProfile(userId)
-      .pipe(
-        takeUntil(this.destroy$),
-        map((profile) => {
-          if (
-            profile &&
-            profile.dashboardData &&
-            profile.dashboardData.appliedJobs
-          ) {
-            return profile.dashboardData.appliedJobs.map((app) => ({
-              id: app.applicationId,
+    // Use JobApplicationService to get applications with details
+    this.jobApplicationService
+      .getUserApplicationsWithDetails(userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (applications) => {
+          // Map JobApplicationWithDetails to AppliedJob interface
+          this.appliedJobs = applications
+            .map((app) => ({
+              id: app.id,
               jobId: app.jobId,
               title: app.jobTitle,
               company: app.company,
               location: app.location,
-              appliedDate: app.appliedDate,
+              appliedDate: app.submittedAt,
               status: app.status,
-              applicationId: app.applicationId,
-            }));
-          }
-          throw new Error('No dashboard data in profile');
-        }),
-        catchError(() => {
-          // Fallback to jobApplications collection
-          return this.jobApplicationService.getUserApplications(userId).pipe(
-            map((applications: JobApplication[]) => {
-              if (applications.length === 0) {
-                return [];
-              }
-
-              // Get job details for each application
-              const jobRequests = applications.map((app) =>
-                this.jobService.getJobById(app.jobId).pipe(
-                  map((job) => ({
-                    id: app.id,
-                    jobId: app.jobId,
-                    title: job?.title || 'Unknown Job',
-                    company: job?.company || 'Unknown Company',
-                    location: job?.location || 'Unknown Location',
-                    appliedDate: app.submittedAt,
-                    status: app.status,
-                    applicationId: app.id,
-                  })),
-                  catchError(() =>
-                    of({
-                      id: app.id,
-                      jobId: app.jobId,
-                      title: 'Unknown Job',
-                      company: 'Unknown Company',
-                      location: 'Unknown Location',
-                      appliedDate: app.submittedAt,
-                      status: app.status,
-                      applicationId: app.id,
-                    })
-                  )
-                )
-              );
-
-              return forkJoin(jobRequests);
-            }),
-            map((jobRequests: any) => jobRequests || [])
-          );
-        })
-      )
-      .subscribe({
-        next: (jobs) => {
-          if (Array.isArray(jobs)) {
-            this.appliedJobs = jobs.sort(
+              applicationId: app.id,
+            }))
+            .sort(
               (a, b) =>
                 new Date(b.appliedDate).getTime() -
                 new Date(a.appliedDate).getTime()
             );
-            this.applyFiltersAndSort();
-          } else {
-            // Handle the case where jobs is an Observable from forkJoin
-            jobs.subscribe({
-              next: (resolvedJobs: AppliedJob[]) => {
-                this.appliedJobs = resolvedJobs.sort(
-                  (a: AppliedJob, b: AppliedJob) =>
-                    new Date(b.appliedDate).getTime() -
-                    new Date(a.appliedDate).getTime()
-                );
-                this.applyFiltersAndSort();
-                this.isLoading = false;
-              },
-              error: (error: any) => {
-                console.error('Error resolving job details:', error);
-                this.error = 'Failed to load job details';
-                this.isLoading = false;
-              },
-            });
-            return;
-          }
+          this.applyFiltersAndSort();
           this.isLoading = false;
         },
         error: (error) => {

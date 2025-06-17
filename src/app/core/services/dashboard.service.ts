@@ -6,12 +6,9 @@ import { JobService, Job } from './job.service';
 import {
   JobApplicationService,
   JobApplication,
+  JobApplicationWithDetails,
 } from './job-application.service';
 import { UserProfileService, UserProfile } from './user-profile.service';
-import {
-  AppliedJobsService,
-  AppliedJobWithDetails,
-} from './applied-jobs.service';
 import { SavedJobsService, SavedJobWithDetails } from './saved-jobs.service';
 import { InterviewsService, InterviewWithDetails } from './interviews.service';
 
@@ -25,7 +22,6 @@ export interface SavedJob {
 export interface DashboardStats {
   id: string;
   userId: string;
-  appliedJobs: number;
   savedJobs: number;
   profileViews: number;
   interviewsScheduled: number;
@@ -139,7 +135,6 @@ export class DashboardService {
     private jobService: JobService,
     private jobApplicationService: JobApplicationService,
     private userProfileService: UserProfileService,
-    private appliedJobsService: AppliedJobsService,
     private savedJobsService: SavedJobsService,
     private interviewsService: InterviewsService
   ) {}
@@ -331,9 +326,9 @@ export class DashboardService {
     return this.jobService.getAllJobs().pipe(
       switchMap((jobs) => {
         if (userId) {
-          // Get user's applied jobs from new AppliedJobsService
-          return this.appliedJobsService.getAppliedJobIds(userId).pipe(
-            map((appliedJobIds) => {
+          // Get user's applied jobs from JobApplicationService
+          return this.jobApplicationService.getAppliedJobIds(userId).pipe(
+            map((appliedJobIds: Set<string>) => {
               // Filter out jobs the user has already applied to
               const availableJobs = jobs.filter(
                 (job) => !appliedJobIds.has(job.id)
@@ -465,8 +460,8 @@ export class DashboardService {
   ): Observable<JobSeekerDashboardStats> {
     // Use new separate services instead of dashboardData
     return forkJoin({
-      appliedJobs: this.appliedJobsService
-        .getAppliedJobs(userId)
+      appliedJobs: this.jobApplicationService
+        .getUserApplications(userId)
         .pipe(catchError(() => of([]))),
       savedJobs: this.savedJobsService
         .getSavedJobs(userId)
@@ -478,7 +473,7 @@ export class DashboardService {
       map(({ appliedJobs, savedJobs, interviews }) => {
         // Calculate pending applications (submitted, pending, under-review)
         const pendingApplications = appliedJobs.filter(
-          (app) =>
+          (app: JobApplication) =>
             app.status === 'pending' ||
             app.status === 'submitted' ||
             app.status === 'reviewed'
@@ -507,23 +502,25 @@ export class DashboardService {
     userId: string,
     limit: number = 3
   ): Observable<RecentApplication[]> {
-    // Use new AppliedJobsService instead of dashboardData
-    return this.appliedJobsService.getRecentAppliedJobs(userId, limit).pipe(
-      map((appliedJobs) =>
-        appliedJobs.map((app) => ({
-          id: app.applicationId,
-          jobId: app.jobId,
-          jobTitle: app.jobTitle,
-          company: app.company,
-          appliedDate: this.formatDate(app.appliedDate),
-          status: app.status,
-        }))
-      ),
-      catchError(() => {
-        // Fallback to calculating from jobApplications collection
-        return this.getRecentApplications(userId, limit);
-      })
-    );
+    // Use JobApplicationService instead of dashboardData
+    return this.jobApplicationService
+      .getRecentUserApplications(userId, limit)
+      .pipe(
+        map((applications: JobApplicationWithDetails[]) =>
+          applications.map((app) => ({
+            id: app.id,
+            jobId: app.jobId,
+            jobTitle: app.jobTitle,
+            company: app.company,
+            appliedDate: this.formatDate(app.submittedAt),
+            status: app.status,
+          }))
+        ),
+        catchError(() => {
+          // Fallback to calculating from jobApplications collection
+          return this.getRecentApplications(userId, limit);
+        })
+      );
   }
 
   // Company Dashboard Methods
@@ -728,7 +725,6 @@ export class DashboardService {
     return {
       id: `stats-${userId}`,
       userId,
-      appliedJobs: 0,
       savedJobs: 0,
       profileViews: 0,
       interviewsScheduled: 0,

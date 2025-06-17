@@ -80,7 +80,6 @@ export interface UserProfile {
 export interface DashboardStats {
   id: string;
   userId: string;
-  appliedJobs?: number;
   savedJobs?: number;
   profileViews?: number;
   interviewsScheduled?: number;
@@ -380,7 +379,6 @@ export class ProfileService {
     const defaultStats: DashboardStats = {
       id: `stats-${userId}`,
       userId: userId,
-      appliedJobs: 0,
       savedJobs: 0,
       profileViews: 0,
       interviewsScheduled: 0,

@@ -68,15 +68,6 @@ export interface Resume {
 }
 
 export interface DashboardData {
-  appliedJobs: {
-    jobId: string;
-    applicationId: string;
-    appliedDate: string;
-    status: string;
-    jobTitle: string;
-    company: string;
-    location: string;
-  }[];
   savedJobs: {
     jobId: string;
     savedDate: string;
