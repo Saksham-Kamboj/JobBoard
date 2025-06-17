@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import {
   ReactiveFormsModule,
   FormBuilder,
@@ -148,7 +148,9 @@ export class JobSeekerSettingsComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private themeService: ThemeService,
     private formBuilder: FormBuilder,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     // Initialize password form
     this.passwordForm = this.formBuilder.group(
@@ -162,6 +164,19 @@ export class JobSeekerSettingsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Subscribe to query parameters to handle tab changes
+    this.authSubscription.add(
+      this.route.queryParams.subscribe((params) => {
+        const tab = params['tab'];
+        if (tab && this.settingsCategories.some((cat) => cat.id === tab)) {
+          this.activeCategory = tab;
+        } else {
+          // Default to first category if no valid tab parameter
+          this.activeCategory = this.settingsCategories[0].id;
+        }
+      })
+    );
+
     // Subscribe to theme changes
     this.authSubscription.add(
       this.themeService.isDarkMode$.subscribe((isDark) => {
@@ -196,6 +211,14 @@ export class JobSeekerSettingsComponent implements OnInit, OnDestroy {
 
   setActiveCategory(categoryId: string) {
     this.activeCategory = categoryId;
+
+    // Update URL parameters
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: categoryId },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   // Helper methods for profile header

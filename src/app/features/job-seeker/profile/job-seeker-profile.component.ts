@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   ReactiveFormsModule,
   FormsModule,
@@ -105,7 +106,9 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.profileForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
@@ -227,6 +230,19 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Subscribe to query parameters to handle tab changes
+    this.authSubscription.add(
+      this.route.queryParams.subscribe((params) => {
+        const tab = params['tab'];
+        if (tab && this.profileSections.some((section) => section.id === tab)) {
+          this.activeSection = tab;
+        } else {
+          // Default to first section if no valid tab parameter
+          this.activeSection = this.profileSections[0].id;
+        }
+      })
+    );
+
     // Subscribe to authentication state
     this.authSubscription.add(
       this.authService.currentUser$.subscribe((user) => {
@@ -306,6 +322,14 @@ export class JobSeekerProfileComponent implements OnInit, OnDestroy {
     this.isEditingEducation = false;
     this.isEditingExperience = false;
     this.clearMessages();
+
+    // Update URL parameters
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: sectionId },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   loadUserProfile() {
