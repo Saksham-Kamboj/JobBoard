@@ -292,6 +292,7 @@
   position: relative;
 }
 
+/* Static background line */
 .progress-steps::before {
   content: '';
   position: absolute;
@@ -304,6 +305,19 @@
   height: 2px;
   background: var(--border);
   z-index: 1;
+}
+
+/* Dynamic progress line */
+.progress-line {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary) 100%);
+  z-index: 2;
+  transition: width 0.8s ease-in-out;
+  border-radius: 1px;
+  box-shadow: 0 0 4px oklch(from var(--primary) l c h / 0.3);
 }
 
 .progress-step {
@@ -329,18 +343,37 @@
   font-weight: 600;
   color: var(--muted-foreground);
   transition: all 0.3s ease;
+  position: relative;
+  z-index: 3;
 }
 
 .progress-step.active .step-indicator {
   background: var(--primary);
   border-color: var(--primary);
   color: var(--primary-foreground);
+  box-shadow: 0 0 0 4px oklch(from var(--primary) l c h / 0.2);
+  animation: pulse 2s infinite;
 }
 
 .progress-step.completed .step-indicator {
   background: var(--success);
   border-color: var(--success);
   color: white;
+  box-shadow: 0 0 0 2px oklch(from var(--success) l c h / 0.2);
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 4px oklch(from var(--primary) l c h / 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 0 8px oklch(from var(--primary) l c h / 0.1);
+  }
+
+  100% {
+    box-shadow: 0 0 0 4px oklch(from var(--primary) l c h / 0.2);
+  }
 }
 
 .step-label {

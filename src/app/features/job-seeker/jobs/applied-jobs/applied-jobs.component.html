@@ -140,10 +140,13 @@
             </div>
           </div>
 
-          <!-- Application Progress -->
+          <!-- Enhanced Application Progress -->
           <div class="application-progress">
             <div class="progress-label">Application Progress</div>
-            <div class="progress-steps">
+            <div class="progress-steps" [attr.data-progress]="getProgressPercentage(job.status)">
+              <!-- Dynamic Progress Line -->
+              <div class="progress-line" [style.width.%]="getProgressPercentage(job.status)"></div>
+
               <div class="progress-step" [class.active]="isStepActive('submitted', job.status)"
                 [class.completed]="isStepCompleted('submitted', job.status)">
                 <div class="step-indicator">

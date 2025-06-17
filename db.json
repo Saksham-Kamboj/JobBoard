@@ -116,11 +116,7 @@
           "Next.js",
           "Angular.js"
         ],
-        "preferredJobTypes": [
-          "full-time",
-          "remote",
-          "Contract"
-        ],
+        "preferredJobTypes": ["full-time", "remote", "Contract"],
         "preferredLocations": [
           "Bangalore, Karnataka",
           "Mumbai, Maharashtra",
@@ -341,16 +337,9 @@
         "currentTitle": "",
         "yearsOfExperience": 0,
         "summary": "",
-        "skills": [
-          "React.js",
-          "Next.js"
-        ],
-        "preferredJobTypes": [
-          "Full-time"
-        ],
-        "preferredLocations": [
-          "New York, NY"
-        ],
+        "skills": ["React.js", "Next.js"],
+        "preferredJobTypes": ["Full-time"],
+        "preferredLocations": ["New York, NY"],
         "expectedSalary": {
           "min": 0,
           "max": 0,
@@ -570,10 +559,10 @@
         },
         "additionalDocuments": []
       },
-      "status": "shortlisted",
+      "status": "interview",
       "submittedAt": "2025-06-07T11:45:00.000Z",
       "updatedAt": "2025-06-08T16:30:00.000Z",
-      "notes": "Excellent QA experience"
+      "notes": "Excellent QA experience - Interview scheduled"
     },
     {
       "jobId": "NasKN54",
@@ -1401,12 +1390,8 @@
       "type": "full-time",
       "salary": "₹30000-₹50000",
       "description": "Job Description\nWe're looking for a versatile Full Stack Developer to join our growing startup. You'll work on both frontend and backend technologies, helping us build scalable web applications that serve thousands of users.\n\nKey Responsibilities:\n• Develop and maintain full-stack web applications\n• Work with modern JavaScript frameworks and backend technologies\n• Design and implement RESTful APIs\n• Collaborate with cross-functional teams\n• Participate in code reviews and technical discussions\n• Help scale our infrastructure as we grow\n\nStartup Environment:\n• Fast-paced, dynamic work environment\n• Direct impact on product development\n• Opportunity to wear multiple hats\n• Work directly with founders and leadership team",
-      "requirements": [
-        "1 year of experience"
-      ],
-      "benefits": [
-        "Work From Home"
-      ],
+      "requirements": ["1 year of experience"],
+      "benefits": ["Work From Home"],
       "skills": [
         "HTML",
         "CSS",
@@ -1642,20 +1627,13 @@
         "enableProfileAnalytics": true
       },
       "jobPreferences": {
-        "preferredJobTypes": [
-          "full-time",
-          "remote"
-        ],
+        "preferredJobTypes": ["full-time", "remote"],
         "salaryRange": {
           "min": 800000,
           "max": 1200000,
           "currency": "INR"
         },
-        "preferredLocations": [
-          "San Francisco, CA",
-          "Remote",
-          "New York, NY"
-        ],
+        "preferredLocations": ["San Francisco, CA", "Remote", "New York, NY"],
         "jobAlertFrequency": "weekly",
         "autoApplyEnabled": false,
         "remoteWork": true,
@@ -1663,10 +1641,7 @@
         "experienceLevel": "mid-level",
         "availabilityDate": "2024-02-01",
         "willingToRelocate": false,
-        "preferredIndustries": [
-          "Technology",
-          "Software"
-        ]
+        "preferredIndustries": ["Technology", "Software"]
       },
       "applications": {
         "autoFillApplications": true,
@@ -2051,7 +2026,7 @@
       "jobId": "7",
       "applicationId": "demo-app-3",
       "appliedDate": "2025-06-07T11:45:00.000Z",
-      "status": "shortlisted"
+      "status": "interview"
     },
     {
       "id": "applied-6",
@@ -2068,6 +2043,38 @@
       "applicationId": "demo-app-cloud",
       "appliedDate": "2025-06-16T14:30:00.000Z",
       "status": "submitted"
+    },
+    {
+      "id": "applied-8",
+      "userId": "demo-job-seeker",
+      "jobId": "8",
+      "applicationId": "demo-app-8",
+      "appliedDate": "2025-06-15T09:30:00.000Z",
+      "status": "reviewed"
+    },
+    {
+      "id": "applied-9",
+      "userId": "demo-job-seeker",
+      "jobId": "9",
+      "applicationId": "demo-app-9",
+      "appliedDate": "2025-06-14T14:20:00.000Z",
+      "status": "shortlisted"
+    },
+    {
+      "id": "applied-10",
+      "userId": "demo-job-seeker",
+      "jobId": "10",
+      "applicationId": "demo-app-10",
+      "appliedDate": "2025-06-13T11:15:00.000Z",
+      "status": "rejected"
+    },
+    {
+      "id": "applied-11",
+      "userId": "demo-job-seeker",
+      "jobId": "11",
+      "applicationId": "demo-app-11",
+      "appliedDate": "2025-06-12T16:45:00.000Z",
+      "status": "accepted"
     }
   ],
   "interviews": [
