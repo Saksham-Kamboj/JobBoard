@@ -98,7 +98,6 @@ export class NotificationModalComponent implements OnDestroy {
   private startAutoCloseTimer() {
     // Prevent multiple timers from running
     if (this.isTimerRunning) {
-      console.log(`⚠️ Timer already running, ignoring new timer request`);
       return;
     }
 
@@ -111,10 +110,6 @@ export class NotificationModalComponent implements OnDestroy {
     }
 
     const duration = this.notification.duration || 3000;
-    console.log(
-      `🚀 Starting timer for ${duration}ms at`,
-      new Date().toLocaleTimeString()
-    );
 
     this.isTimerRunning = true;
     this.remainingTime = Math.ceil(duration / 1000);
@@ -127,7 +122,6 @@ export class NotificationModalComponent implements OnDestroy {
       this.autoCloseTimer = setTimeout(() => {
         // Run the close operation back inside Angular zone
         this.ngZone.run(() => {
-          console.log(`⏰ Timer completed at`, new Date().toLocaleTimeString());
           this.closeModal();
         });
       }, duration);
@@ -153,7 +147,6 @@ export class NotificationModalComponent implements OnDestroy {
 
   private clearAutoCloseTimer() {
     if (this.autoCloseTimer) {
-      console.log(`🛑 Clearing timer at`, new Date().toLocaleTimeString());
       clearTimeout(this.autoCloseTimer);
       this.autoCloseTimer = null;
     }
@@ -168,24 +161,16 @@ export class NotificationModalComponent implements OnDestroy {
       this.canClose &&
       !this.isModalLocked
     ) {
-      console.log(
-        `🖱️ Overlay clicked - closing modal at`,
-        new Date().toLocaleTimeString()
-      );
       this.closeModal();
-    } else if (!this.canClose || this.isModalLocked) {
-      console.log(`🚫 Modal click ignored - too early or locked`);
     }
   }
 
   closeModal() {
     // Prevent multiple close calls
     if (!this.show) {
-      console.log(`🚫 Modal already closed, ignoring close request`);
       return;
     }
 
-    console.log(`❌ Closing modal at`, new Date().toLocaleTimeString());
     this.clearAutoCloseTimer();
     this.close.emit();
   }
