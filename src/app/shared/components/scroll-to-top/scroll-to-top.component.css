@@ -13,42 +13,87 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
   opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.3s ease forwards;
+  transform: translateY(20px) scale(0.8);
+  animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .scroll-to-top-btn:hover {
   background: var(--primary);
-  opacity: 0.9;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
 }
 
 .scroll-to-top-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.1s ease;
 }
 
 .scroll-to-top-btn svg {
-  transition: transform 0.2s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .scroll-to-top-btn:hover svg {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+}
+
+/* Scrolling state */
+.scroll-to-top-btn.scrolling {
+  opacity: 0.7;
+  transform: translateY(0) scale(0.95);
+}
+
+/* Scroll direction states */
+.scroll-to-top-btn.scroll-up {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.scroll-to-top-btn.scroll-down {
+  opacity: 0.6;
+  transform: translateY(5px) scale(0.9);
 }
 
 @keyframes fadeInUp {
-  from {
+  0% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px) scale(0.6);
   }
-  to {
+
+  50% {
+    opacity: 0.8;
+    transform: translateY(-5px) scale(1.1);
+  }
+
+  100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
+}
+
+/* Pulse animation for attention */
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.scroll-to-top-btn.scroll-up:hover {
+  animation: pulse 2s infinite;
 }
 
 /* Responsive adjustments */
@@ -59,7 +104,7 @@
     width: 2.5rem;
     height: 2.5rem;
   }
-  
+
   .scroll-to-top-btn svg {
     width: 18px;
     height: 18px;
@@ -73,7 +118,7 @@
     width: 2.25rem;
     height: 2.25rem;
   }
-  
+
   .scroll-to-top-btn svg {
     width: 16px;
     height: 16px;
@@ -85,7 +130,7 @@
   .scroll-to-top-btn {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
-  
+
   .scroll-to-top-btn:hover {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
   }

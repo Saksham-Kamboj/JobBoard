@@ -815,10 +815,7 @@
     outline: none;
 }
 
-/* Smooth scrolling for anchor links */
-html {
-    scroll-behavior: smooth;
-}
+
 
 /* Prevent body scroll when mobile menu is open */
 body.menu-open {

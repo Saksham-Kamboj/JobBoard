@@ -106,21 +106,23 @@ export class ScrollService {
   }
 
   private handleScrollRestoration(url: string): void {
-    // Use setTimeout to ensure DOM is ready
-    setTimeout(() => {
-      if (
-        this.scrollRestorationEnabled &&
-        this.isBackNavigation &&
-        this.hasStoredPosition(url)
-      ) {
-        // Restore previous scroll position for back navigation
-        this.restoreScrollPosition(url);
-      } else {
-        // Scroll to top for new navigation
-        this.scrollToTopInstant();
-      }
-      this.isBackNavigation = false;
-    }, 0);
+    // Use requestAnimationFrame to ensure DOM is fully rendered
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        if (
+          this.scrollRestorationEnabled &&
+          this.isBackNavigation &&
+          this.hasStoredPosition(url)
+        ) {
+          // Restore previous scroll position for back navigation with smooth animation
+          this.restoreScrollPositionSmooth(url);
+        } else {
+          // Scroll to top for new navigation with better timing
+          this.scrollToTopSmooth();
+        }
+        this.isBackNavigation = false;
+      }, 100); // Increased delay for better UX
+    });
   }
 
   private storeScrollPosition(url: string): void {
@@ -161,6 +163,39 @@ export class ScrollService {
     }
   }
 
+  private restoreScrollPositionSmooth(url: string): void {
+    let position = this.scrollPositions.get(url);
+
+    // Try to get from sessionStorage if not in memory
+    if (!position) {
+      try {
+        const stored = sessionStorage.getItem(`scroll_${url}`);
+        if (stored) {
+          position = JSON.parse(stored);
+        }
+      } catch (e) {
+        console.warn('Failed to parse stored scroll position');
+      }
+    }
+
+    if (position) {
+      // Use smooth scrolling for better UX
+      window.scrollTo({
+        top: position.y,
+        left: position.x,
+        behavior: 'smooth',
+      });
+    }
+  }
+
+  private scrollToTopSmooth(): void {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  }
+
   private hasStoredPosition(url: string): boolean {
     return (
       this.scrollPositions.has(url) ||
@@ -172,10 +207,15 @@ export class ScrollService {
    * Scroll to the top of the page smoothly
    */
   scrollToTop(): void {
+    // Check if user prefers reduced motion
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: 'smooth',
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
     });
   }
 
@@ -237,10 +277,34 @@ export class ScrollService {
   scrollToElement(elementId: string): void {
     const element = document.getElementById(elementId);
     if (element) {
+      const prefersReducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
+
       element.scrollIntoView({
-        behavior: 'smooth',
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
         block: 'start',
         inline: 'nearest',
+      });
+    }
+  }
+
+  /**
+   * Scroll to a specific element with offset (useful for fixed headers)
+   */
+  scrollToElementWithOffset(elementId: string, offset: number = 80): void {
+    const element = document.getElementById(elementId);
+    if (element) {
+      const elementPosition =
+        element.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - offset;
+      const prefersReducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
       });
     }
   }
@@ -249,10 +313,14 @@ export class ScrollService {
    * Scroll to a specific position
    */
   scrollToPosition(x: number, y: number): void {
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
     window.scrollTo({
       top: y,
       left: x,
-      behavior: 'smooth',
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
     });
   }
 

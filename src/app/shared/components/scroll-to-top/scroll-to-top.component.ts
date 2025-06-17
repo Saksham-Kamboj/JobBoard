@@ -10,7 +10,11 @@ import { ScrollService } from '../../../core/services/scroll.service';
 })
 export class ScrollToTopComponent implements OnInit, OnDestroy {
   isVisible = false;
-  private scrollThreshold = 300; // Show button after scrolling 300px
+  isScrolling = false;
+  scrollDirection: 'up' | 'down' = 'down'; // Made public for template access
+  private scrollThreshold = 200; // Show button after scrolling 200px (reduced for better UX)
+  private scrollTimer: any;
+  private lastScrollTop = 0;
 
   constructor(private scrollService: ScrollService) {}
 
@@ -19,19 +23,66 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Cleanup if needed
+    if (this.scrollTimer) {
+      clearTimeout(this.scrollTimer);
+    }
   }
 
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
     this.checkScrollPosition();
+    this.detectScrollDirection();
+    this.handleScrolling();
   }
 
   private checkScrollPosition(): void {
-    this.isVisible = this.scrollService.hasScrolledPast(this.scrollThreshold);
+    const currentScroll =
+      window.pageYOffset || document.documentElement.scrollTop;
+    const shouldShow = currentScroll > this.scrollThreshold;
+
+    // Only show if scrolling down or if we're far enough down
+    this.isVisible =
+      shouldShow &&
+      (this.scrollDirection === 'up' ||
+        currentScroll > this.scrollThreshold * 2);
+  }
+
+  private detectScrollDirection(): void {
+    const currentScrollTop =
+      window.pageYOffset || document.documentElement.scrollTop;
+
+    if (currentScrollTop > this.lastScrollTop) {
+      this.scrollDirection = 'down';
+    } else if (currentScrollTop < this.lastScrollTop) {
+      this.scrollDirection = 'up';
+    }
+
+    this.lastScrollTop = currentScrollTop;
+  }
+
+  private handleScrolling(): void {
+    this.isScrolling = true;
+
+    // Clear existing timer
+    if (this.scrollTimer) {
+      clearTimeout(this.scrollTimer);
+    }
+
+    // Set timer to detect when scrolling stops
+    this.scrollTimer = setTimeout(() => {
+      this.isScrolling = false;
+    }, 150);
   }
 
   scrollToTop(): void {
-    this.scrollService.scrollToTop();
+    // Add a small delay to prevent conflicts with other scroll events
+    setTimeout(() => {
+      this.scrollService.scrollToTop();
+      // Hide button temporarily after clicking
+      this.isVisible = false;
+      setTimeout(() => {
+        this.checkScrollPosition();
+      }, 1000);
+    }, 50);
   }
 }
