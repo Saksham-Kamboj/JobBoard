@@ -1976,16 +1976,40 @@
   ],
   "savedJobs": [
     {
-      "id": "dc1bp2nq2",
+      "id": "hzi85kypb",
       "userId": "demo-job-seeker",
       "jobId": "23",
-      "savedAt": "2025-06-16T13:39:52.445Z"
+      "savedAt": "2025-06-17T04:42:20.038Z"
     },
     {
-      "id": "twxxleo93",
+      "id": "11poyeneq",
+      "userId": "demo-job-seeker",
+      "jobId": "21",
+      "savedAt": "2025-06-17T04:42:21.467Z"
+    },
+    {
+      "id": "0l8pchu26",
       "userId": "demo-job-seeker",
       "jobId": "22",
-      "savedAt": "2025-06-16T13:39:54.031Z"
+      "savedAt": "2025-06-17T04:42:22.513Z"
+    },
+    {
+      "id": "b0r6lwjhy",
+      "userId": "demo-job-seeker",
+      "jobId": "NasKN54",
+      "savedAt": "2025-06-17T04:42:24.721Z"
+    },
+    {
+      "id": "u8xx26okr",
+      "userId": "demo-job-seeker",
+      "jobId": "dc05",
+      "savedAt": "2025-06-17T04:42:26.249Z"
+    },
+    {
+      "id": "eb0tf5k23",
+      "userId": "demo-job-seeker",
+      "jobId": "20",
+      "savedAt": "2025-06-17T04:42:27.953Z"
     }
   ],
   "appliedJobs": [
