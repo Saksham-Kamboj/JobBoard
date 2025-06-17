@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { Subject, forkJoin } from 'rxjs';
 import { takeUntil, map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -26,7 +27,7 @@ interface AppliedJob {
 
 @Component({
   selector: 'app-applied-jobs',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './applied-jobs.component.html',
   styleUrl: './applied-jobs.component.css',
 })
@@ -35,14 +36,21 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
 
   currentUser: User | null = null;
   appliedJobs: AppliedJob[] = [];
+  filteredJobs: AppliedJob[] = [];
   isLoading = true;
   error: string | null = null;
+
+  // Filter and search properties
+  searchQuery = '';
+  statusFilter = '';
+  sortBy = 'date-desc';
 
   constructor(
     private authService: AuthService,
     private userProfileService: UserProfileService,
     private jobApplicationService: JobApplicationService,
-    private jobService: JobService
+    private jobService: JobService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -139,6 +147,7 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
                 new Date(b.appliedDate).getTime() -
                 new Date(a.appliedDate).getTime()
             );
+            this.applyFiltersAndSort();
           } else {
             // Handle the case where jobs is an Observable from forkJoin
             jobs.subscribe({
@@ -148,6 +157,7 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
                     new Date(b.appliedDate).getTime() -
                     new Date(a.appliedDate).getTime()
                 );
+                this.applyFiltersAndSort();
                 this.isLoading = false;
               },
               error: (error: any) => {
@@ -212,5 +222,146 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
       default:
         return 'status-submitted';
     }
+  }
+
+  // New methods for enhanced functionality
+  getActiveApplicationsCount(): number {
+    return this.appliedJobs.filter(
+      (job) => !['rejected', 'accepted'].includes(job.status)
+    ).length;
+  }
+
+  onSearch(): void {
+    this.applyFiltersAndSort();
+  }
+
+  onFilterChange(): void {
+    this.applyFiltersAndSort();
+  }
+
+  onSortChange(): void {
+    this.applyFiltersAndSort();
+  }
+
+  private applyFiltersAndSort(): void {
+    let filtered = [...this.appliedJobs];
+
+    // Apply search filter
+    if (this.searchQuery.trim()) {
+      const query = this.searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(
+        (job) =>
+          job.title.toLowerCase().includes(query) ||
+          job.company.toLowerCase().includes(query) ||
+          job.location.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply status filter
+    if (this.statusFilter) {
+      filtered = filtered.filter((job) => job.status === this.statusFilter);
+    }
+
+    // Apply sorting
+    switch (this.sortBy) {
+      case 'date-asc':
+        filtered.sort(
+          (a, b) =>
+            new Date(a.appliedDate).getTime() -
+            new Date(b.appliedDate).getTime()
+        );
+        break;
+      case 'date-desc':
+        filtered.sort(
+          (a, b) =>
+            new Date(b.appliedDate).getTime() -
+            new Date(a.appliedDate).getTime()
+        );
+        break;
+      case 'company':
+        filtered.sort((a, b) => a.company.localeCompare(b.company));
+        break;
+      case 'status':
+        filtered.sort((a, b) => a.status.localeCompare(b.status));
+        break;
+    }
+
+    this.filteredJobs = filtered;
+  }
+
+  trackByJobId(index: number, job: AppliedJob): string {
+    return job.id;
+  }
+
+  getTimeAgo(dateString: string): string {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    if (diffInDays === 0) {
+      return 'today';
+    } else if (diffInDays === 1) {
+      return '1 day ago';
+    } else if (diffInDays < 7) {
+      return `${diffInDays} days ago`;
+    } else if (diffInDays < 30) {
+      const weeks = Math.floor(diffInDays / 7);
+      return weeks === 1 ? '1 week ago' : `${weeks} weeks ago`;
+    } else if (diffInDays < 365) {
+      const months = Math.floor(diffInDays / 30);
+      return months === 1 ? '1 month ago' : `${months} months ago`;
+    } else {
+      const years = Math.floor(diffInDays / 365);
+      return years === 1 ? '1 year ago' : `${years} years ago`;
+    }
+  }
+
+  // Progress step methods
+  isStepActive(step: string, currentStatus: string): boolean {
+    const statusOrder = ['submitted', 'under-review', 'interview', 'final'];
+    const stepIndex = statusOrder.indexOf(step);
+    const currentIndex = this.getStatusIndex(currentStatus);
+    return stepIndex === currentIndex;
+  }
+
+  isStepCompleted(step: string, currentStatus: string): boolean {
+    const statusOrder = ['submitted', 'under-review', 'interview', 'final'];
+    const stepIndex = statusOrder.indexOf(step);
+    const currentIndex = this.getStatusIndex(currentStatus);
+    return (
+      stepIndex < currentIndex ||
+      (currentStatus === 'accepted' && stepIndex <= 3)
+    );
+  }
+
+  private getStatusIndex(status: string): number {
+    switch (status) {
+      case 'submitted':
+        return 0;
+      case 'under-review':
+      case 'pending':
+      case 'reviewed':
+        return 1;
+      case 'interview':
+      case 'shortlisted':
+        return 2;
+      case 'accepted':
+      case 'rejected':
+        return 3;
+      default:
+        return 0;
+    }
+  }
+
+  // Action methods
+  viewJobDetails(jobId: string): void {
+    this.router.navigate(['/jobs', jobId]);
+  }
+
+  downloadApplication(job: AppliedJob): void {
+    // Implement download functionality
+    console.log('Downloading application for:', job.title);
+    // This would typically generate and download a PDF of the application
   }
 }
