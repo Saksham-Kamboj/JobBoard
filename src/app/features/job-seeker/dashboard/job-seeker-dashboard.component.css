@@ -313,6 +313,21 @@
   color: #3730a3;
 }
 
+.status-pending {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.status-shortlisted {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.status-reviewed {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+
 .status-interview {
   background: #dbeafe;
   color: #1e40af;

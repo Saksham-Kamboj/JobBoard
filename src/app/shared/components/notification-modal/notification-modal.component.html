@@ -1,0 +1,74 @@
+<!-- Modal Overlay -->
+<div *ngIf="show && notification" class="modal-overlay" [class.timer-active]="isTimerRunning"
+  (click)="onOverlayClick($event)">
+  <!-- Modal Container -->
+  <div class="modal-container" [class.timer-active]="isTimerRunning" (click)="$event.stopPropagation()"
+    [class]="'modal-' + notificationType">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="modal-icon">
+        <ng-container [ngSwitch]="notificationType">
+          <svg *ngSwitchCase="'success'" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+            <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          <svg *ngSwitchCase="'error'" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+            <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" />
+            <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" />
+          </svg>
+          <svg *ngSwitchCase="'warning'" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+              stroke="currentColor" stroke-width="2" />
+            <line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="2" />
+            <line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2" />
+          </svg>
+          <svg *ngSwitchDefault width="24" height="24" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+            <line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2" />
+            <line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </ng-container>
+      </div>
+      <div class="modal-title-section">
+        <h3 class="modal-title">{{ notificationTitle }}</h3>
+        <button class="modal-close-btn" (click)="closeModal()" type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" />
+            <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <p class="modal-message">{{ notificationMessage }}</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button class="modal-action-btn" (click)="closeModal()" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" />
+          <polyline points="22,4 12,14.01 9,11.01" stroke="currentColor" stroke-width="2" />
+        </svg>
+        OK
+      </button>
+    </div>
+
+    <!-- Auto-close Progress Bar (optional) -->
+    <div *ngIf="shouldShowAutoClose" class="auto-close-progress">
+      <div class="progress-bar" [class]="'progress-' + notificationType + ' duration-' + notificationDuration">
+      </div>
+    </div>
+
+
+  </div>
+</div>

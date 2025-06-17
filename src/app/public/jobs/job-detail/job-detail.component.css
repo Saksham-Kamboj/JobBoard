@@ -328,6 +328,42 @@
   gap: 1.5rem;
 }
 
+/* Sticky sidebar for large screens */
+@media (min-width: 1025px) {
+  .job-sidebar {
+    position: sticky;
+    top: 100px;
+    /* Account for fixed header */
+    align-self: flex-start;
+    max-height: calc(100vh - 120px);
+    /* Prevent sidebar from being too tall */
+    overflow-y: auto;
+    /* Allow scrolling if content is too long */
+    scrollbar-width: thin;
+    /* Firefox */
+    scrollbar-color: var(--border) transparent;
+    /* Firefox */
+  }
+
+  /* Custom scrollbar for webkit browsers */
+  .job-sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .job-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .job-sidebar::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+  }
+
+  .job-sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--muted-foreground);
+  }
+}
+
 /* Application Card */
 .application-card {
   background: var(--card);
@@ -346,6 +382,76 @@
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 1rem;
+}
+
+.save-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.save-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.save-btn:active {
+  transform: scale(0.98);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.btn-outline:hover {
+  background: var(--muted);
+  border-color: var(--primary);
+}
+
+.btn-saved {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: 1px solid var(--primary);
+  animation: saveSuccess 0.6s ease-out;
+}
+
+.btn-saved:hover {
+  background: var(--primary)/90;
+}
+
+.btn-saved svg {
+  color: var(--primary-foreground);
+}
+
+/* Save success animation */
+@keyframes saveSuccess {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .apply-note {
@@ -512,6 +618,10 @@
 
   .job-sidebar {
     order: -1;
+    position: static;
+    /* Remove sticky behavior on smaller screens */
+    max-height: none;
+    overflow-y: visible;
   }
 }
 

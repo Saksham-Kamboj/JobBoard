@@ -7,15 +7,19 @@ import { Router } from '@angular/router';
 export class NavigationService {
   private previousJobsUrl: string = '/jobs';
   private previousJobsParams: any = {};
+  private lastViewedJobId: string | null = null; // Store the job ID that was clicked
 
   constructor(private router: Router) {}
 
   /**
    * Store the current jobs page URL with filters for later navigation
    */
-  storeJobsPageState(url: string, queryParams: any): void {
+  storeJobsPageState(url: string, queryParams: any, jobId?: string): void {
     this.previousJobsUrl = url;
     this.previousJobsParams = { ...queryParams };
+    if (jobId) {
+      this.lastViewedJobId = jobId;
+    }
   }
 
   /**
@@ -76,11 +80,26 @@ export class NavigationService {
   }
 
   /**
+   * Get the last viewed job ID (for scrolling back to specific job)
+   */
+  getLastViewedJobId(): string | null {
+    return this.lastViewedJobId;
+  }
+
+  /**
+   * Clear the last viewed job ID
+   */
+  clearLastViewedJobId(): void {
+    this.lastViewedJobId = null;
+  }
+
+  /**
    * Clear stored navigation state
    */
   clearStoredState(): void {
     this.previousJobsUrl = '/jobs';
     this.previousJobsParams = {};
+    this.lastViewedJobId = null;
   }
 
   /**

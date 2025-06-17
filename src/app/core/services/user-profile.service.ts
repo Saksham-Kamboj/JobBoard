@@ -67,6 +67,28 @@ export interface Resume {
   fileSize: number;
 }
 
+export interface DashboardData {
+  savedJobs: {
+    jobId: string;
+    savedDate: string;
+    jobTitle: string;
+    company: string;
+    location: string;
+  }[];
+  interviews: {
+    jobId: string;
+    applicationId: string;
+    interviewDate: string;
+    interviewType: string;
+    status: string;
+    jobTitle: string;
+    company: string;
+    location: string;
+    interviewMode: string;
+    notes: string;
+  }[];
+}
+
 export interface UserProfile {
   id: string;
   userId: string;
@@ -75,12 +97,13 @@ export interface UserProfile {
   education: Education[];
   experience: Experience[];
   resume?: Resume;
+  dashboardData?: DashboardData;
   createdAt: string;
   updatedAt: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserProfileService {
   private apiUrl = 'http://localhost:3000/userProfiles';
@@ -90,37 +113,39 @@ export class UserProfileService {
   constructor(private http: HttpClient) {}
 
   getUserProfile(userId: string): Observable<UserProfile | null> {
-    return this.http.get<UserProfile[]>(`${this.apiUrl}?userId=${userId}`)
-      .pipe(
-        map(profiles => profiles.length > 0 ? profiles[0] : null),
-        tap(profile => this.currentProfileSubject.next(profile))
-      );
+    return this.http.get<UserProfile[]>(`${this.apiUrl}?userId=${userId}`).pipe(
+      map((profiles) => (profiles.length > 0 ? profiles[0] : null)),
+      tap((profile) => this.currentProfileSubject.next(profile))
+    );
   }
 
-  createUserProfile(profile: Omit<UserProfile, 'id' | 'createdAt' | 'updatedAt'>): Observable<UserProfile> {
+  createUserProfile(
+    profile: Omit<UserProfile, 'id' | 'createdAt' | 'updatedAt'>
+  ): Observable<UserProfile> {
     const newProfile = {
       ...profile,
       id: this.generateId(),
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
-    return this.http.post<UserProfile>(this.apiUrl, newProfile)
-      .pipe(
-        tap(profile => this.currentProfileSubject.next(profile))
-      );
+    return this.http
+      .post<UserProfile>(this.apiUrl, newProfile)
+      .pipe(tap((profile) => this.currentProfileSubject.next(profile)));
   }
 
-  updateUserProfile(profileId: string, updates: Partial<UserProfile>): Observable<UserProfile> {
+  updateUserProfile(
+    profileId: string,
+    updates: Partial<UserProfile>
+  ): Observable<UserProfile> {
     const updatedProfile = {
       ...updates,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
-    return this.http.patch<UserProfile>(`${this.apiUrl}/${profileId}`, updatedProfile)
-      .pipe(
-        tap(profile => this.currentProfileSubject.next(profile))
-      );
+    return this.http
+      .patch<UserProfile>(`${this.apiUrl}/${profileId}`, updatedProfile)
+      .pipe(tap((profile) => this.currentProfileSubject.next(profile)));
   }
 
   uploadResume(file: File): Observable<Resume> {
@@ -130,10 +155,10 @@ export class UserProfileService {
       fileName: file.name,
       fileUrl: `/uploads/resumes/${file.name}`,
       uploadedAt: new Date().toISOString(),
-      fileSize: file.size
+      fileSize: file.size,
     };
 
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         observer.next(resume);
         observer.complete();

@@ -588,6 +588,75 @@ select:autofill {
   margin: 0 0 1rem 0;
 }
 
+/* Applied Button Styles */
+.btn-applied {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: not-allowed;
+  transition: all 0.2s ease;
+}
+
+.btn-applied:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-applied svg {
+  color: var(--primary);
+}
+
+/* Save Button Styles */
+.btn-outline {
+  background: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
+  background: var(--muted);
+  border-color: var(--primary);
+}
+
+.btn-saved {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: 1px solid var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-saved:hover {
+  background: var(--primary)/90;
+}
+
+.btn-saved svg {
+  color: var(--primary-foreground);
+}
+
 /* Responsive Design */
 @media (min-width: 768px) {
   .job-grid {
@@ -723,5 +792,76 @@ select:autofill {
 
   .active-filters-label {
     font-size: 0.7rem;
+  }
+}
+
+/* Highlight effect for job cards when returning from detail view */
+.job-card.highlight-job {
+  animation: highlightJob 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border-color: var(--primary);
+  position: relative;
+  will-change: transform, box-shadow;
+  /* Optimize for animations */
+}
+
+.job-card.highlight-job::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--primary), var(--success), var(--primary));
+  border-radius: calc(var(--radius) + 2px);
+  z-index: -1;
+  opacity: 0.2;
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity;
+  /* Optimize for animations */
+}
+
+/* Use transform3d for hardware acceleration */
+@keyframes highlightJob {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  50% {
+    transform: translate3d(0, -2px, 0) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* Remove will-change after animation completes */
+.job-card:not(.highlight-job) {
+  will-change: auto;
+}
+
+.job-card:not(.highlight-job)::before {
+  will-change: auto;
+}
+
+/* Dark mode adjustments for highlight effect */
+@media (prefers-color-scheme: dark) {
+  .job-card.highlight-job {
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
   }
 }

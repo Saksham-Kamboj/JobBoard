@@ -1,0 +1,336 @@
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: oklch(0 0 0 / 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Modal Container */
+.modal-container {
+  background: var(--card);
+  color: var(--card-foreground);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 25px -5px oklch(0 0 0 / 0.1), 0 10px 10px -5px oklch(0 0 0 / 0.04);
+  max-width: 400px;
+  width: 90%;
+  max-height: 90vh;
+  overflow: hidden;
+  position: relative;
+  animation: slideIn 0.3s ease-out;
+  border: 1px solid var(--border);
+}
+
+/* Modal Types */
+.modal-success {
+  border-top: 4px solid var(--success);
+}
+
+.modal-error {
+  border-top: 4px solid var(--destructive);
+}
+
+.modal-warning {
+  border-top: 4px solid var(--warning);
+}
+
+.modal-info {
+  border-top: 4px solid var(--primary);
+}
+
+/* Modal Header */
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px 20px 0 20px;
+}
+
+.modal-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+}
+
+.modal-success .modal-icon {
+  color: var(--success);
+}
+
+.modal-error .modal-icon {
+  color: var(--destructive);
+}
+
+.modal-warning .modal-icon {
+  color: var(--warning);
+}
+
+.modal-info .modal-icon {
+  color: var(--primary);
+}
+
+.modal-title-section {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--card-foreground);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.modal-close-btn:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+/* Modal Body */
+.modal-body {
+  padding: 12px 20px 20px 56px;
+}
+
+.modal-message {
+  color: var(--muted-foreground);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Modal Footer */
+.modal-footer {
+  padding: 0 20px 20px 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-action-btn {
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  color: var(--secondary-foreground);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-action-btn:hover {
+  background: var(--muted);
+  border-color: var(--ring);
+}
+
+.modal-success .modal-action-btn {
+  background: var(--success);
+  border-color: var(--success);
+  color: var(--success-foreground);
+}
+
+.modal-success .modal-action-btn:hover {
+  background: var(--success);
+  border-color: var(--success);
+  opacity: 0.9;
+}
+
+.modal-error .modal-action-btn {
+  background: var(--destructive);
+  border-color: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.modal-error .modal-action-btn:hover {
+  background: var(--destructive);
+  border-color: var(--destructive);
+  opacity: 0.9;
+}
+
+.modal-warning .modal-action-btn {
+  background: var(--warning);
+  border-color: var(--warning);
+  color: var(--warning-foreground);
+}
+
+.modal-warning .modal-action-btn:hover {
+  background: var(--warning);
+  border-color: var(--warning);
+  opacity: 0.9;
+}
+
+.modal-info .modal-action-btn {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.modal-info .modal-action-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  opacity: 0.9;
+}
+
+/* Auto-close Progress Bar */
+.auto-close-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--muted);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 100%;
+  transform: translateX(-100%);
+}
+
+/* Dynamic animation classes for different durations */
+.progress-bar.duration-3000 {
+  animation: progressBar 3s linear forwards;
+}
+
+.progress-bar.duration-5000 {
+  animation: progressBar 5s linear forwards;
+}
+
+.progress-bar.duration-4000 {
+  animation: progressBar 4s linear forwards;
+}
+
+/* Ensure modal stays visible during timer */
+.modal-overlay.timer-active {
+  animation: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.modal-container.timer-active {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+.progress-success {
+  background: var(--success);
+}
+
+.progress-error {
+  background: var(--destructive);
+}
+
+.progress-warning {
+  background: var(--warning);
+}
+
+.progress-info {
+  background: var(--primary);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes progressBar {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .modal-overlay {
+    background: oklch(0 0 0 / 0.7);
+  }
+}
+
+/* Focus states for accessibility */
+.modal-close-btn:focus,
+.modal-action-btn:focus {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Enhanced animations */
+.modal-container {
+  transform-origin: center;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .modal-container {
+    margin: 20px;
+    width: calc(100% - 40px);
+    max-width: none;
+  }
+
+  .modal-header {
+    padding: 16px 16px 0 16px;
+  }
+
+  .modal-body {
+    padding: 12px 16px 16px 48px;
+  }
+
+  .modal-footer {
+    padding: 0 16px 16px 16px;
+  }
+
+  .modal-title {
+    font-size: 16px;
+  }
+
+  .modal-message {
+    font-size: 13px;
+  }
+}

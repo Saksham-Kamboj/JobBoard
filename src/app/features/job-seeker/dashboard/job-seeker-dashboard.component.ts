@@ -73,9 +73,9 @@ export class JobSeekerDashboardComponent implements OnInit, OnDestroy {
         },
       });
 
-    // Load recent job postings
+    // Load recent job postings (excluding jobs user has already applied to)
     this.dashboardService
-      .getRecentJobPostings(3)
+      .getRecentJobPostings(3, userId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (jobs) => {
@@ -109,8 +109,14 @@ export class JobSeekerDashboardComponent implements OnInit, OnDestroy {
         return 'status-submitted';
       case 'under-review':
         return 'status-under-review';
+      case 'pending':
+        return 'status-pending';
       case 'interview':
         return 'status-interview';
+      case 'shortlisted':
+        return 'status-shortlisted';
+      case 'reviewed':
+        return 'status-reviewed';
       case 'rejected':
         return 'status-rejected';
       case 'accepted':
@@ -126,14 +132,20 @@ export class JobSeekerDashboardComponent implements OnInit, OnDestroy {
         return 'Submitted';
       case 'under-review':
         return 'Under Review';
+      case 'pending':
+        return 'Pending';
       case 'interview':
-        return 'Interview Scheduled';
+        return 'Interview';
+      case 'shortlisted':
+        return 'Shortlisted';
+      case 'reviewed':
+        return 'Reviewed';
       case 'rejected':
-        return 'Not Selected';
+        return 'Rejected';
       case 'accepted':
         return 'Accepted';
       default:
-        return 'Unknown';
+        return 'Submitted';
     }
   }
 

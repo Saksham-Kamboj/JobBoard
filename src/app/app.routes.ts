@@ -147,6 +147,27 @@ export const routes: Routes = [
           ).then((m) => m.SavedJobsComponent),
       },
       {
+        path: 'dashboard',
+        loadComponent: () =>
+          import(
+            './features/job-seeker/dashboard/job-seeker-dashboard.component'
+          ).then((m) => m.JobSeekerDashboardComponent),
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import(
+            './features/job-seeker/profile/job-seeker-profile.component'
+          ).then((m) => m.JobSeekerProfileComponent),
+      },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import(
+            './features/job-seeker/settings/job-seeker-settings.component'
+          ).then((m) => m.JobSeekerSettingsComponent),
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full',
@@ -208,39 +229,6 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
     ],
-  },
-
-  // Job-Seeker Dashboard route (exclusive to job-seekers)
-  {
-    path: 'dashboard',
-    canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['job-seeker'] },
-    loadComponent: () =>
-      import(
-        './features/job-seeker/dashboard/job-seeker-dashboard.component'
-      ).then((m) => m.JobSeekerDashboardComponent),
-  },
-
-  // Job-seeker Settings route (exclusive to job-seekers)
-  {
-    path: 'profile',
-    canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['job-seeker'] },
-    loadComponent: () =>
-      import('./features/job-seeker/profile/job-seeker-profile.component').then(
-        (m) => m.JobSeekerProfileComponent
-      ),
-  },
-
-  // Job-seeker Settings route (exclusive to job-seekers)
-  {
-    path: 'settings',
-    canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['job-seeker'] },
-    loadComponent: () =>
-      import(
-        './features/job-seeker/settings/job-seeker-settings.component'
-      ).then((m) => m.JobSeekerSettingsComponent),
   },
 
   // Admin Routes
