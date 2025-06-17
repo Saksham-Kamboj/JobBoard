@@ -41,20 +41,33 @@
               class="search-input">
           </div>
           <div class="filter-controls">
-            <select class="filter-select" [(ngModel)]="statusFilter" (change)="onFilterChange()">
-              <option value="">All Status</option>
-              <option value="submitted">Submitted</option>
-              <option value="reviewed">Reviewed</option>
-              <option value="accepted">Accepted</option>
-              <option value="rejected">Rejected</option>
-              <option value="scheduled">Scheduled</option>
-            </select>
+            <div class="filter-group">
+              <select class="filter-select" [(ngModel)]="statusFilter" (change)="onFilterChange()">
+                <option value="">All Status</option>
+                <option value="submitted">Submitted</option>
+                <option value="reviewed">Reviewed</option>
+                <option value="accepted">Accepted</option>
+                <option value="rejected">Rejected</option>
+                <option value="scheduled">Scheduled</option>
+              </select>
+              <span class="filter-badge" *ngIf="statusFilter && getFilteredCount() > 0">
+                {{ getFilteredCount() }}
+              </span>
+            </div>
             <select class="filter-select" [(ngModel)]="sortBy" (change)="onSortChange()">
               <option value="date-desc">Latest First</option>
               <option value="date-asc">Oldest First</option>
               <option value="company">Company A-Z</option>
               <option value="status">Status</option>
             </select>
+            <button class="clear-filters-btn" *ngIf="hasActiveFilters()" (click)="clearAllFilters()"
+              title="Clear all filters">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" />
+                <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" />
+              </svg>
+              Clear
+            </button>
           </div>
         </div>
       </div>

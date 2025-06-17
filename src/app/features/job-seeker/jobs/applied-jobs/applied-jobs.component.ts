@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject, forkJoin } from 'rxjs';
 import { takeUntil, map, catchError } from 'rxjs/operators';
@@ -50,10 +50,14 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
     private userProfileService: UserProfileService,
     private jobApplicationService: JobApplicationService,
     private jobService: JobService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    // Initialize filters from URL parameters
+    this.initializeFiltersFromUrl();
+
     this.authService.currentUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe((user) => {
@@ -98,6 +102,9 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
             );
           this.applyFiltersAndSort();
           this.isLoading = false;
+
+          // Apply URL filters after data is loaded
+          this.initializeFiltersFromUrl();
         },
         error: (error) => {
           console.error('Error loading applied jobs:', error);
@@ -153,14 +160,17 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
   }
 
   onSearch(): void {
+    this.updateUrlParams();
     this.applyFiltersAndSort();
   }
 
   onFilterChange(): void {
+    this.updateUrlParams();
     this.applyFiltersAndSort();
   }
 
   onSortChange(): void {
+    this.updateUrlParams();
     this.applyFiltersAndSort();
   }
 
@@ -348,5 +358,94 @@ export class AppliedJobsComponent implements OnInit, OnDestroy {
     // Implement download functionality
     console.log('Downloading application for:', job.title);
     // This would typically generate and download a PDF of the application
+  }
+
+  /**
+   * Get the count of filtered jobs (for badge display)
+   */
+  getFilteredCount(): number {
+    return this.filteredJobs.length;
+  }
+
+  /**
+   * Check if there are any active filters
+   */
+  hasActiveFilters(): boolean {
+    return !!(
+      this.searchQuery.trim() ||
+      this.statusFilter ||
+      this.sortBy !== 'date-desc'
+    );
+  }
+
+  /**
+   * Initialize filters from URL parameters
+   */
+  private initializeFiltersFromUrl(): void {
+    this.route.queryParams
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((params) => {
+        // Set search query from URL parameter
+        this.searchQuery = params['search'] || '';
+
+        // Set status filter from URL parameter
+        this.statusFilter = params['status'] || '';
+
+        // Set sort option from URL parameter
+        this.sortBy = params['sort'] || 'date-desc';
+
+        // Apply filters if we have loaded jobs
+        if (this.appliedJobs.length > 0) {
+          this.applyFiltersAndSort();
+        }
+      });
+  }
+
+  /**
+   * Update URL parameters when filters change
+   */
+  private updateUrlParams(): void {
+    const queryParams: any = {};
+
+    // Add search parameter if not empty
+    if (this.searchQuery.trim()) {
+      queryParams['search'] = this.searchQuery.trim();
+    }
+
+    // Add status filter parameter if not empty
+    if (this.statusFilter) {
+      queryParams['status'] = this.statusFilter;
+    }
+
+    // Add sort parameter if not default
+    if (this.sortBy !== 'date-desc') {
+      queryParams['sort'] = this.sortBy;
+    }
+
+    // Update URL without reloading the page
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      queryParamsHandling: 'replace', // Replace current query params
+      replaceUrl: true, // Don't add to browser history
+    });
+  }
+
+  /**
+   * Clear all filters and update URL
+   */
+  clearAllFilters(): void {
+    this.searchQuery = '';
+    this.statusFilter = '';
+    this.sortBy = 'date-desc';
+
+    // Clear URL parameters
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {},
+      replaceUrl: true,
+    });
+
+    this.applyFiltersAndSort();
   }
 }

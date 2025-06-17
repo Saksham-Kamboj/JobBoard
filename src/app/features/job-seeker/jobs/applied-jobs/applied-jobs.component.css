@@ -132,6 +132,53 @@
   align-items: center;
 }
 
+.filter-group {
+  position: relative;
+  display: inline-block;
+}
+
+.filter-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px oklch(from var(--primary) l c h / 0.3);
+  z-index: 10;
+}
+
+.clear-filters-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.78rem 0.75rem;
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-filters-btn:hover {
+  background: var(--secondary-hover);
+  border-color: var(--primary);
+}
+
+.clear-filters-btn:active {
+  transform: translateY(1px);
+}
+
 .filter-select {
   padding: 0.75rem 1rem;
   border: 1px solid var(--border);
@@ -746,6 +793,12 @@
 
   .filter-controls {
     justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .clear-filters-btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
   }
 }
 
@@ -865,6 +918,15 @@
 
   .filter-select {
     width: 100%;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .clear-filters-btn {
+    width: 100%;
+    justify-content: center;
   }
 
   .job-card-header,
