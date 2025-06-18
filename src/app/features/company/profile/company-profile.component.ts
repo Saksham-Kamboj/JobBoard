@@ -7,7 +7,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService, User } from '../../../core/services/auth.service';
 import {
@@ -82,7 +82,8 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private profileService: ProfileService,
     private jobManagementService: JobManagementService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.profileForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
@@ -114,6 +115,19 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Subscribe to query parameters to handle tab changes
+    this.authSubscription.add(
+      this.route.queryParams.subscribe((params) => {
+        const tab = params['tab'];
+        if (tab && this.profileSections.some((section) => section.id === tab)) {
+          this.activeSection = tab;
+        } else {
+          // Default to first section if no valid tab parameter
+          this.activeSection = this.profileSections[0].id;
+        }
+      })
+    );
+
     // Subscribe to authentication state
     this.authSubscription.add(
       this.authService.currentUser$.subscribe((user) => {
@@ -159,6 +173,14 @@ export class CompanyProfileComponent implements OnInit, OnDestroy {
     this.isEditingProfile = false;
     this.isEditingCompany = false;
     this.clearMessages();
+
+    // Update URL parameters
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: sectionId },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   loadUserProfile() {
